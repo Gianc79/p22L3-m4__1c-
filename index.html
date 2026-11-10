@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f4f7fb">
-<title>Puzzle Magic v. 1.11</title>
+<title>Puzzle Magic v. 1.12</title>
 
 <style>
 :root{
@@ -219,35 +219,40 @@ h1{
 .stat-timer-row{
   display:flex;
   align-items:center;
-  gap:8px
+  justify-content:space-between;
+  width:100%;
+  gap:12px
 }
 
 .timer-pause-btn{
   display:inline-grid;
   place-items:center;
-  width:28px;
-  height:28px;
+  width:56px;
+  height:56px;
   padding:0;
   border:1px solid #cfd7e6;
-  border-radius:8px;
+  border-radius:14px;
   background:#ffffff;
   color:var(--text);
-  font-size:13px;
+  font-size:26px;
   cursor:pointer;
   line-height:1;
-  box-shadow:0 1px 3px rgba(0,0,0,.06);
+  box-shadow:0 2px 6px rgba(0,0,0,.07);
   transition:all .15s ease;
-  touch-action:manipulation
+  touch-action:manipulation;
+  margin-left:auto;
+  flex-shrink:0
 }
 
 .timer-pause-btn:hover:not(:disabled){
   background:#f0f2ff;
   border-color:var(--primary);
-  color:var(--primary-dark)
+  color:var(--primary-dark);
+  box-shadow:0 3px 8px rgba(70,86,194,.16)
 }
 
 .timer-pause-btn:active:not(:disabled){
-  transform:scale(.92)
+  transform:scale(.94)
 }
 
 .timer-pause-btn:disabled{
@@ -259,7 +264,8 @@ h1{
 .timer-pause-btn.is-paused{
   background:#eef1ff;
   border-color:var(--primary);
-  color:var(--primary-dark)
+  color:var(--primary-dark);
+  box-shadow:0 0 0 2px rgba(91,110,225,.2)
 }
 
 .progress-track{
@@ -287,14 +293,16 @@ h1{
   align-items:flex-start;
   justify-content:space-between;
   gap:12px;
-  margin-bottom:15px
+  width:min(100%,620px);
+  margin:0 auto 15px auto
 }
 
 .game-title-group{
   display:inline-flex;
   align-items:center;
   gap:8px;
-  flex-wrap:wrap
+  flex-wrap:wrap;
+  min-height:38px
 }
 
 .game-top h2{
@@ -356,11 +364,11 @@ h1{
   box-shadow:none
 }
 
-/* Azioni in alto all'estrema destra: Schermo intero e sotto etichetta di stato */
+/* Azioni in alto a destra: Schermo intero (quadrato con bordi stondati) allineato al titolo e al puzzle */
 .game-top-actions{
   display:flex;
   flex-direction:column;
-  align-items:center;
+  align-items:flex-end;
   gap:4px;
   flex-shrink:0;
   margin-left:auto
@@ -369,14 +377,15 @@ h1{
 .fullscreen-toggle-btn{
   display:grid;
   place-items:center;
-  width:36px;
-  height:36px;
+  width:38px;
+  height:38px;
   padding:0;
   border:1px solid var(--border);
-  border-radius:50%;
+  border-radius:10px;
   background:#fff;
   color:var(--text);
   cursor:pointer;
+  box-shadow:0 1px 3px rgba(0,0,0,.06);
   transition:all .15s ease;
   touch-action:manipulation
 }
@@ -384,7 +393,8 @@ h1{
 .fullscreen-toggle-btn:hover:not(:disabled){
   background:#f0f2ff;
   color:var(--primary-dark);
-  border-color:#c9d2f2
+  border-color:#c9d2f2;
+  box-shadow:0 3px 8px rgba(70,86,194,.14)
 }
 
 .fullscreen-toggle-btn:active:not(:disabled){
@@ -1038,7 +1048,7 @@ footer{
 }
 
 
-/* v. 1.10 - Supereroi a fine livello */
+/* v. 1.10 / v. 1.12 - Supereroi a fine livello con foto */
 
 .win-dialog{
   overflow:hidden
@@ -1047,80 +1057,44 @@ footer{
 .hero-stage{
   position:relative;
   width:100%;
-  height:174px;
-  margin:-2px auto 6px;
+  height:210px;
+  margin:-2px auto 10px;
   display:flex;
   align-items:center;
   justify-content:center;
-  isolation:isolate;
-  background:
-    radial-gradient(
-      ellipse at 50% 70%,
-      var(--hero-glow) 0%,
-      transparent 68%
-    );
-  border-radius:18px
+  border-radius:18px;
+  overflow:hidden;
+  background:#111827;
+  box-shadow:0 4px 18px rgba(0,0,0,.1)
 }
 
-.hero-aura{
-  position:absolute;
-  width:148px;
-  height:148px;
-  border-radius:50%;
-  background:var(--hero-glow);
-  opacity:.52;
-  filter:blur(4px);
-  animation:hero-aura-pulse 2.1s ease-in-out infinite
-}
-
-.hero-art{
-  position:relative;
-  z-index:1;
-  width:166px;
-  height:166px;
-  animation:hero-arrive .55s cubic-bezier(.2,.8,.2,1) both
-}
-
-.hero-art svg{
-  display:block;
+.hero-photo{
   width:100%;
   height:100%;
-  overflow:visible
+  object-fit:cover;
+  object-position:center 20%;
+  display:block;
+  transition:transform .3s ease
 }
 
-.hero-figure{
-  transform-origin:50% 82%
-}
-
-.hero-spiderman .hero-figure{
-  animation:spiderman-swing 1.8s ease-in-out infinite
-}
-
-.hero-hulk .hero-figure{
-  animation:hulk-flex 1.6s ease-in-out infinite
-}
-
-.hero-batman .hero-figure{
-  animation:batman-glide 2.2s ease-in-out infinite
-}
-
-.hero-superman .hero-figure{
-  animation:superman-hover 1.9s ease-in-out infinite
+.hero-stage:hover .hero-photo{
+  transform:scale(1.02)
 }
 
 .hero-rank{
   position:absolute;
   z-index:2;
-  right:6px;
+  right:8px;
   bottom:8px;
-  padding:5px 9px;
+  padding:4px 10px;
   border-radius:20px;
-  background:#fff;
-  color:#344563;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(4px);
+  color:#1e293b;
   font-size:10px;
   font-weight:900;
-  letter-spacing:.7px;
-  box-shadow:0 3px 12px rgba(37,53,86,.12)
+  letter-spacing:.6px;
+  box-shadow:0 2px 8px rgba(0,0,0,.18)
 }
 
 .hero-name{
@@ -1141,6 +1115,72 @@ footer{
 
 .win-dialog #winMessage{
   margin-bottom:18px
+}
+
+.win-content{
+  display:contents
+}
+
+/* Adattamento schermo orizzontale / landscape per la schermata di fine livello (v. 1.12) */
+@media (orientation: landscape) and (max-height: 640px), (orientation: landscape) and (min-width: 640px) {
+  .win-dialog{
+    width:min(94vw,680px);
+    max-height:88vh;
+    padding:18px 20px;
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    gap:18px;
+    text-align:left
+  }
+
+  .win-dialog .hero-stage{
+    flex:0 0 42%;
+    max-width:44%;
+    height:250px;
+    margin:0;
+    align-self:stretch
+  }
+
+  .win-dialog .win-content{
+    display:flex;
+    flex:1 1 auto;
+    flex-direction:column;
+    justify-content:center;
+    align-items:flex-start;
+    text-align:left;
+    min-width:0
+  }
+
+  .win-dialog h2{
+    margin:0 0 4px;
+    font-size:20px
+  }
+
+  .win-dialog .hero-name{
+    font-size:18px;
+    margin:0 0 2px
+  }
+
+  .win-dialog .hero-tagline{
+    font-size:12px;
+    margin:0 0 8px
+  }
+
+  .win-dialog #winMessage{
+    margin:0 0 10px;
+    font-size:13px;
+    line-height:1.45
+  }
+
+  .win-dialog .win-stats-summary{
+    margin:0 0 14px
+  }
+
+  .win-dialog .dialog-actions{
+    justify-content:flex-start;
+    width:100%
+  }
 }
 
 .choice-actions{
@@ -1247,6 +1287,82 @@ body.is-fullscreen{
 .game-panel.is-fullscreen .hint,
 .game-panel.is-fullscreen .side-actions{
   display:none!important
+}
+
+/* Timer e tasto pausa a schermo intero (v. 1.12) */
+.fullscreen-hud{
+  display:none
+}
+
+.game-panel.is-fullscreen .fullscreen-hud{
+  position:fixed;
+  top:12px;
+  left:12px;
+  z-index:1005;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:5px 12px;
+  border:1px solid var(--border);
+  border-radius:30px;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(6px);
+  box-shadow:0 4px 16px rgba(0,0,0,.08)
+}
+
+.fullscreen-timer-box{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:15px;
+  font-weight:800;
+  color:var(--text);
+  font-variant-numeric:tabular-nums
+}
+
+.fullscreen-timer-icon{
+  font-size:15px;
+  line-height:1
+}
+
+.fullscreen-pause-btn{
+  display:inline-grid;
+  place-items:center;
+  width:32px;
+  height:32px;
+  padding:0;
+  border:1px solid #cfd7e6;
+  border-radius:50%;
+  background:#ffffff;
+  color:var(--text);
+  font-size:14px;
+  cursor:pointer;
+  line-height:1;
+  box-shadow:0 1px 3px rgba(0,0,0,.06);
+  transition:all .15s ease;
+  touch-action:manipulation
+}
+
+.fullscreen-pause-btn:hover:not(:disabled){
+  background:#f0f2ff;
+  border-color:var(--primary);
+  color:var(--primary-dark)
+}
+
+.fullscreen-pause-btn:active:not(:disabled){
+  transform:scale(.92)
+}
+
+.fullscreen-pause-btn:disabled{
+  opacity:.35;
+  cursor:not-allowed;
+  box-shadow:none
+}
+
+.fullscreen-pause-btn.is-paused{
+  background:#eef1ff;
+  border-color:var(--primary);
+  color:var(--primary-dark)
 }
 
 .game-panel.is-fullscreen .fullscreen-exit-btn{
@@ -1519,7 +1635,7 @@ body.is-fullscreen{
     <button class="sound-toggle" id="soundToggleBtn" type="button" aria-label="Attiva o disattiva audio" title="Audio">
       <span id="soundIcon">🔊</span>
     </button>
-    <div class="version">v. 1.11</div>
+    <div class="version">v. 1.12</div>
   </div>
 </header>
 
@@ -1638,65 +1754,81 @@ body.is-fullscreen{
     <span>Esci da schermo intero</span>
   </button>
 
-  <div class="game-top">
-
-    <div>
-      <div class="game-title-group">
-        <h2 id="gameTitle">
-          Livello 1 · Principiante
-        </h2>
-
-        <button
-          class="mix-icon-btn"
-          id="mixBtn"
-          type="button"
-          title="Mescola i tasselli (MIX)"
-          aria-label="Mescola i tasselli"
-          disabled>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="16 3 21 3 21 8"></polyline>
-            <line x1="4" y1="20" x2="21" y2="3"></line>
-            <polyline points="21 16 21 21 16 21"></polyline>
-            <line x1="15" y1="15" x2="21" y2="21"></line>
-            <line x1="4" y1="4" x2="9" y2="9"></line>
-          </svg>
-          <span>MIX</span>
-        </button>
-      </div>
-
-      <p
-        class="level-description"
-        id="levelDescription">
-        Inizia con 9 tasselli.
-      </p>
+  <!-- Timer e pausa in modalità schermo intero (v. 1.12) -->
+  <div class="fullscreen-hud" id="fullscreenHud" aria-label="Timer a schermo intero">
+    <div class="fullscreen-timer-box">
+      <span class="fullscreen-timer-icon" aria-hidden="true">⏱️</span>
+      <span id="fullscreenTimerVal">00:00</span>
     </div>
-
-    <div class="game-top-actions">
-      <button
-        class="fullscreen-toggle-btn"
-        id="fullscreenToggleBtn"
-        type="button"
-        title="Visualizzazione a schermo intero"
-        aria-label="Schermo intero">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
-        </svg>
-      </button>
-
-      <div
-        class="status"
-        id="gameStatus">
-        IN ATTESA
-      </div>
-    </div>
-
+    <button
+      class="fullscreen-pause-btn"
+      id="fullscreenPauseBtn"
+      type="button"
+      title="Metti in pausa il timer"
+      aria-label="Metti in pausa il timer"
+      disabled>
+      <span id="fullscreenPauseIcon">⏸️</span>
+    </button>
   </div>
-
 
   <div class="game-layout">
 
     <!-- Area principale con tavola puzzle, aiuti e suggerimenti -->
     <div class="game-main-col">
+
+      <div class="game-top">
+
+        <div>
+          <div class="game-title-group">
+            <h2 id="gameTitle">
+              Livello 1 · Principiante
+            </h2>
+
+            <button
+              class="mix-icon-btn"
+              id="mixBtn"
+              type="button"
+              title="Mescola i tasselli (MIX)"
+              aria-label="Mescola i tasselli"
+              disabled>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="16 3 21 3 21 8"></polyline>
+                <line x1="4" y1="20" x2="21" y2="3"></line>
+                <polyline points="21 16 21 21 16 21"></polyline>
+                <line x1="15" y1="15" x2="21" y2="21"></line>
+                <line x1="4" y1="4" x2="9" y2="9"></line>
+              </svg>
+              <span>MIX</span>
+            </button>
+          </div>
+
+          <p
+            class="level-description"
+            id="levelDescription">
+            Inizia con 9 tasselli.
+          </p>
+        </div>
+
+        <div class="game-top-actions">
+          <button
+            class="fullscreen-toggle-btn"
+            id="fullscreenToggleBtn"
+            type="button"
+            title="Visualizzazione a schermo intero"
+            aria-label="Schermo intero">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+            </svg>
+          </button>
+
+          <div
+            class="status"
+            id="gameStatus">
+            IN ATTESA
+          </div>
+        </div>
+
+      </div>
 
       <div class="board-wrap">
 
@@ -1847,15 +1979,13 @@ body.is-fullscreen{
     <div
       class="hero-stage"
       id="heroStage"
-      style="--hero-glow:#dcfce7"
-      aria-hidden="true">
+      style="--hero-glow:#dcfce7">
 
-      <div class="hero-aura"></div>
-
-      <div
-        class="hero-art"
-        id="heroArt">
-      </div>
+      <img
+        class="hero-photo"
+        id="heroPhoto"
+        src="/assets/aistudio/Livello_1_d004bcb3.jpg"
+        alt="Supereroe del livello">
 
       <div
         class="hero-rank"
@@ -1865,47 +1995,49 @@ body.is-fullscreen{
 
     </div>
 
+    <div class="win-content">
 
-    <h2 id="winTitle">
-      Livello completato! 🦸
-    </h2>
+      <h2 id="winTitle">
+        Livello completato! 🦸
+      </h2>
 
-    <div
-      class="hero-name"
-      id="heroName">
-      Spider-Man
-    </div>
+      <div
+        class="hero-name"
+        id="heroName">
+        Spider-Man
+      </div>
 
-    <div
-      class="hero-tagline"
-      id="heroTagline">
-      L'amichevole eroe di quartiere
-    </div>
+      <div
+        class="hero-tagline"
+        id="heroTagline">
+        L'amichevole eroe di quartiere
+      </div>
 
-    <p id="winMessage">
-      Hai ricomposto correttamente la foto.
-    </p>
+      <p id="winMessage">
+        Hai ricomposto correttamente la foto.
+      </p>
 
-    <div class="win-stats-summary" id="winStatsSummary">
-      <!-- Inserito dinamicamente: mosse e tempo -->
-    </div>
+      <div class="win-stats-summary" id="winStatsSummary">
+        <!-- Inserito dinamicamente: mosse e tempo -->
+      </div>
 
+      <div class="dialog-actions">
 
-    <div class="dialog-actions">
+        <button
+          class="button primary"
+          id="nextLevelBtn"
+          type="button">
+          Prossimo livello →
+        </button>
 
-      <button
-        class="button primary"
-        id="nextLevelBtn"
-        type="button">
-        Prossimo livello →
-      </button>
+        <button
+          class="button secondary"
+          id="newGameBtn"
+          type="button">
+          📷 Cambia foto
+        </button>
 
-      <button
-        class="button secondary"
-        id="newGameBtn"
-        type="button">
-        📷 Cambia foto
-      </button>
+      </div>
 
     </div>
 
@@ -2148,8 +2280,8 @@ body.is-fullscreen{
    * Chiave per la v1.10.
    * Se non presente, tenta la lettura compatibile da v109 o v108.
    */
-  const STORAGE_KEY = "puzzleMagic_autosave_v110";
-  const PREV_STORAGE_KEY = "puzzleMagic_autosave_v109";
+  const STORAGE_KEY = "puzzleMagic_autosave_v112";
+  const PREV_STORAGE_KEY = "puzzleMagic_autosave_v110";
 
 
   const HEROES = [
@@ -2161,17 +2293,21 @@ body.is-fullscreen{
       glow: "#fee2e2",
       accent: "#ef4444",
       dark: "#1e3a8a",
-      power: "Senso di ragno & ragnatele"
+      power: "Senso di ragno & ragnatele",
+      image: "/assets/aistudio/Livello_1_d004bcb3.jpg",
+      objectPosition: "center 20%"
     },
 
     {
-      name: "Hulk",
-      tagline: "Il gigante verde più forte della Terra",
-      type: "hulk",
-      glow: "#dcfce7",
-      accent: "#22c55e",
-      dark: "#581c87",
-      power: "Forza gamma devastante"
+      name: "Venom Spider-Man",
+      tagline: "La potenza del costume simbiotico",
+      type: "symbiote",
+      glow: "#ccfbf1",
+      accent: "#0d9488",
+      dark: "#042f2e",
+      power: "Energia oscura & super riflessi",
+      image: "/assets/aistudio/Livello_2_a50f1e7a.jpg",
+      objectPosition: "center 25%"
     },
 
     {
@@ -2181,7 +2317,9 @@ body.is-fullscreen{
       glow: "#fef3c7",
       accent: "#eab308",
       dark: "#0f172a",
-      power: "Intelligenza tattica & bat-gadget"
+      power: "Intelligenza tattica & bat-gadget",
+      image: "/assets/aistudio/Livello_3_0edbdf4e.jpg",
+      objectPosition: "center 20%"
     },
 
     {
@@ -2191,7 +2329,9 @@ body.is-fullscreen{
       glow: "#dbeafe",
       accent: "#3b82f6",
       dark: "#dc2626",
-      power: "Super forza solare & volo"
+      power: "Super forza solare & volo",
+      image: "/assets/aistudio/Livello_4_2ea5ea85.jpg",
+      objectPosition: "center 25%"
     }
 
   ];
