@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f4f7fb">
-<title>Puzzle Magic v. 1.08</title>
+<title>Puzzle Magic v. 1.09</title>
 
 <style>
 :root{
@@ -80,6 +80,35 @@ h1{
   margin:5px 0 0;
   color:var(--muted);
   font-size:14px
+}
+
+.header-actions{
+  display:flex;
+  align-items:center;
+  gap:8px
+}
+
+.sound-toggle{
+  display:grid;
+  place-items:center;
+  width:36px;
+  height:36px;
+  padding:0;
+  border:1px solid var(--border);
+  border-radius:50%;
+  background:white;
+  cursor:pointer;
+  font-size:16px;
+  line-height:1;
+  transition:background .15s ease,transform .15s ease
+}
+
+.sound-toggle:hover{
+  background:#f0f2ff
+}
+
+.sound-toggle:active{
+  transform:scale(.94)
 }
 
 .version{
@@ -164,7 +193,7 @@ h1{
 
 .stats{
   display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
+  grid-template-columns:repeat(4,minmax(0,1fr));
   gap:12px;
   margin-bottom:16px
 }
@@ -246,12 +275,13 @@ h1{
   gap:1px;
   padding:1px;
   width:100%;
-  aspect-ratio:1/1;
+  aspect-ratio:var(--board-aspect, 1/1);
   overflow:hidden;
   border:1px solid #edf0f4;
   border-radius:12px;
   background:#f0f2f5;
-  isolation:isolate
+  isolation:isolate;
+  transition:aspect-ratio .2s ease
 }
 
 .tile{
@@ -272,7 +302,8 @@ h1{
   -webkit-user-select:none;
   -webkit-touch-callout:none;
   touch-action:none;
-  overflow:hidden
+  overflow:hidden;
+  transition:box-shadow .15s ease, transform .12s ease, opacity .15s ease
 }
 
 .tile:focus-visible{
@@ -293,6 +324,55 @@ h1{
 
 .tile.drag-origin{
   opacity:.28
+}
+
+/* Numeri guida sui tasselli */
+.tile-number{
+  position:absolute;
+  top:4px;
+  left:4px;
+  z-index:2;
+  padding:1px 5px;
+  border-radius:4px;
+  background:rgba(20,28,45,.68);
+  backdrop-filter:blur(2px);
+  color:#fff;
+  font-size:10px;
+  font-weight:800;
+  line-height:1.2;
+  pointer-events:none;
+  display:none
+}
+
+.board.show-numbers .tile-number{
+  display:block
+}
+
+/* Evidenziazione tasselli in posizione corretta */
+.board.show-correct .tile.is-correct{
+  box-shadow:inset 0 0 0 2.5px rgba(32,151,119,.85)
+}
+
+.tile-correct-mark{
+  position:absolute;
+  top:4px;
+  right:4px;
+  z-index:2;
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:#209777;
+  color:#fff;
+  font-size:9px;
+  font-weight:900;
+  display:none;
+  place-items:center;
+  pointer-events:none;
+  box-shadow:0 1px 4px rgba(0,0,0,.2)
+}
+
+.board.show-correct .tile.is-correct .tile-correct-mark{
+  display:grid
 }
 
 .drag-ghost{
@@ -494,39 +574,66 @@ footer{
 }
 
 
-/* Controlli compatti */
+/* Layout di gioco e fascia laterale destra */
 
-.controls{
-  width:min(100%,620px);
-  margin:14px auto 0;
+.game-layout{
   display:grid;
-  grid-template-columns:minmax(0,1fr) 92px;
-  gap:8px;
-  align-items:stretch;
-  justify-content:stretch
+  grid-template-columns:minmax(0,1fr);
+  gap:16px
 }
 
-.control-stack{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
+.game-main-col{
   min-width:0
 }
 
-.control-stack .button{
-  width:100%;
-  height:42px;
-  min-height:42px;
-  padding:8px 12px
+.game-side-col{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  min-width:0
+}
+
+.side-preview-card{
+  background:#f8fafd;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:12px;
+  display:flex;
+  flex-direction:column;
+  gap:8px
+}
+
+.side-preview-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px
+}
+
+.side-preview-title{
+  font-size:12px;
+  font-weight:800;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:.5px
+}
+
+.side-format-badge{
+  font-size:11px;
+  font-weight:800;
+  padding:2px 7px;
+  border-radius:10px;
+  background:#e8ebff;
+  color:var(--primary-dark)
 }
 
 .preview-tile{
   position:relative;
   display:block;
-  width:92px;
-  height:92px;
+  width:100%;
+  aspect-ratio:var(--board-aspect, 1/1);
   min-width:0;
-  min-height:0;
+  min-height:92px;
   padding:0;
   overflow:hidden;
   border:1px solid #e1e6ef;
@@ -550,16 +657,16 @@ footer{
 
 .preview-zoom{
   position:absolute;
-  right:5px;
-  bottom:5px;
+  right:6px;
+  bottom:6px;
   display:grid;
   place-items:center;
-  width:25px;
-  height:25px;
+  width:26px;
+  height:26px;
   border-radius:8px;
   background:rgba(23,34,56,.76);
   color:white;
-  font-size:21px;
+  font-size:20px;
   line-height:1
 }
 
@@ -568,11 +675,160 @@ footer{
   outline-offset:3px
 }
 
+.side-actions{
+  display:flex;
+  flex-direction:column;
+  gap:8px
+}
 
-/* v. 1.08 - escolha do nível */
+.side-actions .button{
+  width:100%;
+  min-height:42px
+}
+
+/* Barra strumenti aiuti di gioco */
+
+.game-helpers{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin-top:12px;
+  flex-wrap:wrap
+}
+
+.helper-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 13px;
+  border:1px solid var(--border);
+  border-radius:20px;
+  background:#fff;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .15s ease
+}
+
+.helper-btn:hover{
+  background:#f4f6fc;
+  color:var(--text)
+}
+
+.helper-btn.active{
+  border-color:var(--primary);
+  background:#eef1ff;
+  color:var(--primary-dark)
+}
+
+.helper-icon{
+  font-size:13px;
+  line-height:1
+}
+
+/* Desktop o orientamento orizzontale: affiancamento con anteprima a destra */
+
+@media(min-width:768px){
+  .game-layout{
+    grid-template-columns:minmax(0,1fr) 230px;
+    align-items:start;
+    gap:20px
+  }
+}
+
+@media(orientation: landscape) and (max-height: 540px){
+  .game-layout{
+    grid-template-columns:minmax(0,1fr) 200px;
+    align-items:start;
+    gap:14px
+  }
+}
+
+/* Scelta del formato */
+
+.choice-subheading{
+  text-align:left;
+  font-size:11px;
+  font-weight:800;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:.6px;
+  margin:12px 0 6px
+}
+
+.format-choice-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  margin:0 0 16px
+}
+
+.format-choice-option{
+  min-height:54px;
+  padding:8px 6px;
+  border:2px solid var(--border);
+  border-radius:12px;
+  background:#f8f9fc;
+  color:var(--text);
+  cursor:pointer;
+  text-align:center;
+  transition:all .15s ease
+}
+
+.format-choice-option:active{
+  transform:scale(.98)
+}
+
+.format-choice-option.active{
+  border-color:var(--primary);
+  background:#eef0ff;
+  color:var(--primary-dark)
+}
+
+.format-choice-option strong{
+  display:block;
+  font-size:14px;
+  line-height:1.2;
+  margin-bottom:2px
+}
+
+.format-choice-option span{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  font-weight:700
+}
+
+.format-choice-option.active span{
+  color:var(--primary-dark)
+}
+
+/* Riepilogo vittoria */
+
+.win-stats-summary{
+  display:inline-flex;
+  gap:14px;
+  justify-content:center;
+  align-items:center;
+  padding:8px 16px;
+  border-radius:14px;
+  background:#f4f7fb;
+  margin:0 auto 16px;
+  font-size:13px;
+  font-weight:700;
+  color:var(--text)
+}
+
+.win-stats-summary strong{
+  color:var(--primary-dark)
+}
+
+/* v. 1.09 - scelta del livello */
 
 .level-choice-dialog{
-  width:min(100%,410px)
+  width:min(100%,430px)
 }
 
 .level-choice-grid{
@@ -844,6 +1100,7 @@ footer{
   }
 
   .stats{
+    grid-template-columns:repeat(2,minmax(0,1fr));
     gap:8px
   }
 
@@ -870,23 +1127,6 @@ footer{
   .version{
     font-size:11px;
     padding:5px 7px
-  }
-
-  .controls{
-    grid-template-columns:minmax(0,1fr) 92px;
-    gap:8px
-  }
-
-  .control-stack .button{
-    flex:0 0 auto;
-    width:100%;
-    font-size:13px;
-    padding:8px 6px
-  }
-
-  .preview-tile{
-    width:92px;
-    height:92px
   }
 
   .level-choice-grid{
@@ -948,7 +1188,12 @@ footer{
     </div>
   </div>
 
-  <div class="version">v. 1.08</div>
+  <div class="header-actions">
+    <button class="sound-toggle" id="soundToggleBtn" type="button" aria-label="Attiva o disattiva audio" title="Audio">
+      <span id="soundIcon">🔊</span>
+    </button>
+    <div class="version">v. 1.09</div>
+  </div>
 </header>
 
 
@@ -1024,10 +1269,23 @@ footer{
 
   </div>
 
+
+  <div class="panel stat">
+
+    <div class="stat-label">Tempo</div>
+
+    <div
+      class="stat-value"
+      id="timerValue">
+      00:00
+    </div>
+
+  </div>
+
 </section>
 
 
-<main class="panel game-panel">
+<main class="panel game-panel" id="gamePanel">
 
   <div class="game-top">
 
@@ -1052,84 +1310,129 @@ footer{
   </div>
 
 
-  <div class="board-wrap">
+  <div class="game-layout">
 
-    <div
-      class="board"
-      id="board"
-      aria-label="Tavola del puzzle">
+    <!-- Area principale con tavola puzzle, aiuti e suggerimenti -->
+    <div class="game-main-col">
 
-      <div class="empty-state">
+      <div class="board-wrap">
 
         <div
-          class="empty-icon"
-          aria-hidden="true">
-          🖼️
+          class="board"
+          id="board"
+          aria-label="Tavola del puzzle">
+
+          <div class="empty-state">
+
+            <div
+              class="empty-icon"
+              aria-hidden="true">
+              🖼️
+            </div>
+
+            <strong>Scegli la tua foto</strong>
+
+            <p>
+              Carica un'immagine per iniziare la partita.
+            </p>
+
+          </div>
+
         </div>
 
-        <strong>Scegli la tua foto</strong>
+      </div>
 
-        <p>
-          Carica un'immagine per iniziare la partita.
-        </p>
 
+      <!-- Strumenti di aiuto opzionali -->
+      <div class="game-helpers" id="gameHelpers" aria-label="Aiuti visivi">
+
+        <button
+          class="helper-btn"
+          id="toggleNumbersBtn"
+          type="button"
+          aria-pressed="false"
+          title="Mostra o nascondi i numeri sui tasselli">
+          <span class="helper-icon">🔢</span>
+          <span>Numeri</span>
+        </button>
+
+        <button
+          class="helper-btn"
+          id="toggleCorrectBtn"
+          type="button"
+          aria-pressed="false"
+          title="Evidenzia i tasselli già nella posizione corretta">
+          <span class="helper-icon">✨</span>
+          <span>Posizione corretta</span>
+        </button>
+
+      </div>
+
+
+      <div
+        class="hint"
+        id="hint"
+        aria-live="polite">
+        Carica una foto per cominciare.
       </div>
 
     </div>
 
-  </div>
+
+    <!-- Fascia laterale destra (affiancata in orizzontale o desktop) -->
+    <aside class="game-side-col">
+
+      <div class="side-preview-card">
+
+        <div class="side-preview-header">
+          <span class="side-preview-title">Modello foto</span>
+          <span class="side-format-badge" id="formatBadge">1:1</span>
+        </div>
+
+        <button
+          class="preview-tile"
+          id="previewBtn"
+          type="button"
+          aria-label="Ingrandisci la foto originale"
+          disabled>
+
+          <img
+            id="previewThumb"
+            alt="Miniatura della foto originale">
+
+          <span
+            class="preview-zoom"
+            aria-hidden="true">
+            ⌕
+          </span>
+
+        </button>
+
+      </div>
 
 
-  <div class="controls">
+      <div class="side-actions">
 
-    <div class="control-stack">
+        <button
+          class="button primary"
+          id="mixBtn"
+          type="button"
+          disabled>
+          🔀 MIX
+        </button>
 
-      <button
-        class="button primary"
-        id="mixBtn"
-        type="button"
-        disabled>
-        🔀 MIX
-      </button>
+        <button
+          class="button secondary"
+          id="restartBtn"
+          type="button"
+          disabled>
+          🔄 Ricomincia / Cambia foto
+        </button>
 
-      <button
-        class="button secondary"
-        id="restartBtn"
-        type="button"
-        disabled>
-        🔄 Ricomincia livello / Cambia foto
-      </button>
+      </div>
 
-    </div>
+    </aside>
 
-
-    <button
-      class="preview-tile"
-      id="previewBtn"
-      type="button"
-      aria-label="Ingrandisci la foto originale"
-      disabled>
-
-      <img
-        id="previewThumb"
-        alt="Miniatura della foto originale">
-
-      <span
-        class="preview-zoom"
-        aria-hidden="true">
-        ⌕
-      </span>
-
-    </button>
-
-  </div>
-
-
-  <div
-    class="hint"
-    id="hint"
-    aria-live="polite">
-    Carica una foto per cominciare.
   </div>
 
 </main>
@@ -1230,6 +1533,10 @@ footer{
     <p id="winMessage">
       Hai ricomposto correttamente la foto.
     </p>
+
+    <div class="win-stats-summary" id="winStatsSummary">
+      <!-- Inserito dinamicamente: mosse e tempo -->
+    </div>
 
 
     <div class="dialog-actions">
@@ -1336,6 +1643,8 @@ footer{
     </p>
 
 
+    <div class="choice-subheading">Livello di partenza:</div>
+
     <div
       class="level-choice-grid"
       id="levelChoiceGrid">
@@ -1381,6 +1690,47 @@ footer{
         <strong>6 × 6</strong>
         <span>Esperto</span>
 
+      </button>
+
+    </div>
+
+
+    <div class="choice-subheading">Formato del puzzle:</div>
+
+    <div
+      class="format-choice-grid"
+      id="formatChoiceGrid">
+
+      <button
+        class="format-choice-option active"
+        type="button"
+        data-format="auto">
+        <strong>Auto</strong>
+        <span>Rileva da foto</span>
+      </button>
+
+      <button
+        class="format-choice-option"
+        type="button"
+        data-format="1:1">
+        <strong>1 : 1</strong>
+        <span>Quadrato</span>
+      </button>
+
+      <button
+        class="format-choice-option"
+        type="button"
+        data-format="4:3">
+        <strong>4 : 3</strong>
+        <span>Classico</span>
+      </button>
+
+      <button
+        class="format-choice-option"
+        type="button"
+        data-format="16:9">
+        <strong>16 : 9</strong>
+        <span>Panoramico</span>
       </button>
 
     </div>
@@ -1448,7 +1798,12 @@ footer{
    * Non viene effettuata alcuna migrazione dei salvataggi
    * delle versioni precedenti.
    */
-  const STORAGE_KEY = "puzzleMagic_autosave_v108";
+  /*
+   * Chiave per la v1.09.
+   * Se non presente, tenta la lettura compatibile da v108.
+   */
+  const STORAGE_KEY = "puzzleMagic_autosave_v109";
+  const PREV_STORAGE_KEY = "puzzleMagic_autosave_v108";
 
 
   const HALLOWEEN = [
@@ -1521,6 +1876,15 @@ footer{
   const levelValue = $("levelValue");
   const difficultyValue = $("difficultyValue");
   const movesValue = $("movesValue");
+  const timerValue = $("timerValue");
+  const formatBadge = $("formatBadge");
+
+  const soundToggleBtn = $("soundToggleBtn");
+  const soundIcon = $("soundIcon");
+  const toggleNumbersBtn = $("toggleNumbersBtn");
+  const toggleCorrectBtn = $("toggleCorrectBtn");
+  const formatChoiceGrid = $("formatChoiceGrid");
+  const winStatsSummary = $("winStatsSummary");
 
   const heroStage = $("heroStage");
   const heroArt = $("heroArt");
@@ -1550,12 +1914,129 @@ footer{
   let activeOverlay = "";
 
   let photoLoadMode = "newGame";
+  let selectedStartLevel = 0;
 
   /*
-   * Livello scelto nella schermata che precede
-   * il selettore della foto.
+   * Nuove funzionalità v1.09
    */
-  let selectedStartLevel = 0;
+  let selectedFormat = "auto";
+  let currentAspectRatio = "1:1";
+  let showNumbers = false;
+  let showCorrect = false;
+
+  let timerSeconds = 0;
+  let timerInterval = null;
+  let timerRunning = false;
+
+  let soundEnabled = localStorage.getItem("puzzleMagic_sound") !== "off";
+  let audioCtx = null;
+
+
+  function getAudioContext(){
+    if(!audioCtx){
+      const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+      if(AudioCtxClass) audioCtx = new AudioCtxClass();
+    }
+    if(audioCtx && audioCtx.state === "suspended"){
+      audioCtx.resume();
+    }
+    return audioCtx;
+  }
+
+
+  function playSound(type){
+    if(!soundEnabled) return;
+
+    try{
+      const ctx = getAudioContext();
+      if(!ctx) return;
+
+      const now = ctx.currentTime;
+
+      if(type === "swap"){
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(320, now);
+        osc.frequency.exponentialRampToValueAtTime(160, now + 0.07);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.07);
+
+      }else if(type === "win"){
+        const freqs = [523.25, 659.25, 783.99, 1046.50];
+        freqs.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(freq, now + i * 0.09);
+          gain.gain.setValueAtTime(0.22, now + i * 0.09);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.09 + 0.32);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + i * 0.09);
+          osc.stop(now + i * 0.09 + 0.32);
+        });
+      }
+    }catch(_){}
+  }
+
+
+  function updateSoundUI(){
+    if(soundIcon){
+      soundIcon.textContent = soundEnabled ? "🔊" : "🔇";
+    }
+    if(soundToggleBtn){
+      soundToggleBtn.setAttribute(
+        "aria-label",
+        soundEnabled ? "Disattiva audio" : "Attiva audio"
+      );
+    }
+  }
+
+
+  function formatTime(totalSec){
+    const m = Math.floor(totalSec / 60);
+    const s = totalSec % 60;
+    return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  }
+
+
+  function updateTimerDisplay(){
+    if(timerValue){
+      timerValue.textContent = formatTime(timerSeconds);
+    }
+  }
+
+
+  function startTimer(){
+    if(timerRunning || locked) return;
+    timerRunning = true;
+    if(timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      timerSeconds++;
+      updateTimerDisplay();
+    }, 1000);
+  }
+
+
+  function stopTimer(){
+    timerRunning = false;
+    if(timerInterval){
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+  }
+
+
+  function resetTimer(){
+    stopTimer();
+    timerSeconds = 0;
+    updateTimerDisplay();
+  }
 
 
   function currentLevel(){
@@ -1608,11 +2089,15 @@ footer{
     try{
 
       const data={
-        version:1,
+        version:2,
         photoData,
         levelIndex,
         pieces,
         moves,
+        timerSeconds,
+        currentAspectRatio,
+        showNumbers,
+        showCorrect,
         mixed,
         locked,
         overlay:getVisibleOverlay(),
@@ -1716,10 +2201,12 @@ footer{
     try{
 
       /*
-       * Soltanto il salvataggio v1.08 viene considerato.
-       * Le versioni precedenti non vengono migrate.
+       * Cerca prima la v1.09, altrimenti tenta il ripristino
+       * compatibile dalla v1.08.
        */
-      const raw=localStorage.getItem(STORAGE_KEY);
+      const raw=
+        localStorage.getItem(STORAGE_KEY) ||
+        localStorage.getItem(PREV_STORAGE_KEY);
 
       if(!raw)
         return false;
@@ -1738,9 +2225,15 @@ footer{
       levelIndex=data.levelIndex;
       pieces=data.pieces.slice();
       moves=data.moves;
+      timerSeconds=Number.isInteger(data.timerSeconds)?data.timerSeconds:0;
+      currentAspectRatio=typeof data.currentAspectRatio==="string"?data.currentAspectRatio:"1:1";
+      showNumbers=Boolean(data.showNumbers);
+      showCorrect=Boolean(data.showCorrect);
       mixed=data.mixed;
       locked=data.locked;
       selectedTile=null;
+
+      updateTimerDisplay();
 
 
       $("previewImage").src=photoData;
@@ -1784,6 +2277,10 @@ footer{
         shufflePieces(true);
 
       }else{
+
+        if(moves>0 && !locked){
+          startTimer();
+        }
 
         saveGame();
 
@@ -1902,6 +2399,25 @@ footer{
     board.style.gridTemplateColumns=
       `repeat(${n},minmax(0,1fr))`;
 
+    let aspectCss = "1 / 1";
+    if(currentAspectRatio === "16:9") aspectCss = "16 / 9";
+    else if(currentAspectRatio === "4:3") aspectCss = "4 / 3";
+    board.style.setProperty("--board-aspect", aspectCss);
+
+    if(formatBadge) formatBadge.textContent = currentAspectRatio;
+
+    board.classList.toggle("show-numbers", showNumbers);
+    board.classList.toggle("show-correct", showCorrect);
+
+    if(toggleNumbersBtn){
+      toggleNumbersBtn.classList.toggle("active", showNumbers);
+      toggleNumbersBtn.setAttribute("aria-pressed", String(showNumbers));
+    }
+    if(toggleCorrectBtn){
+      toggleCorrectBtn.classList.toggle("active", showCorrect);
+      toggleCorrectBtn.setAttribute("aria-pressed", String(showCorrect));
+    }
+
 
     if(!photoData){
 
@@ -1957,10 +2473,28 @@ footer{
         `${n===1?0:(row/(n-1))*100}%`;
 
 
+      if(piece===position){
+        tile.classList.add("is-correct");
+      }
+
+
       if(selectedTile===position){
 
         tile.classList.add("selected");
       }
+
+
+      /* Numero guida per il tassello */
+      const numSpan=document.createElement("span");
+      numSpan.className="tile-number";
+      numSpan.textContent=String(piece+1);
+      tile.appendChild(numSpan);
+
+      /* Indicatore discreto di posizione corretta */
+      const markSpan=document.createElement("span");
+      markSpan.className="tile-correct-mark";
+      markSpan.textContent="✓";
+      tile.appendChild(markSpan);
 
 
       tile.addEventListener(
@@ -1987,7 +2521,7 @@ footer{
 
 
   /*
-   * Apertura della schermata di scelta livello.
+   * Apertura della schermata di scelta livello e formato.
    */
   function openLevelChoice(
     mode="newGame",
@@ -2021,6 +2555,22 @@ footer{
       });
 
 
+    if(formatChoiceGrid){
+      formatChoiceGrid
+        .querySelectorAll(".format-choice-option")
+        .forEach(button=>{
+
+          const fmt=button.dataset.format;
+
+          button.classList.toggle(
+            "active",
+            fmt===selectedFormat
+          );
+
+        });
+    }
+
+
     activeOverlay="levelChoice";
 
     levelChoiceOverlay.classList.add("show");
@@ -2050,6 +2600,9 @@ footer{
     const requestedStartLevel=
       selectedStartLevel;
 
+    const requestedFormat=
+      selectedFormat;
+
 
     const objectUrl=
       URL.createObjectURL(file);
@@ -2062,25 +2615,64 @@ footer{
 
       try{
 
-        const side=
-          Math.min(
-            image.naturalWidth,
-            image.naturalHeight
-          );
+        const natW=image.naturalWidth;
+        const natH=image.naturalHeight;
+        const natRatio=natW/natH;
 
+        let targetRatio=1;
+        let ratioName="1:1";
 
-        const sx=
-          (image.naturalWidth-side)/2;
+        if(requestedFormat==="16:9"){
+          targetRatio=16/9;
+          ratioName="16:9";
+        }else if(requestedFormat==="4:3"){
+          targetRatio=4/3;
+          ratioName="4:3";
+        }else if(requestedFormat==="1:1"){
+          targetRatio=1;
+          ratioName="1:1";
+        }else{
+          // Rilevamento automatico
+          if(natRatio>=1.55){
+            targetRatio=16/9;
+            ratioName="16:9";
+          }else if(natRatio>=1.15){
+            targetRatio=4/3;
+            ratioName="4:3";
+          }else{
+            targetRatio=1;
+            ratioName="1:1";
+          }
+        }
 
-        const sy=
-          (image.naturalHeight-side)/2;
+        currentAspectRatio=ratioName;
+
+        let cropW, cropH;
+        if(natRatio>targetRatio){
+          cropH=natH;
+          cropW=cropH*targetRatio;
+        }else{
+          cropW=natW;
+          cropH=cropW/targetRatio;
+        }
+
+        const sx=(natW-cropW)/2;
+        const sy=(natH-cropH)/2;
 
 
         const canvas=
           document.createElement("canvas");
 
-        canvas.width=900;
-        canvas.height=900;
+        if(ratioName==="16:9"){
+          canvas.width=1280;
+          canvas.height=720;
+        }else if(ratioName==="4:3"){
+          canvas.width=960;
+          canvas.height=720;
+        }else{
+          canvas.width=900;
+          canvas.height=900;
+        }
 
 
         const context=
@@ -2091,8 +2683,8 @@ footer{
           image,
           sx,
           sy,
-          side,
-          side,
+          cropW,
+          cropH,
           0,
           0,
           canvas.width,
@@ -2103,7 +2695,7 @@ footer{
         photoData=
           canvas.toDataURL(
             "image/jpeg",
-            0.82
+            0.84
           );
 
 
@@ -2142,6 +2734,8 @@ footer{
       activeOverlay="";
       photoLoadMode="newGame";
 
+      resetTimer();
+
 
       levelChoiceOverlay.classList.remove("show");
       previewOverlay.classList.remove("show");
@@ -2162,7 +2756,7 @@ footer{
 
 
       setHint(
-        `Nuova foto caricata dal livello ` +
+        `Nuova foto caricata (${currentAspectRatio}) dal livello ` +
         `${levelIndex+1} ` +
         `(${currentLevel().size}×${currentLevel().size}). ` +
         `I tasselli sono già mescolati.`
@@ -2321,6 +2915,18 @@ footer{
     moves++;
     selectedTile=null;
 
+    if(!timerRunning){
+      startTimer();
+    }
+
+    playSound("swap");
+
+    if(navigator.vibrate){
+      try{
+        navigator.vibrate(25);
+      }catch(_){}
+    }
+
     renderBoard();
 
 
@@ -2357,6 +2963,8 @@ footer{
     moves=0;
     mixed=false;
     selectedTile=null;
+
+    resetTimer();
 
 
     createSolvedPieces();
@@ -2911,6 +3519,12 @@ footer{
 
     showHalloween(levelIndex);
 
+    if(winStatsSummary){
+      winStatsSummary.innerHTML =
+        `<span>🎯 Mosse: <strong>${moves}</strong></span>` +
+        `<span>⏱️ Tempo: <strong>${formatTime(timerSeconds)}</strong></span>`;
+    }
+
 
     if(levelIndex===LEVELS.length-1){
 
@@ -2921,7 +3535,7 @@ footer{
       $("winMessage").textContent=
         `La Mummia ti applaude: hai completato ` +
         `tutti e quattro i livelli! ` +
-        `Hai chiuso l'ultima sfida in ${moves} mosse.`;
+        `Hai chiuso l'ultima sfida in ${moves} mosse (${formatTime(timerSeconds)}).`;
 
 
       $("nextLevelBtn").textContent=
@@ -2940,7 +3554,7 @@ footer{
 
 
       $("winMessage").textContent=
-        `Hai ricomposto la foto in ${moves} mosse. ` +
+        `Hai ricomposto la foto in ${moves} mosse e ${formatTime(timerSeconds)}. ` +
         `${HALLOWEEN[levelIndex].name} ` +
         `ti aspetta per festeggiare! ` +
         `Il prossimo livello sarà ancora più difficile.`;
@@ -2971,6 +3585,9 @@ footer{
 
     locked=true;
     selectedTile=null;
+
+    stopTimer();
+    playSound("win");
 
     renderBoard();
 
@@ -3015,6 +3632,8 @@ footer{
     mixed=false;
     locked=false;
     selectedTile=null;
+
+    resetTimer();
 
 
     createSolvedPieces();
@@ -3632,6 +4251,95 @@ footer{
     });
 
 
+  /*
+   * SCELTA DEL FORMATO
+   */
+  if(formatChoiceGrid){
+    formatChoiceGrid
+      .querySelectorAll(".format-choice-option")
+      .forEach(button=>{
+
+        button.addEventListener(
+          "click",
+          ()=>{
+
+            selectedFormat=
+              button.dataset.format;
+
+            formatChoiceGrid
+              .querySelectorAll(".format-choice-option")
+              .forEach(option=>{
+
+                option.classList.toggle(
+                  "active",
+                  option.dataset.format===selectedFormat
+                );
+
+              });
+          }
+        );
+      });
+  }
+
+
+  /*
+   * ATTIVAZIONE / DISATTIVAZIONE AUDIO
+   */
+  if(soundToggleBtn){
+    soundToggleBtn.addEventListener(
+      "click",
+      ()=>{
+
+        soundEnabled=!soundEnabled;
+
+        localStorage.setItem(
+          "puzzleMagic_sound",
+          soundEnabled ? "on" : "off"
+        );
+
+        updateSoundUI();
+
+        if(soundEnabled){
+          playSound("swap");
+        }
+      }
+    );
+  }
+
+
+  /*
+   * AIUTI VISIVI (NUMERI E POSIZIONE CORRETTA)
+   */
+  if(toggleNumbersBtn){
+    toggleNumbersBtn.addEventListener(
+      "click",
+      ()=>{
+
+        showNumbers=!showNumbers;
+
+        renderBoard();
+
+        saveGame();
+      }
+    );
+  }
+
+
+  if(toggleCorrectBtn){
+    toggleCorrectBtn.addEventListener(
+      "click",
+      ()=>{
+
+        showCorrect=!showCorrect;
+
+        renderBoard();
+
+        saveGame();
+      }
+    );
+  }
+
+
   confirmLevelBtn.addEventListener(
     "click",
     ()=>{
@@ -3886,10 +4594,13 @@ footer{
   /*
    * AVVIO
    *
-   * Prima cerca una partita v1.08 salvata.
+   * Prima cerca una partita v1.09 o v1.08 salvata.
    * Se esiste, la ripristina esattamente.
    * Altrimenti parte da una schermata vuota.
    */
+  updateSoundUI();
+  updateTimerDisplay();
+
   if(!restoreGame()){
 
     createSolvedPieces();
