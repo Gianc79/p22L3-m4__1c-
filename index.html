@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f4f7fb">
-<title>Puzzle Magic v. 1.10</title>
+<title>Puzzle Magic v. 1.11</title>
 
 <style>
 :root{
@@ -216,6 +216,52 @@ h1{
   overflow-wrap:anywhere
 }
 
+.stat-timer-row{
+  display:flex;
+  align-items:center;
+  gap:8px
+}
+
+.timer-pause-btn{
+  display:inline-grid;
+  place-items:center;
+  width:28px;
+  height:28px;
+  padding:0;
+  border:1px solid #cfd7e6;
+  border-radius:8px;
+  background:#ffffff;
+  color:var(--text);
+  font-size:13px;
+  cursor:pointer;
+  line-height:1;
+  box-shadow:0 1px 3px rgba(0,0,0,.06);
+  transition:all .15s ease;
+  touch-action:manipulation
+}
+
+.timer-pause-btn:hover:not(:disabled){
+  background:#f0f2ff;
+  border-color:var(--primary);
+  color:var(--primary-dark)
+}
+
+.timer-pause-btn:active:not(:disabled){
+  transform:scale(.92)
+}
+
+.timer-pause-btn:disabled{
+  opacity:.35;
+  cursor:not-allowed;
+  box-shadow:none
+}
+
+.timer-pause-btn.is-paused{
+  background:#eef1ff;
+  border-color:var(--primary);
+  color:var(--primary-dark)
+}
+
 .progress-track{
   height:5px;
   background:#edf0f6;
@@ -238,7 +284,7 @@ h1{
 
 .game-top{
   display:flex;
-  align-items:center;
+  align-items:flex-start;
   justify-content:space-between;
   gap:12px;
   margin-bottom:15px
@@ -256,43 +302,68 @@ h1{
   font-size:18px
 }
 
+/* Pulsante MIX con formattazione 3D tattile senza evidenziazione toggle */
 .mix-icon-btn{
   display:inline-flex;
   align-items:center;
   gap:5px;
-  padding:5px 10px;
-  border:1px solid #c9d2f2;
+  padding:5px 12px;
+  border:1px solid #b8c4f2;
+  border-bottom:3px solid #8e9fe0;
   border-radius:18px;
-  background:#f0f2ff;
+  background:linear-gradient(180deg,#ffffff 0%,#edf1fd 100%);
   color:var(--primary-dark);
   font-size:12px;
   font-weight:800;
   cursor:pointer;
   line-height:1;
-  transition:all .15s ease;
-  touch-action:manipulation
+  box-shadow:0 2px 4px rgba(70,86,194,.12);
+  transition:transform .08s ease,box-shadow .08s ease,border-bottom .08s ease;
+  touch-action:manipulation;
+  outline:none;
+  user-select:none;
+  -webkit-user-select:none
 }
 
 .mix-icon-btn:hover:not(:disabled){
-  background:var(--primary);
-  color:#fff;
-  border-color:var(--primary)
+  background:linear-gradient(180deg,#ffffff 0%,#e4eaff 100%);
+  color:var(--primary-dark);
+  border-color:#a4b5ec
 }
 
 .mix-icon-btn:active:not(:disabled){
-  transform:scale(.94)
+  transform:translateY(2px);
+  border-bottom-width:1px;
+  box-shadow:0 1px 2px rgba(70,86,194,.1);
+  background:linear-gradient(180deg,#edf1fd 0%,#e4eaff 100%);
+  color:var(--primary-dark)
+}
+
+.mix-icon-btn:focus{
+  outline:none
+}
+
+.mix-icon-btn:focus-visible{
+  outline:2px solid #aab5ff;
+  outline-offset:2px
 }
 
 .mix-icon-btn:disabled{
   opacity:.38;
   cursor:not-allowed;
-  transform:none
+  transform:none;
+  border-bottom-width:1px;
+  box-shadow:none
 }
 
+/* Azioni in alto all'estrema destra: Schermo intero e sotto etichetta di stato */
 .game-top-actions{
   display:flex;
+  flex-direction:column;
   align-items:center;
-  gap:10px
+  gap:4px;
+  flex-shrink:0;
+  margin-left:auto
 }
 
 .fullscreen-toggle-btn{
@@ -332,10 +403,12 @@ h1{
 }
 
 .status{
-  font-size:12px;
+  font-size:11px;
   font-weight:800;
   color:var(--muted);
-  white-space:nowrap
+  white-space:nowrap;
+  letter-spacing:.3px;
+  text-align:center
 }
 
 .board-wrap{
@@ -1446,7 +1519,7 @@ body.is-fullscreen{
     <button class="sound-toggle" id="soundToggleBtn" type="button" aria-label="Attiva o disattiva audio" title="Audio">
       <span id="soundIcon">🔊</span>
     </button>
-    <div class="version">v. 1.10</div>
+    <div class="version">v. 1.11</div>
   </div>
 </header>
 
@@ -1454,7 +1527,7 @@ body.is-fullscreen{
 <section class="panel upload-panel">
 
   <div class="upload-copy">
-    <h2>Partita</h2>
+    <h2>Nuova partita</h2>
     <p>Scegli il livello e la foto con cui giocare.</p>
   </div>
 
@@ -1462,7 +1535,7 @@ body.is-fullscreen{
     class="button primary"
     id="newPhotoBtn"
     type="button">
-    📷 Carica / Cambia foto
+    Nuova partita
   </button>
 
   <input
@@ -1528,10 +1601,22 @@ body.is-fullscreen{
 
     <div class="stat-label">Tempo</div>
 
-    <div
-      class="stat-value"
-      id="timerValue">
-      00:00
+    <div class="stat-timer-row">
+      <div
+        class="stat-value"
+        id="timerValue">
+        00:00
+      </div>
+
+      <button
+        class="timer-pause-btn"
+        id="timerPauseBtn"
+        type="button"
+        title="Metti in pausa il timer"
+        aria-label="Metti in pausa il timer"
+        disabled>
+        <span id="pauseBtnIcon">⏸️</span>
+      </button>
     </div>
 
   </div>
@@ -1829,7 +1914,7 @@ body.is-fullscreen{
 </div>
 
 
-<!-- Dialog elegante per Carica / Cambia foto (v. 1.10) -->
+<!-- Dialog elegante per Nuova partita (v. 1.11) -->
 
 <div
   class="overlay"
@@ -1847,7 +1932,7 @@ body.is-fullscreen{
     </div>
 
     <h2 id="actionChoiceTitle">
-      Carica / Cambia foto
+      Nuova partita
     </h2>
 
     <p>
@@ -1860,14 +1945,7 @@ body.is-fullscreen{
         class="button primary"
         id="actionNewPhotoBtn"
         type="button">
-        📷 Carica una nuova foto
-      </button>
-
-      <button
-        class="button secondary"
-        id="actionRestartLevelBtn"
-        type="button">
-        🔄 Ricomincia questo livello
+        Nuova partita
       </button>
 
       <button
@@ -2138,7 +2216,6 @@ body.is-fullscreen{
   const winOverlay = $("winOverlay");
   const actionChoiceOverlay = $("actionChoiceOverlay");
   const actionNewPhotoBtn = $("actionNewPhotoBtn");
-  const actionRestartLevelBtn = $("actionRestartLevelBtn");
   const actionCancelBtn = $("actionCancelBtn");
   const levelChoiceOverlay = $("levelChoiceOverlay");
 
@@ -2150,6 +2227,8 @@ body.is-fullscreen{
   const difficultyValue = $("difficultyValue");
   const movesValue = $("movesValue");
   const timerValue = $("timerValue");
+  const timerPauseBtn = $("timerPauseBtn");
+  const pauseBtnIcon = $("pauseBtnIcon");
   const formatBadge = $("formatBadge");
 
   const soundToggleBtn = $("soundToggleBtn");
@@ -2199,6 +2278,8 @@ body.is-fullscreen{
   let timerSeconds = 0;
   let timerInterval = null;
   let timerRunning = false;
+  let isPaused = false;
+  let isFullscreen = false;
 
   let soundEnabled = localStorage.getItem("puzzleMagic_sound") !== "off";
   let audioCtx = null;
@@ -2307,7 +2388,55 @@ body.is-fullscreen{
   function resetTimer(){
     stopTimer();
     timerSeconds = 0;
+    isPaused = false;
     updateTimerDisplay();
+    updatePauseBtnUI();
+  }
+
+
+  function updatePauseBtnUI(){
+    if(!timerPauseBtn) return;
+    const canPause = Boolean(photoData && mixed && !locked);
+    timerPauseBtn.disabled = !canPause;
+    if(isPaused){
+      if(pauseBtnIcon) pauseBtnIcon.textContent = "▶️";
+      timerPauseBtn.title = "Riprendi il timer";
+      timerPauseBtn.setAttribute("aria-label", "Riprendi il timer");
+      timerPauseBtn.classList.add("is-paused");
+    } else {
+      if(pauseBtnIcon) pauseBtnIcon.textContent = "⏸️";
+      timerPauseBtn.title = "Metti in pausa il timer";
+      timerPauseBtn.setAttribute("aria-label", "Metti in pausa il timer");
+      timerPauseBtn.classList.remove("is-paused");
+    }
+  }
+
+
+  function pauseGame(){
+    if(!photoData || !mixed || locked || isPaused) return;
+    isPaused = true;
+    stopTimer();
+    updatePauseBtnUI();
+    if(gameStatus){
+      gameStatus.textContent = "IN PAUSA";
+    }
+    setHint("Timer in pausa. Sposta un tassello per riprendere.");
+  }
+
+
+  function resumeFromPause(){
+    if(isPaused){
+      isPaused = false;
+      startTimer();
+      updatePauseBtnUI();
+      if(gameStatus && mixed && !locked){
+        gameStatus.textContent = "IN CORSO";
+      }
+      setHint("Partita ripresa!");
+    } else if(!timerRunning && photoData && mixed && !locked){
+      startTimer();
+      updatePauseBtnUI();
+    }
   }
 
 
@@ -2335,6 +2464,18 @@ body.is-fullscreen{
     if(fullscreenToggleBtn){
       fullscreenToggleBtn.setAttribute("aria-pressed", String(isFullscreen));
     }
+
+    try{
+      if(isFullscreen){
+        if(document.documentElement.requestFullscreen && !document.fullscreenElement){
+          document.documentElement.requestFullscreen().catch(()=>{});
+        }
+      }else{
+        if(document.exitFullscreen && document.fullscreenElement){
+          document.exitFullscreen().catch(()=>{});
+        }
+      }
+    }catch(_){}
   }
 
 
@@ -2629,9 +2770,11 @@ body.is-fullscreen{
         ? "IN ATTESA"
         : locked
           ? "COMPLETATO"
-          : mixed
-            ? "IN CORSO"
-            : "PRONTO";
+          : isPaused
+            ? "IN PAUSA"
+            : mixed
+              ? "IN CORSO"
+              : "PRONTO";
 
 
     /*
@@ -2647,6 +2790,8 @@ body.is-fullscreen{
     if(fullscreenToggleBtn){
       fullscreenToggleBtn.disabled=!loaded;
     }
+
+    updatePauseBtnUI();
   }
 
 
@@ -3141,6 +3286,7 @@ body.is-fullscreen{
       return;
     }
 
+    resumeFromPause();
 
     if(selectedTile===null){
 
@@ -3195,9 +3341,7 @@ body.is-fullscreen{
     moves++;
     selectedTile=null;
 
-    if(!timerRunning){
-      startTimer();
-    }
+    resumeFromPause();
 
     playSound("swap");
 
@@ -3826,6 +3970,8 @@ body.is-fullscreen{
       return;
     }
 
+    resumeFromPause();
+
 
     const tile=
       event.currentTarget;
@@ -4212,18 +4358,6 @@ body.is-fullscreen{
   }
 
 
-  if(actionRestartLevelBtn){
-    actionRestartLevelBtn.addEventListener(
-      "click",
-      ()=>{
-
-        closeActionChoice();
-        restartLevel();
-      }
-    );
-  }
-
-
   if(actionCancelBtn){
     actionCancelBtn.addEventListener(
       "click",
@@ -4237,8 +4371,13 @@ body.is-fullscreen{
       "click",
       event=>{
 
+        /*
+         * La finestra Nuova partita non si chiude cliccando
+         * sullo sfondo esterno: l'utente deve scegliere
+         * esplicitamente "Nuova partita" o "Continua la partita".
+         */
         if(event.target===actionChoiceOverlay){
-          closeActionChoice();
+          /* intenzionale: non chiudere */
         }
       }
     );
@@ -4246,14 +4385,31 @@ body.is-fullscreen{
 
 
   /*
-   * CONTROLLI MODALITÀ SCHERMO INTERO (v. 1.10)
+   * CONTROLLO TIMER: PAUSA E RIPRESA (v. 1.11)
+   */
+  if(timerPauseBtn){
+    timerPauseBtn.addEventListener(
+      "click",
+      ()=>{
+
+        if(isPaused){
+          resumeFromPause();
+        }else{
+          pauseGame();
+        }
+      }
+    );
+  }
+
+
+  /*
+   * CONTROLLI MODALITÀ SCHERMO INTERO (v. 1.10 / v. 1.11)
    */
   if(fullscreenToggleBtn){
     fullscreenToggleBtn.addEventListener(
       "click",
       ()=>{
 
-        if(!photoData) return;
         toggleFullscreen();
       }
     );
@@ -4266,6 +4422,19 @@ body.is-fullscreen{
       ()=>toggleFullscreen(false)
     );
   }
+
+
+  document.addEventListener("fullscreenchange", ()=>{
+    const isDocFs = Boolean(document.fullscreenElement);
+    if(isFullscreen !== isDocFs){
+      isFullscreen = isDocFs;
+      gamePanel.classList.toggle("is-fullscreen", isFullscreen);
+      document.body.classList.toggle("is-fullscreen", isFullscreen);
+      if(fullscreenToggleBtn){
+        fullscreenToggleBtn.setAttribute("aria-pressed", String(isFullscreen));
+      }
+    }
+  });
 
 
   /*
@@ -4289,7 +4458,10 @@ body.is-fullscreen{
 
   mixBtn.addEventListener(
     "click",
-    ()=>shufflePieces(false)
+    ()=>{
+      shufflePieces(false);
+      mixBtn.blur();
+    }
   );
 
 
@@ -4623,7 +4795,11 @@ body.is-fullscreen{
         activeOverlay==="actionChoice"
       ){
 
-        closeActionChoice();
+        /*
+         * La modale Nuova partita richiede una scelta esplicita
+         * tra "Nuova partita" e "Continua la partita".
+         */
+        return;
 
       }else if(
         activeOverlay==="levelChoice"
