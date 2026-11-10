@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f4f7fb">
-<title>Puzzle Magic v. 1.09</title>
+<title>Puzzle Magic v. 1.10</title>
 
 <style>
 :root{
@@ -244,9 +244,85 @@ h1{
   margin-bottom:15px
 }
 
+.game-title-group{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap
+}
+
 .game-top h2{
   margin:0;
   font-size:18px
+}
+
+.mix-icon-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:5px 10px;
+  border:1px solid #c9d2f2;
+  border-radius:18px;
+  background:#f0f2ff;
+  color:var(--primary-dark);
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+  line-height:1;
+  transition:all .15s ease;
+  touch-action:manipulation
+}
+
+.mix-icon-btn:hover:not(:disabled){
+  background:var(--primary);
+  color:#fff;
+  border-color:var(--primary)
+}
+
+.mix-icon-btn:active:not(:disabled){
+  transform:scale(.94)
+}
+
+.mix-icon-btn:disabled{
+  opacity:.38;
+  cursor:not-allowed;
+  transform:none
+}
+
+.game-top-actions{
+  display:flex;
+  align-items:center;
+  gap:10px
+}
+
+.fullscreen-toggle-btn{
+  display:grid;
+  place-items:center;
+  width:36px;
+  height:36px;
+  padding:0;
+  border:1px solid var(--border);
+  border-radius:50%;
+  background:#fff;
+  color:var(--text);
+  cursor:pointer;
+  transition:all .15s ease;
+  touch-action:manipulation
+}
+
+.fullscreen-toggle-btn:hover:not(:disabled){
+  background:#f0f2ff;
+  color:var(--primary-dark);
+  border-color:#c9d2f2
+}
+
+.fullscreen-toggle-btn:active:not(:disabled){
+  transform:scale(.94)
+}
+
+.fullscreen-toggle-btn:disabled{
+  opacity:.38;
+  cursor:not-allowed
 }
 
 .level-description{
@@ -889,7 +965,7 @@ footer{
 }
 
 
-/* v. 1.08 - Halloween */
+/* v. 1.10 - Supereroi a fine livello */
 
 .win-dialog{
   overflow:hidden
@@ -921,7 +997,7 @@ footer{
   background:var(--hero-glow);
   opacity:.52;
   filter:blur(4px);
-  animation:halloween-aura-pulse 2.1s ease-in-out infinite
+  animation:hero-aura-pulse 2.1s ease-in-out infinite
 }
 
 .hero-art{
@@ -929,7 +1005,7 @@ footer{
   z-index:1;
   width:166px;
   height:166px;
-  animation:halloween-arrive .55s cubic-bezier(.2,.8,.2,1) both
+  animation:hero-arrive .55s cubic-bezier(.2,.8,.2,1) both
 }
 
 .hero-art svg{
@@ -939,24 +1015,24 @@ footer{
   overflow:visible
 }
 
-.halloween-figure{
+.hero-figure{
   transform-origin:50% 82%
 }
 
-.monster-frankenstein .halloween-figure{
-  animation:frankenstein-move 1.55s ease-in-out infinite
+.hero-spiderman .hero-figure{
+  animation:spiderman-swing 1.8s ease-in-out infinite
 }
 
-.monster-dracula .halloween-figure{
-  animation:dracula-float 2.1s ease-in-out infinite
+.hero-hulk .hero-figure{
+  animation:hulk-flex 1.6s ease-in-out infinite
 }
 
-.monster-werewolf .halloween-figure{
-  animation:werewolf-roar 1.75s ease-in-out infinite
+.hero-batman .hero-figure{
+  animation:batman-glide 2.2s ease-in-out infinite
 }
 
-.monster-mummy .halloween-figure{
-  animation:mummy-sway 1.65s ease-in-out infinite
+.hero-superman .hero-figure{
+  animation:superman-hover 1.9s ease-in-out infinite
 }
 
 .hero-rank{
@@ -1002,7 +1078,7 @@ footer{
   width:100%
 }
 
-@keyframes halloween-arrive{
+@keyframes hero-arrive{
   0%{
     opacity:0;
     transform:translateY(20px) scale(.62) rotate(-8deg)
@@ -1017,7 +1093,7 @@ footer{
   }
 }
 
-@keyframes halloween-aura-pulse{
+@keyframes hero-aura-pulse{
   0%,100%{
     transform:scale(.92);
     opacity:.35
@@ -1028,42 +1104,220 @@ footer{
   }
 }
 
-@keyframes frankenstein-move{
-  0%,100%{
-    transform:translateY(0) rotate(-1deg)
-  }
-  50%{
-    transform:translateY(-5px) rotate(1deg)
-  }
-}
-
-@keyframes dracula-float{
-  0%,100%{
-    transform:translateY(2px) scale(1)
-  }
-  50%{
-    transform:translateY(-6px) scale(1.025)
-  }
-}
-
-@keyframes werewolf-roar{
-  0%,100%{
-    transform:translateY(0) rotate(-1deg) scale(1)
-  }
-  35%{
-    transform:translateY(-4px) rotate(1deg) scale(1.015)
-  }
-  55%{
-    transform:translateY(-2px) rotate(-1deg) scale(1.035)
-  }
-}
-
-@keyframes mummy-sway{
+@keyframes spiderman-swing{
   0%,100%{
     transform:translateY(0) rotate(-2deg)
   }
   50%{
-    transform:translateY(-3px) rotate(2deg)
+    transform:translateY(-7px) rotate(2deg) scale(1.03)
+  }
+}
+
+@keyframes hulk-flex{
+  0%,100%{
+    transform:translateY(0) scale(1)
+  }
+  50%{
+    transform:translateY(-5px) scale(1.04) rotate(1deg)
+  }
+}
+
+@keyframes batman-glide{
+  0%,100%{
+    transform:translateY(2px)
+  }
+  50%{
+    transform:translateY(-6px) scale(1.02)
+  }
+}
+
+@keyframes superman-hover{
+  0%,100%{
+    transform:translateY(0) scale(1)
+  }
+  50%{
+    transform:translateY(-8px) scale(1.03)
+  }
+}
+
+/* Modalità Schermo Intero (v. 1.10) */
+body.is-fullscreen{
+  overflow:hidden
+}
+
+.fullscreen-exit-btn{
+  display:none
+}
+
+.game-panel.is-fullscreen{
+  position:fixed;
+  inset:0;
+  z-index:900;
+  margin:0;
+  width:100vw;
+  height:100vh;
+  max-width:none;
+  border-radius:0;
+  border:none;
+  padding:12px;
+  background:var(--bg);
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden
+}
+
+.game-panel.is-fullscreen .game-top,
+.game-panel.is-fullscreen .game-helpers,
+.game-panel.is-fullscreen .hint,
+.game-panel.is-fullscreen .side-actions{
+  display:none!important
+}
+
+.game-panel.is-fullscreen .fullscreen-exit-btn{
+  position:fixed;
+  top:12px;
+  right:12px;
+  z-index:1005;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:8px 14px;
+  border:1px solid var(--border);
+  border-radius:30px;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(6px);
+  color:var(--text);
+  font-size:13px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 4px 16px rgba(0,0,0,.08);
+  transition:all .15s ease
+}
+
+.game-panel.is-fullscreen .fullscreen-exit-btn:hover{
+  background:#f0f2ff;
+  color:var(--primary-dark)
+}
+
+.game-panel.is-fullscreen .fullscreen-exit-btn:active{
+  transform:scale(.95)
+}
+
+/* Verticale (portrait): solo puzzle sopra e anteprima sotto, entrambi per intero */
+@media (orientation: portrait){
+  .game-panel.is-fullscreen .game-layout{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    height:100%;
+    gap:12px
+  }
+  .game-panel.is-fullscreen .game-main-col{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:min(95vw, calc(56vh * var(--board-aspect-num, 1)));
+    max-height:56vh
+  }
+  .game-panel.is-fullscreen .board-wrap{
+    width:100%;
+    margin:0
+  }
+  .game-panel.is-fullscreen .board{
+    width:100%;
+    max-height:56vh;
+    box-shadow:0 8px 24px rgba(0,0,0,.08)
+  }
+  .game-panel.is-fullscreen .game-side-col{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:min(80vw, calc(28vh * var(--board-aspect-num, 1)));
+    max-height:28vh
+  }
+  .game-panel.is-fullscreen .side-preview-card{
+    background:transparent;
+    border:none;
+    padding:0;
+    width:100%
+  }
+  .game-panel.is-fullscreen .side-preview-header{
+    display:none
+  }
+  .game-panel.is-fullscreen .preview-tile{
+    width:100%;
+    max-height:28vh;
+    border-radius:10px;
+    box-shadow:0 4px 16px rgba(0,0,0,.08)
+  }
+  .game-panel.is-fullscreen .preview-zoom{
+    display:none
+  }
+}
+
+/* Orizzontale (landscape): solo puzzle a sx e anteprima a dx, entrambi per intero */
+@media (orientation: landscape){
+  .game-panel.is-fullscreen .game-layout{
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    height:100%;
+    gap:20px
+  }
+  .game-panel.is-fullscreen .game-main-col{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:min(88vh, calc(58vw / var(--board-aspect-num, 1)));
+    max-width:58vw
+  }
+  .game-panel.is-fullscreen .board-wrap{
+    height:100%;
+    width:auto;
+    aspect-ratio:var(--board-aspect, 1/1);
+    margin:0
+  }
+  .game-panel.is-fullscreen .board{
+    height:100%;
+    width:100%;
+    box-shadow:0 8px 24px rgba(0,0,0,.08)
+  }
+  .game-panel.is-fullscreen .game-side-col{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:min(78vh, calc(32vw / var(--board-aspect-num, 1)));
+    max-width:32vw
+  }
+  .game-panel.is-fullscreen .side-preview-card{
+    background:transparent;
+    border:none;
+    padding:0;
+    height:100%
+  }
+  .game-panel.is-fullscreen .side-preview-header{
+    display:none
+  }
+  .game-panel.is-fullscreen .preview-tile{
+    height:100%;
+    width:auto;
+    aspect-ratio:var(--board-aspect, 1/1);
+    border-radius:12px;
+    box-shadow:0 4px 16px rgba(0,0,0,.08)
+  }
+  .game-panel.is-fullscreen .preview-zoom{
+    display:none
   }
 }
 
@@ -1167,7 +1421,7 @@ footer{
   }
 
   .hero-art,
-  .halloween-figure,
+  .hero-figure,
   .hero-aura{
     animation:none!important
   }
@@ -1192,7 +1446,7 @@ footer{
     <button class="sound-toggle" id="soundToggleBtn" type="button" aria-label="Attiva o disattiva audio" title="Audio">
       <span id="soundIcon">🔊</span>
     </button>
-    <div class="version">v. 1.09</div>
+    <div class="version">v. 1.10</div>
   </div>
 </header>
 
@@ -1200,15 +1454,15 @@ footer{
 <section class="panel upload-panel">
 
   <div class="upload-copy">
-    <h2>Nuova partita</h2>
-    <p>Scegli il livello di partenza e carica una nuova foto.</p>
+    <h2>Partita</h2>
+    <p>Scegli il livello e la foto con cui giocare.</p>
   </div>
 
   <button
     class="button primary"
     id="newPhotoBtn"
     type="button">
-    📷 Carica una foto
+    📷 Carica / Cambia foto
   </button>
 
   <input
@@ -1287,12 +1541,43 @@ footer{
 
 <main class="panel game-panel" id="gamePanel">
 
+  <button
+    class="fullscreen-exit-btn"
+    id="fullscreenExitBtn"
+    type="button"
+    title="Esci da schermo intero"
+    aria-label="Esci da schermo intero">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 14h6m0 0v6m0-6L3 21m17-7h-6m0 0v6m0-6l7 7M10 10H4m6 0V4m0 6L3 3m11 7h6m-6 0V4m0 6l7-7"/>
+    </svg>
+    <span>Esci da schermo intero</span>
+  </button>
+
   <div class="game-top">
 
     <div>
-      <h2 id="gameTitle">
-        Livello 1 · Principiante
-      </h2>
+      <div class="game-title-group">
+        <h2 id="gameTitle">
+          Livello 1 · Principiante
+        </h2>
+
+        <button
+          class="mix-icon-btn"
+          id="mixBtn"
+          type="button"
+          title="Mescola i tasselli (MIX)"
+          aria-label="Mescola i tasselli"
+          disabled>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="16 3 21 3 21 8"></polyline>
+            <line x1="4" y1="20" x2="21" y2="3"></line>
+            <polyline points="21 16 21 21 16 21"></polyline>
+            <line x1="15" y1="15" x2="21" y2="21"></line>
+            <line x1="4" y1="4" x2="9" y2="9"></line>
+          </svg>
+          <span>MIX</span>
+        </button>
+      </div>
 
       <p
         class="level-description"
@@ -1301,10 +1586,23 @@ footer{
       </p>
     </div>
 
-    <div
-      class="status"
-      id="gameStatus">
-      IN ATTESA
+    <div class="game-top-actions">
+      <button
+        class="fullscreen-toggle-btn"
+        id="fullscreenToggleBtn"
+        type="button"
+        title="Visualizzazione a schermo intero"
+        aria-label="Schermo intero">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+        </svg>
+      </button>
+
+      <div
+        class="status"
+        id="gameStatus">
+        IN ATTESA
+      </div>
     </div>
 
   </div>
@@ -1343,18 +1641,8 @@ footer{
       </div>
 
 
-      <!-- Strumenti di aiuto opzionali -->
+      <!-- Strumenti di aiuto opzionali (Numeri rimosso) -->
       <div class="game-helpers" id="gameHelpers" aria-label="Aiuti visivi">
-
-        <button
-          class="helper-btn"
-          id="toggleNumbersBtn"
-          type="button"
-          aria-pressed="false"
-          title="Mostra o nascondi i numeri sui tasselli">
-          <span class="helper-icon">🔢</span>
-          <span>Numeri</span>
-        </button>
 
         <button
           class="helper-btn"
@@ -1379,7 +1667,7 @@ footer{
     </div>
 
 
-    <!-- Fascia laterale destra (affiancata in orizzontale o desktop) -->
+    <!-- Fascia laterale destra con anteprima modello -->
     <aside class="game-side-col">
 
       <div class="side-preview-card">
@@ -1406,27 +1694,6 @@ footer{
             ⌕
           </span>
 
-        </button>
-
-      </div>
-
-
-      <div class="side-actions">
-
-        <button
-          class="button primary"
-          id="mixBtn"
-          type="button"
-          disabled>
-          🔀 MIX
-        </button>
-
-        <button
-          class="button secondary"
-          id="restartBtn"
-          type="button"
-          disabled>
-          🔄 Ricomincia / Cambia foto
         </button>
 
       </div>
@@ -1508,26 +1775,26 @@ footer{
       <div
         class="hero-rank"
         id="heroRank">
-        MOSTRO 1 / 4
+        SUPEREROE 1 / 4
       </div>
 
     </div>
 
 
     <h2 id="winTitle">
-      Livello completato! 🎃
+      Livello completato! 🦸
     </h2>
 
     <div
       class="hero-name"
       id="heroName">
-      Frankenstein
+      Spider-Man
     </div>
 
     <div
       class="hero-tagline"
       id="heroTagline">
-      Il mostro elettrico di Halloween
+      L'amichevole eroe di quartiere
     </div>
 
     <p id="winMessage">
@@ -1552,7 +1819,7 @@ footer{
         class="button secondary"
         id="newGameBtn"
         type="button">
-        📷 Nuova foto
+        📷 Cambia foto
       </button>
 
     </div>
@@ -1562,52 +1829,52 @@ footer{
 </div>
 
 
-<!-- Scelta ricomincia/cambia foto -->
+<!-- Dialog elegante per Carica / Cambia foto (v. 1.10) -->
 
 <div
   class="overlay"
-  id="restartChoiceOverlay"
+  id="actionChoiceOverlay"
   role="dialog"
   aria-modal="true"
-  aria-labelledby="restartChoiceTitle">
+  aria-labelledby="actionChoiceTitle">
 
   <div class="dialog">
 
     <div
       class="dialog-emoji"
       aria-hidden="true">
-      🔄
+      🧩
     </div>
 
-    <h2 id="restartChoiceTitle">
-      Ricomincia livello / Cambia foto
+    <h2 id="actionChoiceTitle">
+      Carica / Cambia foto
     </h2>
 
     <p>
-      Come vuoi proseguire?
+      Hai una partita in corso. Come preferisci procedere?
     </p>
 
     <div class="dialog-actions choice-actions">
 
       <button
         class="button primary"
-        id="samePhotoBtn"
+        id="actionNewPhotoBtn"
         type="button">
-        Utilizza la stessa foto
+        📷 Carica una nuova foto
       </button>
 
       <button
         class="button secondary"
-        id="changePhotoBtn"
+        id="actionRestartLevelBtn"
         type="button">
-        📷 Cambia foto
+        🔄 Ricomincia questo livello
       </button>
 
       <button
         class="button secondary"
-        id="cancelRestartChoiceBtn"
+        id="actionCancelBtn"
         type="button">
-        Annulla
+        Continua la partita
       </button>
 
     </div>
@@ -1631,7 +1898,7 @@ footer{
     <div
       class="dialog-emoji"
       aria-hidden="true">
-      🎃
+      🧩
     </div>
 
     <h2 id="levelChoiceTitle">
@@ -1800,52 +2067,53 @@ footer{
    */
   /*
    * Chiave per la v1.09.
-   * Se non presente, tenta la lettura compatibile da v108.
+   * Chiave per la v1.10.
+   * Se non presente, tenta la lettura compatibile da v109 o v108.
    */
-  const STORAGE_KEY = "puzzleMagic_autosave_v109";
-  const PREV_STORAGE_KEY = "puzzleMagic_autosave_v108";
+  const STORAGE_KEY = "puzzleMagic_autosave_v110";
+  const PREV_STORAGE_KEY = "puzzleMagic_autosave_v109";
 
 
-  const HALLOWEEN = [
+  const HEROES = [
 
     {
-      name:"Frankenstein",
-      tagline:"Il mostro elettrico di Halloween",
-      type:"frankenstein",
-      glow:"#dcfce7",
-      accent:"#86efac",
-      dark:"#166534",
-      power:"Scossa elettrica"
+      name: "Spider-Man",
+      tagline: "L'amichevole eroe di quartiere",
+      type: "spiderman",
+      glow: "#fee2e2",
+      accent: "#ef4444",
+      dark: "#1e3a8a",
+      power: "Senso di ragno & ragnatele"
     },
 
     {
-      name:"Dracula",
-      tagline:"Il signore della notte",
-      type:"dracula",
-      glow:"#fce7f3",
-      accent:"#ef4444",
-      dark:"#4c1d95",
-      power:"Morso vampirico"
+      name: "Hulk",
+      tagline: "Il gigante verde più forte della Terra",
+      type: "hulk",
+      glow: "#dcfce7",
+      accent: "#22c55e",
+      dark: "#581c87",
+      power: "Forza gamma devastante"
     },
 
     {
-      name:"Lupo mannaro",
-      tagline:"La creatura della luna piena",
-      type:"werewolf",
-      glow:"#fef3c7",
-      accent:"#f59e0b",
-      dark:"#3f3f46",
-      power:"Ululato lunare"
+      name: "Batman",
+      tagline: "Il Cavaliere Oscuro di Gotham",
+      type: "batman",
+      glow: "#fef3c7",
+      accent: "#eab308",
+      dark: "#0f172a",
+      power: "Intelligenza tattica & bat-gadget"
     },
 
     {
-      name:"Mummia",
-      tagline:"La guardiana della cripta",
-      type:"mummy",
-      glow:"#fef3c7",
-      accent:"#d97706",
-      dark:"#57534e",
-      power:"Maledizione delle bende"
+      name: "Superman",
+      tagline: "L'Uomo d'Acciaio di Metropolis",
+      type: "superman",
+      glow: "#dbeafe",
+      accent: "#3b82f6",
+      dark: "#dc2626",
+      power: "Super forza solare & volo"
     }
 
   ];
@@ -1860,13 +2128,18 @@ footer{
 
   const mixBtn = $("mixBtn");
   const previewBtn = $("previewBtn");
-  const restartBtn = $("restartBtn");
+  const gamePanel = $("gamePanel");
+  const fullscreenToggleBtn = $("fullscreenToggleBtn");
+  const fullscreenExitBtn = $("fullscreenExitBtn");
 
   const closePreviewBtn = $("closePreviewBtn");
 
   const previewOverlay = $("previewOverlay");
   const winOverlay = $("winOverlay");
-  const restartChoiceOverlay = $("restartChoiceOverlay");
+  const actionChoiceOverlay = $("actionChoiceOverlay");
+  const actionNewPhotoBtn = $("actionNewPhotoBtn");
+  const actionRestartLevelBtn = $("actionRestartLevelBtn");
+  const actionCancelBtn = $("actionCancelBtn");
   const levelChoiceOverlay = $("levelChoiceOverlay");
 
   const levelChoiceGrid = $("levelChoiceGrid");
@@ -1881,7 +2154,6 @@ footer{
 
   const soundToggleBtn = $("soundToggleBtn");
   const soundIcon = $("soundIcon");
-  const toggleNumbersBtn = $("toggleNumbersBtn");
   const toggleCorrectBtn = $("toggleCorrectBtn");
   const formatChoiceGrid = $("formatChoiceGrid");
   const winStatsSummary = $("winStatsSummary");
@@ -2055,13 +2327,24 @@ footer{
   }
 
 
+  function toggleFullscreen(enable){
+    isFullscreen = typeof enable === "boolean" ? enable : !isFullscreen;
+    gamePanel.classList.toggle("is-fullscreen", isFullscreen);
+    document.body.classList.toggle("is-fullscreen", isFullscreen);
+
+    if(fullscreenToggleBtn){
+      fullscreenToggleBtn.setAttribute("aria-pressed", String(isFullscreen));
+    }
+  }
+
+
   function getVisibleOverlay(){
 
     if(previewOverlay.classList.contains("show"))
       return "preview";
 
-    if(restartChoiceOverlay.classList.contains("show"))
-      return "restartChoice";
+    if(actionChoiceOverlay && actionChoiceOverlay.classList.contains("show"))
+      return "actionChoice";
 
     if(winOverlay.classList.contains("show"))
       return "win";
@@ -2252,10 +2535,10 @@ footer{
         activeOverlay="preview";
         previewOverlay.classList.add("show");
 
-      }else if(savedOverlay==="restartChoice"){
+      }else if(savedOverlay==="actionChoice" || savedOverlay==="restartChoice"){
 
-        activeOverlay="restartChoice";
-        restartChoiceOverlay.classList.add("show");
+        activeOverlay="actionChoice";
+        actionChoiceOverlay.classList.add("show");
 
       }else if(savedOverlay==="win" && locked){
 
@@ -2361,9 +2644,9 @@ footer{
 
     previewBtn.disabled=!loaded;
 
-    restartBtn.disabled=
-      !loaded ||
-      locked;
+    if(fullscreenToggleBtn){
+      fullscreenToggleBtn.disabled=!loaded;
+    }
   }
 
 
@@ -2400,19 +2683,22 @@ footer{
       `repeat(${n},minmax(0,1fr))`;
 
     let aspectCss = "1 / 1";
-    if(currentAspectRatio === "16:9") aspectCss = "16 / 9";
-    else if(currentAspectRatio === "4:3") aspectCss = "4 / 3";
+    let aspectNum = 1;
+    if(currentAspectRatio === "16:9"){
+      aspectCss = "16 / 9";
+      aspectNum = 16 / 9;
+    }else if(currentAspectRatio === "4:3"){
+      aspectCss = "4 / 3";
+      aspectNum = 4 / 3;
+    }
     board.style.setProperty("--board-aspect", aspectCss);
+    document.documentElement.style.setProperty("--board-aspect", aspectCss);
+    document.documentElement.style.setProperty("--board-aspect-num", String(aspectNum));
 
     if(formatBadge) formatBadge.textContent = currentAspectRatio;
 
-    board.classList.toggle("show-numbers", showNumbers);
     board.classList.toggle("show-correct", showCorrect);
 
-    if(toggleNumbersBtn){
-      toggleNumbersBtn.classList.toggle("active", showNumbers);
-      toggleNumbersBtn.setAttribute("aria-pressed", String(showNumbers));
-    }
     if(toggleCorrectBtn){
       toggleCorrectBtn.classList.toggle("active", showCorrect);
       toggleCorrectBtn.setAttribute("aria-pressed", String(showCorrect));
@@ -2483,12 +2769,6 @@ footer{
         tile.classList.add("selected");
       }
 
-
-      /* Numero guida per il tassello */
-      const numSpan=document.createElement("span");
-      numSpan.className="tile-number";
-      numSpan.textContent=String(piece+1);
-      tile.appendChild(numSpan);
 
       /* Indicatore discreto di posizione corretta */
       const markSpan=document.createElement("span");
@@ -2740,7 +3020,7 @@ footer{
       levelChoiceOverlay.classList.remove("show");
       previewOverlay.classList.remove("show");
       winOverlay.classList.remove("show");
-      restartChoiceOverlay.classList.remove("show");
+      if(actionChoiceOverlay) actionChoiceOverlay.classList.remove("show");
 
 
       $("previewImage").src=
@@ -2982,526 +3262,340 @@ footer{
 
 
   /*
-   * Disegni SVG dei quattro mostri.
+   * Grafiche vettoriali HD stile cartone animato dei quattro Supereroi (v. 1.10).
    */
-  function monsterSvg(monster,index){
+  function heroSvg(hero,index){
 
-    if(monster.type==="frankenstein"){
-
+    if(hero.type==="spiderman"){
+      /* LIVELLO 1: SPIDER-MAN */
       return `
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 240 220"
         role="img"
-        aria-label="Frankenstein, mostro di Halloween">
+        aria-label="Spider-Man, supereroe amichevole di quartiere">
 
-        <g
-          class="halloween-figure"
-          stroke-linecap="round"
-          stroke-linejoin="round">
+        <!-- Ragnatela di sfondo ed effetti comic -->
+        <g opacity=".4" stroke="#ef4444" stroke-width="1.8" fill="none">
+          <circle cx="120" cy="85" r="38"/>
+          <circle cx="120" cy="85" r="70"/>
+          <path d="M120 15 L120 155 M50 85 L190 85 M70 35 L170 135 M170 35 L70 135"/>
+        </g>
 
-          <path
-            d="M82 104 L56 128 L70 139 L96 119"
-            fill="#166534"
-            stroke="#14532d"
-            stroke-width="4"/>
+        <!-- Filo e anello di ragnatela -->
+        <path d="M50 40 Q75 18 100 52 Q125 86 160 55" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M160 55 Q175 40 185 58 Q195 76 178 85 Q161 94 160 55" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
 
-          <path
-            d="M158 104 L184 128 L170 139 L144 119"
-            fill="#166534"
-            stroke="#14532d"
-            stroke-width="4"/>
+        <!-- Figure Spider-Man -->
+        <g class="hero-figure" stroke-linecap="round" stroke-linejoin="round">
 
-          <path
-            d="M91 105 Q120 94 149 105 L143 169
-               Q120 184 97 169 Z"
-            fill="#374151"
-            stroke="#1f2937"
-            stroke-width="4"/>
+          <!-- Braccio sinistro (posa eroica) -->
+          <path d="M84 108 L58 126 L69 138 L95 120" fill="#dc2626" stroke="#991b1b" stroke-width="3.5"/>
+          <circle cx="56" cy="132" r="9" fill="#dc2626" stroke="#991b1b" stroke-width="3"/>
 
-          <rect
-            x="104"
-            y="143"
-            width="32"
-            height="25"
-            rx="4"
-            fill="#86efac"
-            stroke="#166534"
-            stroke-width="3"/>
+          <!-- Braccio destro con spara-ragnatele -->
+          <path d="M156 108 L182 88 L194 99 L168 119" fill="#dc2626" stroke="#991b1b" stroke-width="3.5"/>
+          <circle cx="188" cy="90" r="9" fill="#dc2626" stroke="#991b1b" stroke-width="3"/>
 
-          <path
-            d="M95 164 L89 190 L111 190 L120 171
-               L129 190 L151 190 L145 164"
-            fill="#111827"
-            stroke="#030712"
-            stroke-width="4"/>
+          <!-- Corpo/Busto (rosso e blu classico) -->
+          <path d="M90 106 Q120 95 150 106 L144 166 Q120 178 96 166 Z" fill="#1d4ed8" stroke="#1e3a8a" stroke-width="3.5"/>
+          <path d="M102 104 Q120 97 138 104 L134 168 Q120 175 106 168 Z" fill="#dc2626" stroke="#991b1b" stroke-width="3"/>
 
-          <path
-            d="M91 188 L112 188 M128 188 L150 188"
-            stroke="#86efac"
-            stroke-width="7"/>
+          <!-- Ragnatele sul busto -->
+          <path d="M120 104 L120 168 M106 122 Q120 128 134 122 M108 142 Q120 148 132 142" stroke="#111827" stroke-width="1.8" fill="none"/>
 
-          <rect
-            x="92"
-            y="42"
-            width="56"
-            height="58"
-            rx="15"
-            fill="#86efac"
-            stroke="#166534"
-            stroke-width="4"/>
+          <!-- Gambe -->
+          <path d="M96 164 L90 192 L112 192 L120 172 L128 192 L150 192 L144 164" fill="#1d4ed8" stroke="#1e3a8a" stroke-width="3.5"/>
+          <!-- Stivali rossi -->
+          <path d="M88 184 L114 184 L112 194 L88 194 Z M126 184 L152 184 L150 194 L126 194 Z" fill="#dc2626" stroke="#991b1b" stroke-width="2.5"/>
 
-          <path
-            d="M92 54 Q120 25 148 54 L145 39
-               Q120 21 95 39 Z"
-            fill="#111827"
-            stroke="#030712"
-            stroke-width="3"/>
+          <!-- Logo Ragno sul petto -->
+          <circle cx="120" cy="132" r="4.5" fill="#111827"/>
+          <path d="M120 128 L114 123 M120 128 L126 123 M120 134 L113 138 M120 134 L127 138" stroke="#111827" stroke-width="2.2"/>
 
-          <path
-            d="M101 58 L112 55 M128 55 L139 58"
-            stroke="#1f2937"
-            stroke-width="5"/>
+          <!-- Testa/Maschera -->
+          <ellipse cx="120" cy="66" rx="30" ry="34" fill="#dc2626" stroke="#991b1b" stroke-width="3.5"/>
 
-          <circle
-            cx="109"
-            cy="68"
-            r="5"
-            fill="#fef08a"/>
+          <!-- Motivo ragnatela sulla maschera -->
+          <g stroke="#111827" stroke-width="1.6" fill="none">
+            <path d="M120 32 L120 100 M90 66 L150 66"/>
+            <path d="M99 43 L141 89 M141 43 L99 89"/>
+            <ellipse cx="120" cy="66" rx="14" ry="16"/>
+            <ellipse cx="120" cy="66" rx="24" ry="27"/>
+          </g>
 
-          <circle
-            cx="131"
-            cy="68"
-            r="5"
-            fill="#fef08a"/>
+          <!-- Occhi iconici da fumetto (grandi, bianchi con bordo nero lucido) -->
+          <path d="M100 58 Q114 55 117 73 Q109 77 98 67 Z" fill="#ffffff" stroke="#111827" stroke-width="3.8"/>
+          <path d="M140 58 Q126 55 123 73 Q131 77 142 67 Z" fill="#ffffff" stroke="#111827" stroke-width="3.8"/>
 
-          <path
-            d="M109 84 Q120 91 131 84"
-            fill="none"
-            stroke="#166534"
-            stroke-width="3"/>
+          <!-- Riflessi lucidi negli occhi -->
+          <ellipse cx="107" cy="64" rx="3.5" ry="5" fill="#f8fafc" opacity=".85"/>
+          <ellipse cx="133" cy="64" rx="3.5" ry="5" fill="#f8fafc" opacity=".85"/>
 
-          <path
-            d="M88 50 L78 57 L88 65"
-            fill="none"
-            stroke="#374151"
-            stroke-width="5"/>
-
-          <path
-            d="M152 50 L162 57 L152 65"
-            fill="none"
-            stroke="#374151"
-            stroke-width="5"/>
-
-          <path
-            d="M75 101 L65 88 M165 101 L175 88"
-            stroke="#86efac"
-            stroke-width="5"/>
-
-          <path
-            d="M62 74 L53 62 L61 63 L57 51"
-            fill="none"
-            stroke="#fde047"
-            stroke-width="4"/>
-
-          <path
-            d="M178 74 L187 62 L179 63 L183 51"
-            fill="none"
-            stroke="#fde047"
-            stroke-width="4"/>
-
-          <rect
-            x="88"
-            y="109"
-            width="10"
-            height="16"
-            fill="#d1d5db"
-            stroke="#374151"
-            stroke-width="2"/>
-
-          <rect
-            x="142"
-            y="109"
-            width="10"
-            height="16"
-            fill="#d1d5db"
-            stroke="#374151"
-            stroke-width="2"/>
-
+          <!-- Stelle comic spark -->
+          <polygon points="45,95 48,102 55,103 50,108 52,115 45,111 38,115 40,108 35,103 42,102" fill="#fbbf24"/>
+          <polygon points="198,35 200,41 206,42 201,46 203,52 198,49 193,52 195,46 190,42 196,41" fill="#38bdf8"/>
         </g>
       </svg>`;
     }
 
 
-    if(monster.type==="dracula"){
-
+    if(hero.type==="hulk"){
+      /* LIVELLO 2: HULK */
       return `
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 240 220"
         role="img"
-        aria-label="Dracula, mostro di Halloween">
+        aria-label="Hulk, il gigante verde più forte">
 
-        <circle
-          cx="178"
-          cy="38"
-          r="15"
-          fill="#fff"
-          opacity=".9"/>
+        <!-- Onde d'urto ed energia gamma -->
+        <g opacity=".35" stroke="#22c55e" stroke-width="2.5" fill="none">
+          <circle cx="120" cy="110" r="85"/>
+          <circle cx="120" cy="110" r="105"/>
+          <path d="M35 150 Q45 130 30 115 M205 150 Q195 130 210 115" stroke-width="3"/>
+        </g>
 
-        <g
-          class="halloween-figure"
-          stroke-linecap="round"
-          stroke-linejoin="round">
+        <!-- Figure Hulk Cartoon -->
+        <g class="hero-figure" stroke-linecap="round" stroke-linejoin="round">
 
-          <path
-            d="M99 102 Q62 94 39 120 L61 143
-               Q79 132 100 136 Z"
-            fill="#7f1d1d"
-            stroke="#450a0a"
-            stroke-width="4"/>
+          <!-- Bicipite sinistro in flex -->
+          <path d="M78 114 Q48 100 50 78 Q68 70 82 92" fill="#15803d" stroke="#14532d" stroke-width="4"/>
+          <circle cx="54" cy="74" r="14" fill="#22c55e" stroke="#14532d" stroke-width="3.5"/>
+          <path d="M48 70 L58 76 M46 76 L56 82" stroke="#14532d" stroke-width="2.5"/>
 
-          <path
-            d="M141 102 Q178 94 201 120 L179 143
-               Q161 132 140 136 Z"
-            fill="#7f1d1d"
-            stroke="#450a0a"
-            stroke-width="4"/>
+          <!-- Bicipite destro in flex -->
+          <path d="M162 114 Q192 100 190 78 Q172 70 158 92" fill="#15803d" stroke="#14532d" stroke-width="4"/>
+          <circle cx="186" cy="74" r="14" fill="#22c55e" stroke="#14532d" stroke-width="3.5"/>
+          <path d="M182 70 L192 76 M184 76 L194 82" stroke="#14532d" stroke-width="2.5"/>
 
-          <path
-            d="M92 106 Q120 94 148 106 L143 170
-               Q120 182 97 170 Z"
-            fill="#111827"
-            stroke="#030712"
-            stroke-width="4"/>
+          <!-- Spalle e torace possente -->
+          <path d="M74 100 Q120 86 166 100 L156 165 Q120 178 84 165 Z" fill="#22c55e" stroke="#14532d" stroke-width="4"/>
 
-          <path
-            d="M107 166 L96 190 L114 190 L120 174
-               L126 190 L144 190 L133 166"
-            fill="#111827"
-            stroke="#030712"
-            stroke-width="4"/>
+          <!-- Definizione pettorali cartoon -->
+          <path d="M96 112 Q120 118 120 135 M144 112 Q120 118 120 135" stroke="#15803d" stroke-width="3.5" fill="none"/>
+          <path d="M102 144 Q120 148 138 144 M106 156 Q120 160 134 156" stroke="#15803d" stroke-width="3" fill="none"/>
 
-          <path
-            d="M94 61 Q120 32 146 61 L141 101
-               Q120 116 99 101 Z"
-            fill="#f8d9d2"
-            stroke="#7f1d1d"
-            stroke-width="3"/>
+          <!-- Pantaloni strappati viola classici -->
+          <path d="M84 162 L78 190 L98 185 L106 193 L120 170 L134 193 L142 185 L162 190 L156 162 Z" fill="#7e22ce" stroke="#581c87" stroke-width="3.5"/>
+          <path d="M90 176 L94 186 M146 176 L150 186" stroke="#e9d5ff" stroke-width="2"/>
 
-          <path
-            d="M94 63 Q87 43 104 30
-               Q120 20 136 30
-               Q153 42 146 63
-               L137 49 Q120 38 103 49 Z"
-            fill="#111827"
-            stroke="#030712"
-            stroke-width="3"/>
+          <!-- Gambe possenti verdi -->
+          <path d="M84 188 L80 206 L104 206 L108 192 M132 192 L136 206 L160 206 L156 188" fill="#15803d" stroke="#14532d" stroke-width="3.5"/>
 
-          <path
-            d="M101 69 L112 67 M128 67 L139 69"
-            stroke="#4c1d95"
-            stroke-width="4"/>
+          <!-- Testa Hulk: mascella squadrata e sorriso fiero -->
+          <path d="M88 48 Q120 36 152 48 L148 88 Q120 102 92 88 Z" fill="#22c55e" stroke="#14532d" stroke-width="4"/>
 
-          <circle
-            cx="109"
-            cy="75"
-            r="4"
-            fill="#ef4444"/>
+          <!-- Capelli scuri scompigliati cartoon -->
+          <path d="M86 52 Q92 28 120 28 Q148 28 154 52 L146 44 Q135 34 120 37 Q105 34 94 44 Z" fill="#14532d" stroke="#052e16" stroke-width="3.5"/>
 
-          <circle
-            cx="131"
-            cy="75"
-            r="4"
-            fill="#ef4444"/>
+          <!-- Sopracciglia decise -->
+          <path d="M96 56 L112 60 M128 60 L144 56" stroke="#14532d" stroke-width="4.5"/>
 
-          <path
-            d="M108 88 Q120 94 132 88"
-            fill="none"
-            stroke="#7f1d1d"
-            stroke-width="3"/>
+          <!-- Occhi espressivi verdi -->
+          <ellipse cx="106" cy="66" rx="4.5" ry="4" fill="#ffffff" stroke="#14532d" stroke-width="2.5"/>
+          <circle cx="106" cy="66" r="2.5" fill="#14532d"/>
+          <ellipse cx="134" cy="66" rx="4.5" ry="4" fill="#ffffff" stroke="#14532d" stroke-width="2.5"/>
+          <circle cx="134" cy="66" r="2.5" fill="#14532d"/>
 
-          <path
-            d="M111 88 L114 101 L120 89
-               L126 101 L129 88"
-            fill="white"
-            stroke="#7f1d1d"
-            stroke-width="2"/>
+          <!-- Naso e sorriso eroico da gigante buono -->
+          <path d="M116 72 Q120 75 124 72" stroke="#14532d" stroke-width="2.5" fill="none"/>
+          <path d="M104 80 Q120 92 136 80" fill="#ffffff" stroke="#14532d" stroke-width="3"/>
+          <path d="M112 84 L112 87 M120 85 L120 88 M128 84 L128 87" stroke="#14532d" stroke-width="2"/>
 
-          <path
-            d="M100 111 L120 126 L140 111"
-            fill="none"
-            stroke="#ef4444"
-            stroke-width="4"/>
-
-          <path
-            d="M52 121 L39 108 M188 121 L201 108"
-            stroke="#ef4444"
-            stroke-width="5"/>
-
+          <!-- Fulmini di energia gamma -->
+          <path d="M36 50 L44 58 L38 60 L46 70" stroke="#facc15" stroke-width="3.5" fill="none"/>
+          <path d="M204 50 L196 58 L202 60 L194 70" stroke="#facc15" stroke-width="3.5" fill="none"/>
         </g>
       </svg>`;
     }
 
 
-    if(monster.type==="werewolf"){
-
+    if(hero.type==="batman"){
+      /* LIVELLO 3: BATMAN */
       return `
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 240 220"
         role="img"
-        aria-label="Lupo mannaro, mostro di Halloween">
+        aria-label="Batman, il Cavaliere Oscuro">
 
-        <circle
-          cx="171"
-          cy="46"
-          r="29"
-          fill="#fff7cc"
-          stroke="#f59e0b"
-          stroke-width="3"/>
+        <!-- Bat-segnale luminoso sullo sfondo -->
+        <circle cx="120" cy="80" r="54" fill="#fef08a" opacity=".4"/>
+        <circle cx="120" cy="80" r="42" fill="#fef08a" opacity=".55"/>
 
-        <g
-          class="halloween-figure"
-          stroke-linecap="round"
-          stroke-linejoin="round">
+        <!-- Pipistrelli in lontananza -->
+        <path d="M42 36 Q47 30 52 36 Q47 42 42 36 M188 32 Q194 26 200 32 Q194 38 188 32" fill="#1e293b"/>
+        <path d="M28 58 Q33 53 38 58 Q33 63 28 58 M198 55 Q203 50 208 55 Q203 60 198 55" fill="#1e293b"/>
 
-          <path
-            d="M89 106 L59 127 L73 140 L101 120"
-            fill="#78716c"
-            stroke="#292524"
-            stroke-width="4"/>
+        <!-- Figure Batman Cartoon -->
+        <g class="hero-figure" stroke-linecap="round" stroke-linejoin="round">
 
-          <path
-            d="M151 106 L181 127 L167 140 L139 120"
-            fill="#78716c"
-            stroke="#292524"
-            stroke-width="4"/>
+          <!-- Mantello maestoso che scende ai lati -->
+          <path d="M78 86 Q40 120 32 188 Q62 174 88 180 Q96 140 102 118" fill="#0f172a" stroke="#020617" stroke-width="4"/>
+          <path d="M162 86 Q200 120 208 188 Q178 174 152 180 Q144 140 138 118" fill="#0f172a" stroke="#020617" stroke-width="4"/>
 
-          <path
-            d="M92 103 Q120 92 148 103
-               L145 169 Q120 181 95 169 Z"
-            fill="#57534e"
-            stroke="#292524"
-            stroke-width="4"/>
+          <!-- Braccia in posa solenne -->
+          <path d="M84 104 L60 132 L74 142 L98 120" fill="#334155" stroke="#1e293b" stroke-width="3.5"/>
+          <!-- Guanti neri con punte iconiche -->
+          <path d="M60 132 L50 144 L66 148 Z M54 135 L44 138 M58 141 L48 144" fill="#0f172a" stroke="#020617" stroke-width="2.5"/>
 
-          <path
-            d="M95 164 L88 191 L111 191 L120 170
-               L129 191 L152 191 L145 164"
-            fill="#44403c"
-            stroke="#292524"
-            stroke-width="4"/>
+          <path d="M156 104 L180 132 L166 142 L142 120" fill="#334155" stroke="#1e293b" stroke-width="3.5"/>
+          <path d="M180 132 L190 144 L174 148 Z M186 135 L196 138 M182 141 L192 144" fill="#0f172a" stroke="#020617" stroke-width="2.5"/>
 
-          <path
-            d="M92 50 L84 23 L106 39
-               Q120 28 134 39 L156 23 L148 50
-               Q153 71 145 99
-               Q120 115 95 99
-               Q87 71 92 50 Z"
-            fill="#78716c"
-            stroke="#292524"
-            stroke-width="4"/>
+          <!-- Corpo/Tuta grigio scuro -->
+          <path d="M92 100 Q120 94 148 100 L142 165 Q120 172 98 165 Z" fill="#475569" stroke="#1e293b" stroke-width="3.5"/>
 
-          <path
-            d="M91 52 Q120 38 149 52
-               L143 88 Q120 106 97 88 Z"
-            fill="#a8a29e"
-            stroke="#44403c"
-            stroke-width="3"/>
+          <!-- Emblema pipistrello sul petto (ovale giallo con pipistrello nero) -->
+          <ellipse cx="120" cy="126" rx="20" ry="12" fill="#facc15" stroke="#ca8a04" stroke-width="2.5"/>
+          <!-- Sagoma pipistrello -->
+          <path d="M112 126 Q116 120 120 123 Q124 120 128 126 Q125 128 123 125 L122 130 L120 128 L118 130 L117 125 Q115 128 112 126 Z" fill="#0f172a"/>
 
-          <path
-            d="M84 23 L91 47 M156 23 L149 47"
-            stroke="#292524"
-            stroke-width="5"/>
+          <!-- Cintura multiuso dorata con capsule -->
+          <rect x="94" y="156" width="52" height="11" rx="3" fill="#eab308" stroke="#a16207" stroke-width="2.5"/>
+          <rect x="114" y="154" width="12" height="15" rx="3" fill="#fef08a" stroke="#a16207" stroke-width="2"/>
+          <rect x="97" y="157" width="6" height="9" fill="#ca8a04"/>
+          <rect x="105" y="157" width="6" height="9" fill="#ca8a04"/>
+          <rect x="129" y="157" width="6" height="9" fill="#ca8a04"/>
+          <rect x="137" y="157" width="6" height="9" fill="#ca8a04"/>
 
-          <path
-            d="M102 61 L113 64 M127 64 L138 61"
-            stroke="#292524"
-            stroke-width="5"/>
+          <!-- Gambe -->
+          <path d="M96 166 L90 196 L112 196 L120 174 L128 196 L150 196 L144 166" fill="#1e293b" stroke="#020617" stroke-width="3.5"/>
 
-          <circle
-            cx="109"
-            cy="70"
-            r="5"
-            fill="#fbbf24"/>
+          <!-- Maschera con orecchie a punta iconiche -->
+          <!-- Orecchie -->
+          <polygon points="94,62 86,22 104,45" fill="#0f172a" stroke="#020617" stroke-width="3"/>
+          <polygon points="146,62 154,22 136,45" fill="#0f172a" stroke="#020617" stroke-width="3"/>
 
-          <circle
-            cx="131"
-            cy="70"
-            r="5"
-            fill="#fbbf24"/>
+          <!-- Cappuccio/Maschera -->
+          <path d="M92 56 Q120 40 148 56 L145 92 Q120 102 95 92 Z" fill="#0f172a" stroke="#020617" stroke-width="3.5"/>
 
-          <path
-            d="M101 84 Q120 101 139 84"
-            fill="#292524"
-            stroke="#1c1917"
-            stroke-width="3"/>
+          <!-- Zona bocca/mento umano -->
+          <path d="M105 76 Q120 72 135 76 L131 92 Q120 98 109 92 Z" fill="#fed7aa" stroke="#0f172a" stroke-width="2"/>
+          <!-- Sorriso fiducioso del Cavaliere Oscuro -->
+          <path d="M113 86 Q120 90 127 86" stroke="#9a3412" stroke-width="2.5" fill="none"/>
 
-          <path
-            d="M107 90 L111 100 M120 94 L120 104
-               M133 90 L129 100"
-            stroke="#fff7ed"
-            stroke-width="3"/>
-
-          <path
-            d="M70 132 L59 147 L70 143 L65 158"
-            fill="none"
-            stroke="#fbbf24"
-            stroke-width="4"/>
-
-          <path
-            d="M170 132 L181 147 L170 143 L175 158"
-            fill="none"
-            stroke="#fbbf24"
-            stroke-width="4"/>
-
+          <!-- Occhi bianchi da cappuccio (tagli triangolari) -->
+          <polygon points="102,64 114,68 104,71" fill="#ffffff"/>
+          <polygon points="138,64 126,68 136,71" fill="#ffffff"/>
         </g>
       </svg>`;
     }
 
 
-    /* MUMMIA */
-
+    /* LIVELLO 4: SUPERMAN */
     return `
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 240 220"
       role="img"
-      aria-label="Mummia, mostro di Halloween">
+      aria-label="Superman, l'Uomo d'Acciaio">
 
-      <g
-        class="halloween-figure"
-        stroke-linecap="round"
-        stroke-linejoin="round">
+      <!-- Raggi solari dorati di Metropolis -->
+      <g opacity=".4" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round">
+        <line x1="120" y1="12" x2="120" y2="3"/>
+        <line x1="60" y1="35" x2="48" y2="25"/>
+        <line x1="180" y1="35" x2="192" y2="25"/>
+        <line x1="28" y1="85" x2="16" y2="85"/>
+        <line x1="212" y1="85" x2="224" y2="85"/>
+      </g>
+      <circle cx="120" cy="75" r="65" fill="#fef08a" opacity=".3"/>
 
-        <path
-          d="M93 105 L63 127 L74 141 L102 119"
-          fill="#d6c6a5"
-          stroke="#57534e"
-          stroke-width="4"/>
+      <!-- Figure Superman Cartoon -->
+      <g class="hero-figure" stroke-linecap="round" stroke-linejoin="round">
 
-        <path
-          d="M147 105 L177 127 L166 141 L138 119"
-          fill="#d6c6a5"
-          stroke="#57534e"
-          stroke-width="4"/>
+        <!-- Mantello rosso fiammeggiante dietro le spalle -->
+        <path d="M78 88 Q35 125 32 192 Q68 180 94 186 Q100 144 104 116" fill="#dc2626" stroke="#991b1b" stroke-width="4"/>
+        <path d="M162 88 Q205 125 208 192 Q172 180 146 186 Q140 144 136 116" fill="#dc2626" stroke="#991b1b" stroke-width="4"/>
 
-        <path
-          d="M93 101 Q120 92 147 101
-             L144 170 Q120 183 96 170 Z"
-          fill="#d6c6a5"
-          stroke="#57534e"
-          stroke-width="4"/>
+        <!-- Braccia sui fianchi (posa classica del trionfo) -->
+        <path d="M84 104 L58 132 L82 144 L96 122" fill="#2563eb" stroke="#1d4ed8" stroke-width="3.5"/>
+        <circle cx="82" cy="144" r="8" fill="#fed7aa" stroke="#ea580c" stroke-width="2.5"/>
 
-        <path
-          d="M96 166 L89 191 L111 191 L120 171
-             L129 191 L151 191 L144 166"
-          fill="#c8b894"
-          stroke="#57534e"
-          stroke-width="4"/>
+        <path d="M156 104 L182 132 L158 144 L144 122" fill="#2563eb" stroke="#1d4ed8" stroke-width="3.5"/>
+        <circle cx="158" cy="144" r="8" fill="#fed7aa" stroke="#ea580c" stroke-width="2.5"/>
 
-        <path
-          d="M91 55 Q120 36 149 55
-             L143 100 Q120 112 97 100 Z"
-          fill="#d6c6a5"
-          stroke="#57534e"
-          stroke-width="4"/>
+        <!-- Corpo/Tuta blu regale -->
+        <path d="M88 100 Q120 92 152 100 L144 165 Q120 174 96 165 Z" fill="#2563eb" stroke="#1d4ed8" stroke-width="3.5"/>
 
-        <path
-          d="M95 57 L145 72
-             M93 70 L143 84
-             M95 84 L140 96"
-          stroke="#a8a29e"
-          stroke-width="8"/>
+        <!-- Scudo 'S' leggendario sul petto (diamante giallo e rosso) -->
+        <polygon points="120,110 138,118 132,138 120,147 108,138 102,118" fill="#facc15" stroke="#dc2626" stroke-width="3.2"/>
+        <!-- Disegno cartoon della 'S' -->
+        <path d="M128 116 L113 116 Q108 122 114 127 L125 130 Q131 135 126 142 L112 142" stroke="#dc2626" stroke-width="3.8" stroke-linecap="square" fill="none"/>
 
-        <path
-          d="M101 65 L111 65 M129 65 L139 65"
-          stroke="#57534e"
-          stroke-width="4"/>
+        <!-- Cintura gialla con fibbia ovale -->
+        <rect x="94" y="156" width="52" height="10" rx="3" fill="#facc15" stroke="#ca8a04" stroke-width="2.5"/>
+        <ellipse cx="120" cy="161" rx="7" ry="5.5" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
 
-        <circle
-          cx="109"
-          cy="72"
-          r="5"
-          fill="#ef4444"/>
+        <!-- Slip rossi classici -->
+        <path d="M96 165 L106 178 L120 172 L134 178 L144 165 Z" fill="#dc2626" stroke="#991b1b" stroke-width="2.5"/>
 
-        <circle
-          cx="131"
-          cy="72"
-          r="5"
-          fill="#ef4444"/>
+        <!-- Gambe blu con stivali rossi -->
+        <path d="M96 172 L90 196 L112 196 L120 176 L128 196 L150 196 L144 172" fill="#2563eb" stroke="#1d4ed8" stroke-width="3.5"/>
+        <!-- Stivali rossi con punta a V -->
+        <path d="M88 184 L100 188 L114 184 L112 198 L88 198 Z M126 184 L140 188 L152 184 L150 198 L126 198 Z" fill="#dc2626" stroke="#991b1b" stroke-width="2.5"/>
 
-        <path
-          d="M105 86 Q120 91 135 86"
-          fill="none"
-          stroke="#57534e"
-          stroke-width="3"/>
+        <!-- Collo e Testa -->
+        <path d="M108 88 L108 102 L132 102 L132 88 Z" fill="#fed7aa"/>
+        <ellipse cx="120" cy="62" rx="26" ry="29" fill="#fed7aa" stroke="#ea580c" stroke-width="3"/>
 
-        <path
-          d="M94 108 L146 118
-             M96 123 L143 134
-             M97 140 L141 151
-             M100 156 L137 166"
-          stroke="#a8a29e"
-          stroke-width="9"/>
+        <!-- Capelli scuri con l'iconico ciuffo a 'S' sulla fronte -->
+        <path d="M96 56 Q94 30 120 30 Q146 30 144 56 Q132 40 120 42 Q108 40 96 56 Z" fill="#0f172a" stroke="#020617" stroke-width="3"/>
+        <!-- Ciuffo a 'S' -->
+        <path d="M120 42 Q125 48 121 54 Q116 57 118 60" fill="none" stroke="#0f172a" stroke-width="3.2" stroke-linecap="round"/>
 
-        <path
-          d="M68 134 Q46 148 58 168"
-          fill="none"
-          stroke="#d6c6a5"
-          stroke-width="8"/>
+        <!-- Occhi fieri celesti e sopracciglia decise -->
+        <path d="M102 54 L114 56 M126 56 L138 54" stroke="#0f172a" stroke-width="3.5"/>
+        <circle cx="108" cy="62" r="3.5" fill="#0284c7"/>
+        <circle cx="109" cy="61" r="1.2" fill="#ffffff"/>
+        <circle cx="132" cy="62" r="3.5" fill="#0284c7"/>
+        <circle cx="133" cy="61" r="1.2" fill="#ffffff"/>
 
-        <path
-          d="M172 134 Q194 148 182 168"
-          fill="none"
-          stroke="#d6c6a5"
-          stroke-width="8"/>
+        <!-- Sorriso radioso da Uomo d'Acciaio -->
+        <path d="M110 74 Q120 83 130 74" fill="#ffffff" stroke="#c2410c" stroke-width="2.8"/>
 
-        <path
-          d="M56 168 Q47 176 54 183"
-          fill="none"
-          stroke="#a8a29e"
-          stroke-width="5"/>
-
+        <!-- Spille oro del mantello -->
+        <circle cx="94" cy="100" r="4" fill="#facc15" stroke="#ca8a04" stroke-width="1.8"/>
+        <circle cx="146" cy="100" r="4" fill="#facc15" stroke="#ca8a04" stroke-width="1.8"/>
       </g>
     </svg>`;
   }
 
 
-  function showHalloween(index){
+  function showHero(index){
 
-    const monster=
-      HALLOWEEN[index] ||
-      HALLOWEEN[0];
+    const hero=
+      HEROES[index] ||
+      HEROES[0];
 
 
     heroStage.style.setProperty(
       "--hero-glow",
-      monster.glow
+      hero.glow
     );
 
 
     heroArt.className=
-      `hero-art halloween-art monster-${monster.type}`;
+      `hero-art hero-character hero-${hero.type}`;
 
 
     heroArt.innerHTML=
-      monsterSvg(
-        monster,
+      heroSvg(
+        hero,
         index
       );
 
 
     heroRank.textContent=
-      `MOSTRO ${index+1} / ${HALLOWEEN.length} · ` +
-      monster.power.toUpperCase();
+      `SUPEREROE ${index+1} / ${HEROES.length} · ` +
+      hero.power.toUpperCase();
 
 
     heroName.textContent=
-      monster.name;
+      hero.name;
 
     heroTagline.textContent=
-      monster.tagline;
+      hero.tagline;
 
 
     /*
@@ -3517,7 +3611,7 @@ footer{
 
   function showWinDialog(celebrate=true){
 
-    showHalloween(levelIndex);
+    showHero(levelIndex);
 
     if(winStatsSummary){
       winStatsSummary.innerHTML =
@@ -3529,12 +3623,11 @@ footer{
     if(levelIndex===LEVELS.length-1){
 
       $("winTitle").textContent=
-        "Hai vinto! 🎃";
+        "Hai vinto! 🦸‍♂️";
 
 
       $("winMessage").textContent=
-        `La Mummia ti applaude: hai completato ` +
-        `tutti e quattro i livelli! ` +
+        `Superman ti applaude: hai completato tutti e quattro i livelli! ` +
         `Hai chiuso l'ultima sfida in ${moves} mosse (${formatTime(timerSeconds)}).`;
 
 
@@ -3545,19 +3638,18 @@ footer{
         true;
 
       $("newGameBtn").textContent=
-        "📷 Nuova partita";
+        "📷 Cambia foto";
 
     }else{
 
       $("winTitle").textContent=
-        "Livello completato! 🎃";
+        "Livello completato! 🦸";
 
 
       $("winMessage").textContent=
         `Hai ricomposto la foto in ${moves} mosse e ${formatTime(timerSeconds)}. ` +
-        `${HALLOWEEN[levelIndex].name} ` +
-        `ti aspetta per festeggiare! ` +
-        `Il prossimo livello sarà ancora più difficile.`;
+        `${HEROES[levelIndex].name} ti aspetta per festeggiare! ` +
+        `Il prossimo livello sarà ancora più avvincente.`;
 
 
       $("nextLevelBtn").textContent=
@@ -3567,7 +3659,7 @@ footer{
         false;
 
       $("newGameBtn").textContent=
-        "📷 Nuova foto";
+        "📷 Cambia foto";
     }
 
 
@@ -3671,9 +3763,10 @@ footer{
     const symbols=[
       "🎉",
       "✨",
-      "🎃",
-      "🦇",
-      "⭐"
+      "⭐",
+      "🦸",
+      "⚡",
+      "💥"
     ];
 
 
@@ -4079,28 +4172,100 @@ footer{
   /*
    * NUOVA PARTITA
    */
+  /*
+   * CARICA / CAMBIA FOTO (v. 1.10)
+   * Finestra elegante personalizzata senza alert di sistema del browser.
+   */
   newPhotoBtn.addEventListener(
     "click",
     ()=>{
 
-      if(
-        photoData &&
-        !window.confirm(
-          "Sei sicuro di voler abbandonare " +
-          "la partita in corso?"
-        )
-      ){
-
+      if(!photoData){
+        openLevelChoice("newGame", 0);
         return;
       }
 
-
-      openLevelChoice(
-        "newGame",
-        0
-      );
+      activeOverlay="actionChoice";
+      actionChoiceOverlay.classList.add("show");
+      saveGame();
     }
   );
+
+
+  function closeActionChoice(){
+
+    actionChoiceOverlay.classList.remove("show");
+    activeOverlay="";
+    saveGame();
+  }
+
+
+  if(actionNewPhotoBtn){
+    actionNewPhotoBtn.addEventListener(
+      "click",
+      ()=>{
+
+        closeActionChoice();
+        openLevelChoice("newGame", 0);
+      }
+    );
+  }
+
+
+  if(actionRestartLevelBtn){
+    actionRestartLevelBtn.addEventListener(
+      "click",
+      ()=>{
+
+        closeActionChoice();
+        restartLevel();
+      }
+    );
+  }
+
+
+  if(actionCancelBtn){
+    actionCancelBtn.addEventListener(
+      "click",
+      closeActionChoice
+    );
+  }
+
+
+  if(actionChoiceOverlay){
+    actionChoiceOverlay.addEventListener(
+      "click",
+      event=>{
+
+        if(event.target===actionChoiceOverlay){
+          closeActionChoice();
+        }
+      }
+    );
+  }
+
+
+  /*
+   * CONTROLLI MODALITÀ SCHERMO INTERO (v. 1.10)
+   */
+  if(fullscreenToggleBtn){
+    fullscreenToggleBtn.addEventListener(
+      "click",
+      ()=>{
+
+        if(!photoData) return;
+        toggleFullscreen();
+      }
+    );
+  }
+
+
+  if(fullscreenExitBtn){
+    fullscreenExitBtn.addEventListener(
+      "click",
+      ()=>toggleFullscreen(false)
+    );
+  }
 
 
   /*
@@ -4125,92 +4290,6 @@ footer{
   mixBtn.addEventListener(
     "click",
     ()=>shufflePieces(false)
-  );
-
-
-  /*
-   * RIAVVIA / CAMBIA FOTO
-   */
-  restartBtn.addEventListener(
-    "click",
-    ()=>{
-
-      if(
-        !photoData ||
-        locked
-      ){
-        return;
-      }
-
-
-      activeOverlay=
-        "restartChoice";
-
-
-      restartChoiceOverlay.classList.add(
-        "show"
-      );
-
-
-      saveGame();
-    }
-  );
-
-
-  function closeRestartChoice(){
-
-    restartChoiceOverlay.classList.remove(
-      "show"
-    );
-
-    activeOverlay="";
-
-    saveGame();
-  }
-
-
-  $("samePhotoBtn").addEventListener(
-    "click",
-    ()=>{
-
-      closeRestartChoice();
-
-      restartLevel();
-    }
-  );
-
-
-  $("changePhotoBtn").addEventListener(
-    "click",
-    ()=>{
-
-      closeRestartChoice();
-
-      openLevelChoice(
-        "replaceCurrent",
-        levelIndex
-      );
-    }
-  );
-
-
-  $("cancelRestartChoiceBtn").addEventListener(
-    "click",
-    closeRestartChoice
-  );
-
-
-  restartChoiceOverlay.addEventListener(
-    "click",
-    event=>{
-
-      if(
-        event.target===restartChoiceOverlay
-      ){
-
-        closeRestartChoice();
-      }
-    }
   );
 
 
@@ -4308,23 +4387,8 @@ footer{
 
 
   /*
-   * AIUTI VISIVI (NUMERI E POSIZIONE CORRETTA)
+   * AIUTI VISIVI (POSIZIONE CORRETTA)
    */
-  if(toggleNumbersBtn){
-    toggleNumbersBtn.addEventListener(
-      "click",
-      ()=>{
-
-        showNumbers=!showNumbers;
-
-        renderBoard();
-
-        saveGame();
-      }
-    );
-  }
-
-
   if(toggleCorrectBtn){
     toggleCorrectBtn.addEventListener(
       "click",
@@ -4482,16 +4546,16 @@ footer{
 
 
   /*
-   * NUOVA FOTO DALLA SCHERMATA DI VITTORIA.
+   * CAMBIA FOTO DALLA SCHERMATA DI VITTORIA (v. 1.10).
    *
-   * Il livello successivo viene preselezionato,
-   * ma l'utente può scegliere qualsiasi livello.
+   * Prosegue direttamente al livello successivo aprendo la Galleria
+   * del dispositivo, senza aprire la finestra "Da quale livello vuoi partire".
    */
   $("newGameBtn").addEventListener(
     "click",
     ()=>{
 
-      const defaultLevel=
+      const targetLevel=
         levelIndex<LEVELS.length-1
           ? levelIndex+1
           : 0;
@@ -4504,12 +4568,14 @@ footer{
       activeOverlay="";
 
 
-      openLevelChoice(
-        levelIndex<LEVELS.length-1
-          ? "continue"
-          : "newGame",
-        defaultLevel
-      );
+      selectedStartLevel=targetLevel;
+      photoLoadMode="continueNext";
+
+      /*
+       * Apre direttamente la Galleria o il selettore del dispositivo.
+       */
+      photoInput.value="";
+      photoInput.click();
     }
   );
 
@@ -4532,7 +4598,7 @@ footer{
 
 
   /*
-   * TASTO ESC
+   * TASTO ESC (gestione schermo intero e modali)
    */
   document.addEventListener(
     "keydown",
@@ -4542,15 +4608,22 @@ footer{
         return;
 
 
+      if(isFullscreen){
+
+        toggleFullscreen(false);
+        return;
+      }
+
+
       if(activeOverlay==="preview"){
 
         closePreview();
 
       }else if(
-        activeOverlay==="restartChoice"
+        activeOverlay==="actionChoice"
       ){
 
-        closeRestartChoice();
+        closeActionChoice();
 
       }else if(
         activeOverlay==="levelChoice"
