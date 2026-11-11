@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f4f7fb">
-<title>Puzzle Magic v. 1.12</title>
+<title>Puzzle Magic v. 1.13</title>
 
 <style>
 :root{
@@ -1289,64 +1289,67 @@ body.is-fullscreen{
   display:none!important
 }
 
-/* Timer e tasto pausa a schermo intero (v. 1.12) */
+/* Timer e tasto pausa a schermo intero (v. 1.13 - raddoppiato e centrato sotto l'anteprima foto) */
 .fullscreen-hud{
   display:none
 }
 
 .game-panel.is-fullscreen .fullscreen-hud{
-  position:fixed;
-  top:12px;
-  left:12px;
-  z-index:1005;
   display:inline-flex;
   align-items:center;
-  gap:10px;
-  padding:5px 12px;
-  border:1px solid var(--border);
-  border-radius:30px;
-  background:rgba(255,255,255,.94);
-  backdrop-filter:blur(6px);
-  box-shadow:0 4px 16px rgba(0,0,0,.08)
+  justify-content:center;
+  gap:16px;
+  padding:8px 22px;
+  border:2px solid var(--border);
+  border-radius:40px;
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(8px);
+  box-shadow:0 6px 20px rgba(0,0,0,.12);
+  margin-top:12px;
+  align-self:center;
+  flex-shrink:0
 }
 
 .fullscreen-timer-box{
   display:flex;
   align-items:center;
-  gap:6px;
-  font-size:15px;
+  gap:10px;
+  font-size:26px;
   font-weight:800;
   color:var(--text);
-  font-variant-numeric:tabular-nums
+  font-variant-numeric:tabular-nums;
+  line-height:1
 }
 
 .fullscreen-timer-icon{
-  font-size:15px;
+  font-size:26px;
   line-height:1
 }
 
 .fullscreen-pause-btn{
   display:inline-grid;
   place-items:center;
-  width:32px;
-  height:32px;
+  width:56px;
+  height:56px;
   padding:0;
-  border:1px solid #cfd7e6;
+  border:2px solid #cfd7e6;
   border-radius:50%;
   background:#ffffff;
   color:var(--text);
-  font-size:14px;
+  font-size:24px;
   cursor:pointer;
   line-height:1;
-  box-shadow:0 1px 3px rgba(0,0,0,.06);
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
   transition:all .15s ease;
-  touch-action:manipulation
+  touch-action:manipulation;
+  flex-shrink:0
 }
 
 .fullscreen-pause-btn:hover:not(:disabled){
   background:#f0f2ff;
   border-color:var(--primary);
-  color:var(--primary-dark)
+  color:var(--primary-dark);
+  box-shadow:0 4px 12px rgba(70,86,194,.18)
 }
 
 .fullscreen-pause-btn:active:not(:disabled){
@@ -1362,7 +1365,8 @@ body.is-fullscreen{
 .fullscreen-pause-btn.is-paused{
   background:#eef1ff;
   border-color:var(--primary);
-  color:var(--primary-dark)
+  color:var(--primary-dark);
+  box-shadow:0 0 0 2px rgba(91,110,225,.25)
 }
 
 .game-panel.is-fullscreen .fullscreen-exit-btn{
@@ -1395,7 +1399,7 @@ body.is-fullscreen{
   transform:scale(.95)
 }
 
-/* Verticale (portrait): solo puzzle sopra e anteprima sotto, entrambi per intero */
+/* Verticale (portrait): solo puzzle sopra e anteprima sotto con widget cronometro/pausa centrato al di sotto */
 @media (orientation: portrait){
   .game-panel.is-fullscreen .game-layout{
     display:flex;
@@ -1404,15 +1408,15 @@ body.is-fullscreen{
     justify-content:center;
     width:100%;
     height:100%;
-    gap:12px
+    gap:10px
   }
   .game-panel.is-fullscreen .game-main-col{
     flex:0 0 auto;
     display:flex;
     align-items:center;
     justify-content:center;
-    width:min(95vw, calc(56vh * var(--board-aspect-num, 1)));
-    max-height:56vh
+    width:min(95vw, calc(50vh * var(--board-aspect-num, 1)));
+    max-height:50vh
   }
   .game-panel.is-fullscreen .board-wrap{
     width:100%;
@@ -1420,29 +1424,34 @@ body.is-fullscreen{
   }
   .game-panel.is-fullscreen .board{
     width:100%;
-    max-height:56vh;
+    max-height:50vh;
     box-shadow:0 8px 24px rgba(0,0,0,.08)
   }
   .game-panel.is-fullscreen .game-side-col{
     flex:0 0 auto;
     display:flex;
+    flex-direction:column;
     align-items:center;
     justify-content:center;
-    width:min(80vw, calc(28vh * var(--board-aspect-num, 1)));
-    max-height:28vh
+    width:100%;
+    max-height:40vh
   }
   .game-panel.is-fullscreen .side-preview-card{
     background:transparent;
     border:none;
     padding:0;
-    width:100%
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center
   }
   .game-panel.is-fullscreen .side-preview-header{
     display:none
   }
   .game-panel.is-fullscreen .preview-tile{
-    width:100%;
-    max-height:28vh;
+    width:min(70vw, calc(20vh * var(--board-aspect-num, 1)));
+    max-height:20vh;
     border-radius:10px;
     box-shadow:0 4px 16px rgba(0,0,0,.08)
   }
@@ -1451,7 +1460,7 @@ body.is-fullscreen{
   }
 }
 
-/* Orizzontale (landscape): solo puzzle a sx e anteprima a dx, entrambi per intero */
+/* Orizzontale (landscape): solo puzzle a sx e anteprima a dx con widget cronometro/pausa in basso a dx sotto la foto */
 @media (orientation: landscape){
   .game-panel.is-fullscreen .game-layout{
     display:flex;
@@ -1460,15 +1469,15 @@ body.is-fullscreen{
     justify-content:center;
     width:100%;
     height:100%;
-    gap:20px
+    gap:24px
   }
   .game-panel.is-fullscreen .game-main-col{
     flex:0 0 auto;
     display:flex;
     align-items:center;
     justify-content:center;
-    height:min(88vh, calc(58vw / var(--board-aspect-num, 1)));
-    max-width:58vw
+    height:min(88vh, calc(56vw / var(--board-aspect-num, 1)));
+    max-width:56vw
   }
   .game-panel.is-fullscreen .board-wrap{
     height:100%;
@@ -1484,22 +1493,28 @@ body.is-fullscreen{
   .game-panel.is-fullscreen .game-side-col{
     flex:0 0 auto;
     display:flex;
+    flex-direction:column;
     align-items:center;
     justify-content:center;
-    height:min(78vh, calc(32vw / var(--board-aspect-num, 1)));
-    max-width:32vw
+    height:min(88vh, calc(36vw / var(--board-aspect-num, 1)));
+    max-width:36vw
   }
   .game-panel.is-fullscreen .side-preview-card{
     background:transparent;
     border:none;
     padding:0;
-    height:100%
+    height:auto;
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center
   }
   .game-panel.is-fullscreen .side-preview-header{
     display:none
   }
   .game-panel.is-fullscreen .preview-tile{
-    height:100%;
+    height:min(56vh, calc(28vw / var(--board-aspect-num, 1)));
     width:auto;
     aspect-ratio:var(--board-aspect, 1/1);
     border-radius:12px;
@@ -1635,7 +1650,7 @@ body.is-fullscreen{
     <button class="sound-toggle" id="soundToggleBtn" type="button" aria-label="Attiva o disattiva audio" title="Audio">
       <span id="soundIcon">🔊</span>
     </button>
-    <div class="version">v. 1.12</div>
+    <div class="version">v. 1.13</div>
   </div>
 </header>
 
@@ -1753,23 +1768,6 @@ body.is-fullscreen{
     </svg>
     <span>Esci da schermo intero</span>
   </button>
-
-  <!-- Timer e pausa in modalità schermo intero (v. 1.12) -->
-  <div class="fullscreen-hud" id="fullscreenHud" aria-label="Timer a schermo intero">
-    <div class="fullscreen-timer-box">
-      <span class="fullscreen-timer-icon" aria-hidden="true">⏱️</span>
-      <span id="fullscreenTimerVal">00:00</span>
-    </div>
-    <button
-      class="fullscreen-pause-btn"
-      id="fullscreenPauseBtn"
-      type="button"
-      title="Metti in pausa il timer"
-      aria-label="Metti in pausa il timer"
-      disabled>
-      <span id="fullscreenPauseIcon">⏸️</span>
-    </button>
-  </div>
 
   <div class="game-layout">
 
@@ -1913,6 +1911,23 @@ body.is-fullscreen{
 
         </button>
 
+        <!-- Timer e pausa in modalità schermo intero (posizionato sotto l'anteprima foto e centrato) -->
+        <div class="fullscreen-hud" id="fullscreenHud" aria-label="Timer a schermo intero">
+          <div class="fullscreen-timer-box">
+            <span class="fullscreen-timer-icon" aria-hidden="true">⏱️</span>
+            <span id="fullscreenTimerVal">00:00</span>
+          </div>
+          <button
+            class="fullscreen-pause-btn"
+            id="fullscreenPauseBtn"
+            type="button"
+            title="Metti in pausa il timer"
+            aria-label="Metti in pausa il timer"
+            disabled>
+            <span id="fullscreenPauseIcon">⏸️</span>
+          </button>
+        </div>
+
       </div>
 
     </aside>
@@ -1984,8 +1999,14 @@ body.is-fullscreen{
       <img
         class="hero-photo"
         id="heroPhoto"
-        src="/assets/aistudio/Livello_1_d004bcb3.jpg"
+        src="./assets/aistudio/Livello_1_d004bcb3.jpg"
         alt="Supereroe del livello">
+
+      <div
+        class="hero-art hero-character"
+        id="heroArt"
+        style="display:none">
+      </div>
 
       <div
         class="hero-rank"
@@ -2280,8 +2301,8 @@ body.is-fullscreen{
    * Chiave per la v1.10.
    * Se non presente, tenta la lettura compatibile da v109 o v108.
    */
-  const STORAGE_KEY = "puzzleMagic_autosave_v112";
-  const PREV_STORAGE_KEY = "puzzleMagic_autosave_v110";
+  const STORAGE_KEY = "puzzleMagic_autosave_v113";
+  const PREV_STORAGE_KEY = "puzzleMagic_autosave_v112";
 
 
   const HEROES = [
@@ -2294,7 +2315,7 @@ body.is-fullscreen{
       accent: "#ef4444",
       dark: "#1e3a8a",
       power: "Senso di ragno & ragnatele",
-      image: "/assets/aistudio/Livello_1_d004bcb3.jpg",
+      image: "./assets/aistudio/Livello_1_d004bcb3.jpg",
       objectPosition: "center 20%"
     },
 
@@ -2306,7 +2327,7 @@ body.is-fullscreen{
       accent: "#0d9488",
       dark: "#042f2e",
       power: "Energia oscura & super riflessi",
-      image: "/assets/aistudio/Livello_2_a50f1e7a.jpg",
+      image: "./assets/aistudio/Livello_2_a50f1e7a.jpg",
       objectPosition: "center 25%"
     },
 
@@ -2318,7 +2339,7 @@ body.is-fullscreen{
       accent: "#eab308",
       dark: "#0f172a",
       power: "Intelligenza tattica & bat-gadget",
-      image: "/assets/aistudio/Livello_3_0edbdf4e.jpg",
+      image: "./assets/aistudio/Livello_3_0edbdf4e.jpg",
       objectPosition: "center 20%"
     },
 
@@ -2330,7 +2351,7 @@ body.is-fullscreen{
       accent: "#3b82f6",
       dark: "#dc2626",
       power: "Super forza solare & volo",
-      image: "/assets/aistudio/Livello_4_2ea5ea85.jpg",
+      image: "./assets/aistudio/Livello_4_2ea5ea85.jpg",
       objectPosition: "center 25%"
     }
 
@@ -2378,6 +2399,7 @@ body.is-fullscreen{
   const winStatsSummary = $("winStatsSummary");
 
   const heroStage = $("heroStage");
+  const heroPhoto = $("heroPhoto");
   const heroArt = $("heroArt");
   const heroRank = $("heroRank");
   const heroName = $("heroName");
@@ -2397,6 +2419,7 @@ body.is-fullscreen{
 
   let mixed = false;
   let locked = false;
+  let gameCompleted = false;
   let selectedTile = null;
   let activeDrag = null;
 
@@ -2606,14 +2629,8 @@ body.is-fullscreen{
     }
 
     try{
-      if(isFullscreen){
-        if(document.documentElement.requestFullscreen && !document.fullscreenElement){
-          document.documentElement.requestFullscreen().catch(()=>{});
-        }
-      }else{
-        if(document.exitFullscreen && document.fullscreenElement){
-          document.exitFullscreen().catch(()=>{});
-        }
+      if(!isFullscreen && document.exitFullscreen && document.fullscreenElement){
+        document.exitFullscreen().catch(()=>{});
       }
     }catch(_){}
   }
@@ -2648,6 +2665,11 @@ body.is-fullscreen{
    * In questo modo, uscendo dall'app e rientrando,
    * la partita riparte esattamente dal punto precedente.
    */
+  function isGameFinished(){
+    return gameCompleted || (levelIndex >= LEVELS.length - 1 && locked && isSolved());
+  }
+
+
   function saveGame(){
 
     try{
@@ -2664,6 +2686,7 @@ body.is-fullscreen{
         showCorrect,
         mixed,
         locked,
+        gameCompleted: isGameFinished(),
         overlay:getVisibleOverlay(),
         savedAt:Date.now()
       };
@@ -2795,6 +2818,7 @@ body.is-fullscreen{
       showCorrect=Boolean(data.showCorrect);
       mixed=data.mixed;
       locked=data.locked;
+      gameCompleted=Boolean(data.gameCompleted || (data.levelIndex>=LEVELS.length-1 && data.locked));
       selectedTile=null;
 
       updateTimerDisplay();
@@ -3295,6 +3319,7 @@ body.is-fullscreen{
       moves=0;
       mixed=false;
       locked=false;
+      gameCompleted=false;
       selectedTile=null;
       activeOverlay="";
       photoLoadMode="newGame";
@@ -3852,44 +3877,56 @@ body.is-fullscreen{
       HEROES[index] ||
       HEROES[0];
 
-
-    heroStage.style.setProperty(
-      "--hero-glow",
-      hero.glow
-    );
-
-
-    heroArt.className=
-      `hero-art hero-character hero-${hero.type}`;
-
-
-    heroArt.innerHTML=
-      heroSvg(
-        hero,
-        index
+    if(heroStage){
+      heroStage.style.setProperty(
+        "--hero-glow",
+        hero.glow || "#dcfce7"
       );
+    }
 
+    if(heroRank){
+      heroRank.textContent=
+        `SUPEREROE ${index+1} / ${HEROES.length} · ` +
+        hero.power.toUpperCase();
+    }
 
-    heroRank.textContent=
-      `SUPEREROE ${index+1} / ${HEROES.length} · ` +
-      hero.power.toUpperCase();
+    if(heroName){
+      heroName.textContent=
+        hero.name;
+    }
 
-
-    heroName.textContent=
-      hero.name;
-
-    heroTagline.textContent=
-      hero.tagline;
-
+    if(heroTagline){
+      heroTagline.textContent=
+        hero.tagline;
+    }
 
     /*
-     * Riavvia l'animazione ogni volta.
+     * Supporto sia all'immagine reale sia al fallback SVG:
+     * se l'immagine è presente e caricata viene mostrata, altrimenti subentra la Hero Art SVG.
      */
-    heroArt.style.animation="none";
+    if(heroArt){
+      heroArt.className=
+        `hero-art hero-character hero-${hero.type}`;
+      heroArt.innerHTML=
+        heroSvg(hero, index);
+      heroArt.style.animation="none";
+      void heroArt.offsetWidth;
+      heroArt.style.animation="";
+    }
 
-    void heroArt.offsetWidth;
-
-    heroArt.style.animation="";
+    if(heroPhoto){
+      heroPhoto.style.display="block";
+      if(heroArt) heroArt.style.display="none";
+      heroPhoto.src=hero.image;
+      heroPhoto.alt=hero.name;
+      if(hero.objectPosition){
+        heroPhoto.style.objectPosition=hero.objectPosition;
+      }
+      heroPhoto.onerror=()=>{
+        heroPhoto.style.display="none";
+        if(heroArt) heroArt.style.display="block";
+      };
+    }
   }
 
 
@@ -3916,13 +3953,13 @@ body.is-fullscreen{
 
 
       $("nextLevelBtn").textContent=
-        "Finito!";
+        "Chiudi";
 
       $("nextLevelBtn").disabled=
-        true;
+        false;
 
       $("newGameBtn").textContent=
-        "📷 Cambia foto";
+        "Nuova partita";
 
     }else{
 
@@ -3962,6 +3999,10 @@ body.is-fullscreen{
     locked=true;
     selectedTile=null;
 
+    if(levelIndex>=LEVELS.length-1){
+      gameCompleted=true;
+    }
+
     stopTimer();
     playSound("win");
 
@@ -3972,7 +4013,9 @@ body.is-fullscreen{
     saveGame();
 
     setHint(
-      "Livello completato!"
+      levelIndex>=LEVELS.length-1
+        ? "Congratulazioni! Hai completato tutti i livelli!"
+        : "Livello completato!"
     );
   }
 
@@ -4466,7 +4509,7 @@ body.is-fullscreen{
     "click",
     ()=>{
 
-      if(!photoData){
+      if(!photoData || isGameFinished()){
         openLevelChoice("newGame", 0);
         return;
       }
@@ -4866,6 +4909,13 @@ body.is-fullscreen{
   $("newGameBtn").addEventListener(
     "click",
     ()=>{
+
+      if(levelIndex>=LEVELS.length-1){
+        winOverlay.classList.remove("show");
+        activeOverlay="";
+        openLevelChoice("newGame", 0);
+        return;
+      }
 
       const targetLevel=
         levelIndex<LEVELS.length-1
