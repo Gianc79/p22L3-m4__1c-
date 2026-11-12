@@ -3684,6 +3684,27 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
   }
 
 
+  function updateCorrectTogglesUI(){
+    const list = [
+      { btn: toggleCorrectBtn, lbl: $("toggleStateLabel") },
+      { btn: $("fsHelpBtn"), lbl: $("fsHelpToggleStateLabel") },
+      { btn: $("fullscreenPortraitHelpBtn"), lbl: $("fullscreenPortraitHelpToggleState") }
+    ];
+    const loaded = Boolean(photoData);
+    list.forEach(item => {
+      if(item.btn){
+        item.btn.disabled = !loaded;
+        item.btn.classList.toggle("active", showCorrect);
+        item.btn.setAttribute("aria-checked", String(showCorrect));
+        item.btn.setAttribute("aria-pressed", String(showCorrect));
+      }
+      if(item.lbl){
+        item.lbl.textContent = showCorrect ? "ON" : "OFF";
+      }
+    });
+  }
+
+
   function updateUI(){
 
     const level=currentLevel();
@@ -3761,16 +3782,7 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
       previewResetBtn.disabled = !loaded;
     }
 
-    if(toggleCorrectBtn){
-      toggleCorrectBtn.disabled = !loaded;
-    }
-
-    const fsHelpBtn = $("fsHelpBtn");
-    if(fsHelpBtn){
-      fsHelpBtn.disabled = !loaded;
-      fsHelpBtn.classList.toggle("active", showCorrect);
-      fsHelpBtn.setAttribute("aria-pressed", String(showCorrect));
-    }
+    updateCorrectTogglesUI();
 
     const fsStripThumb = $("fsStripThumbImg");
     if(fsStripThumb && photoData){
@@ -3834,20 +3846,7 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
     if(formatBadge) formatBadge.textContent = currentAspectRatio;
 
     board.classList.toggle("show-correct", showCorrect);
-
-    if(toggleCorrectBtn){
-      toggleCorrectBtn.classList.toggle("active", showCorrect);
-      toggleCorrectBtn.setAttribute("aria-checked", String(showCorrect));
-      if(toggleStateLabel){
-        toggleStateLabel.textContent = showCorrect ? "ON" : "OFF";
-      }
-    }
-
-    const fsHelpBtn = $("fsHelpBtn");
-    if(fsHelpBtn){
-      fsHelpBtn.classList.toggle("active", showCorrect);
-      fsHelpBtn.setAttribute("aria-pressed", String(showCorrect));
-    }
+    updateCorrectTogglesUI();
 
 
     if(!photoData){
@@ -4747,9 +4746,8 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
         : (getHeroDataUrl(index, "") || resolveHeroUrl(hero.image));
       heroPhoto.src=resolved;
       heroPhoto.alt=hero.name;
-      if(hero.objectPosition){
-        heroPhoto.style.objectPosition=hero.objectPosition;
-      }
+      heroPhoto.style.objectFit="cover";
+      heroPhoto.style.objectPosition=hero.objectPosition || "center top";
       heroPhoto.onerror=()=>{
         if(!heroPhoto.dataset.retry){
           heroPhoto.dataset.retry="1";
@@ -4809,9 +4807,8 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
 
 
       $("winMessage").textContent=
-        `Hai ricomposto la foto in ${moves} mosse e ${formatTime(timerSeconds)}. ` +
-        `${HEROES[levelIndex].name} ti aspetta per festeggiare! ` +
-        `Il prossimo livello sarà ancora più avvincente.`;
+        `Hai ricomposto la foto in ${moves} mosse e ${formatTime(timerSeconds)}.\n` +
+        `Scopri chi ti sta aspettando alla fine del prossimo livello!`;
 
 
       $("nextLevelBtn").textContent=
@@ -5471,6 +5468,16 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
     fsHelpBtn.addEventListener("click", ()=>{
       showCorrect = !showCorrect;
       renderBoard();
+      saveGame();
+    });
+  }
+
+  const fullscreenPortraitHelpBtn = $("fullscreenPortraitHelpBtn");
+  if(fullscreenPortraitHelpBtn){
+    fullscreenPortraitHelpBtn.addEventListener("click", ()=>{
+      showCorrect = !showCorrect;
+      renderBoard();
+      saveGame();
     });
   }
 
@@ -5906,12 +5913,14 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
     previewOverlay.addEventListener(
       "click",
       event=>{
-
-        if(
-          event.target===previewOverlay
-        ){
-
-          closePreview();
+        if(isFullscreen){
+          if(event.target !== $("previewImage")){
+            closePreview();
+          }
+        }else{
+          if(event.target===previewOverlay){
+            closePreview();
+          }
         }
       }
     );
