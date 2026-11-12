@@ -4951,7 +4951,7 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
     }
 
     activeOverlay = "win";
-    winOverlay.classList.add("show");
+    if(winOverlay) winOverlay.classList.add("show");
 
     if(celebrate)
       launchConfetti();
@@ -5464,20 +5464,22 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
    * CARICA / CAMBIA FOTO (v. 1.10)
    * Finestra elegante personalizzata senza alert di sistema del browser.
    */
-  newPhotoBtn.addEventListener(
-    "click",
-    ()=>{
+  if(newPhotoBtn){
+    newPhotoBtn.addEventListener(
+      "click",
+      ()=>{
 
-      if(!photoData || isGameFinished()){
-        openLevelChoice("newGame", 0);
-        return;
+        if(!photoData || isGameFinished()){
+          openLevelChoice("newGame", 0);
+          return;
+        }
+
+        activeOverlay="actionChoice";
+        actionChoiceOverlay.classList.add("show");
+        saveGame();
       }
-
-      activeOverlay="actionChoice";
-      actionChoiceOverlay.classList.add("show");
-      saveGame();
-    }
-  );
+    );
+  }
 
 
   function closeActionChoice(){
@@ -5766,22 +5768,25 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
   );
 
 
-  mixBtn.addEventListener(
-    "click",
-    ()=>{
-      shufflePieces(false);
-      mixBtn.blur();
-    }
-  );
+  if(mixBtn){
+    mixBtn.addEventListener(
+      "click",
+      ()=>{
+        shufflePieces(false);
+        mixBtn.blur();
+      }
+    );
+  }
 
 
   /*
    * SCELTA DEL LIVELLO
    */
-  levelChoiceGrid
-    .querySelectorAll(
-      ".level-choice-option"
-    )
+  if(levelChoiceGrid){
+    levelChoiceGrid
+      .querySelectorAll(
+        ".level-choice-option"
+      )
     .forEach(button=>{
 
       button.addEventListener(
@@ -5810,6 +5815,7 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
         }
       );
     });
+  }
 
 
   /*
@@ -5886,57 +5892,63 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
   }
 
 
-  confirmLevelBtn.addEventListener(
-    "click",
-    ()=>{
+  if(confirmLevelBtn){
+    confirmLevelBtn.addEventListener(
+      "click",
+      ()=>{
 
-      photoInput.value="";
+        photoInput.value="";
 
-      levelChoiceOverlay.classList.remove(
-        "show"
-      );
+        if(levelChoiceOverlay) levelChoiceOverlay.classList.remove(
+          "show"
+        );
 
-      activeOverlay="";
+        activeOverlay="";
 
-      /*
-       * La partita corrente non viene modificata
-       * finché una nuova foto non viene effettivamente
-       * caricata.
-       */
-      photoInput.click();
-    }
-  );
-
-
-  cancelLevelChoiceBtn.addEventListener(
-    "click",
-    ()=>{
-
-      levelChoiceOverlay.classList.remove(
-        "show"
-      );
-
-      activeOverlay="";
-    }
-  );
+        /*
+         * La partita corrente non viene modificata
+         * finché una nuova foto non viene effettivamente
+         * caricata.
+         */
+        photoInput.click();
+      }
+    );
+  }
 
 
-  levelChoiceOverlay.addEventListener(
-    "click",
-    event=>{
+  if(cancelLevelChoiceBtn){
+    cancelLevelChoiceBtn.addEventListener(
+      "click",
+      ()=>{
 
-      if(
-        event.target===levelChoiceOverlay
-      ){
-
-        levelChoiceOverlay.classList.remove(
+        if(levelChoiceOverlay) levelChoiceOverlay.classList.remove(
           "show"
         );
 
         activeOverlay="";
       }
-    }
-  );
+    );
+  }
+
+
+  if(levelChoiceOverlay){
+    levelChoiceOverlay.addEventListener(
+      "click",
+      event=>{
+
+        if(
+          event.target===levelChoiceOverlay
+        ){
+
+          levelChoiceOverlay.classList.remove(
+            "show"
+          );
+
+          activeOverlay="";
+        }
+      }
+    );
+  }
 
 
   /*
@@ -6164,56 +6176,66 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
   /*
    * PROSSIMO LIVELLO
    */
-  $("nextLevelBtn").addEventListener(
-    "click",
-    ()=>{
-      if(levelIndex < LEVELS.length - 1){
-        nextLevel();
-      }else{
-        winOverlay.classList.remove("show");
-        activeOverlay="";
-        saveGame();
+  const nextLevelBtnEl = $("nextLevelBtn");
+  if(nextLevelBtnEl){
+    nextLevelBtnEl.addEventListener(
+      "click",
+      ()=>{
+        if(levelIndex < LEVELS.length - 1){
+          nextLevel();
+        }else{
+          if(winOverlay) winOverlay.classList.remove("show");
+          activeOverlay="";
+          saveGame();
+        }
       }
-    }
-  );
+    );
+  }
 
   /*
    * CAMBIA FOTO DALLA SCHERMATA DI VITTORIA (v. 1.10 / v. 1.14 / v. 1.18)
    */
-  $("newGameBtn").addEventListener(
-    "click",
-    ()=>{
-      if(levelIndex >= LEVELS.length - 1){
-        winOverlay.classList.remove("show");
-        activeOverlay="";
-        if(isFullscreen) toggleFullscreen(false);
-        inGameSession = false;
-        if(homeView) homeView.style.display = "";
-        if(gamePanel) gamePanel.classList.add("hidden-initial");
-        document.body.classList.remove("in-game");
-        saveGame();
-        return;
+  const newGameBtnEl = $("newGameBtn");
+  if(newGameBtnEl){
+    newGameBtnEl.addEventListener(
+      "click",
+      ()=>{
+        if(levelIndex >= LEVELS.length - 1){
+          if(winOverlay) winOverlay.classList.remove("show");
+          activeOverlay="";
+          if(isFullscreen) toggleFullscreen(false);
+          inGameSession = false;
+          if(homeView) homeView.style.display = "";
+          if(gamePanel) gamePanel.classList.add("hidden-initial");
+          document.body.classList.remove("in-game");
+          saveGame();
+          return;
+        }
+
+        const targetLevel = levelIndex < LEVELS.length - 1 ? levelIndex + 1 : 0;
+        selectedStartLevel = targetLevel;
+        selectedLevel = targetLevel;
+        photoLoadMode = "continueNext";
+        awaitingWinPhoto = true;
+
+        if(photoInput){
+          photoInput.value = "";
+          photoInput.click();
+        }
       }
+    );
+  }
 
-      const targetLevel = levelIndex < LEVELS.length - 1 ? levelIndex + 1 : 0;
-      selectedStartLevel = targetLevel;
-      selectedLevel = targetLevel;
-      photoLoadMode = "continueNext";
-      awaitingWinPhoto = true;
-
-      photoInput.value = "";
-      photoInput.click();
-    }
-  );
-
-  winOverlay.addEventListener(
-    "click",
-    event=>{
-      if(event.target === winOverlay){
-        /* intenzionale */
+  if(winOverlay){
+    winOverlay.addEventListener(
+      "click",
+      event=>{
+        if(event.target === winOverlay){
+          /* intenzionale */
+        }
       }
-    }
-  );
+    );
+  }
 
   /*
    * EVENTI SCHERMATA PRINCIPALE (HOME VIEW v. 1.18)
