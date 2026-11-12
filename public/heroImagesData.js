@@ -1,1 +1,1 @@
-window.HERO_DATA_URLS = ["./Livello4.png", "./Livello5.png", "./Livello6.png", "./Livello7.png"]
+window.HERO_DATA_URLS = ["./Livello4.png", "./Livello5.png", "./Livello6.png", "./Livello7.png"];
