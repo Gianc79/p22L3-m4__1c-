@@ -6,7 +6,8 @@
 <meta name="theme-color" content="#f4f7fb">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Puzzle Magic v. 1.19</title>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Puzzle Magic v. 1.20</title>
 
 <style>
 :root{
@@ -88,6 +89,13 @@ button:focus-visible {
   flex: 0 0 auto;
 }
 
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 h1 {
   margin: 0;
   font-size: clamp(20px, 4.5vw, 26px);
@@ -106,6 +114,7 @@ h1 {
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-left: auto;
 }
 
 .sound-toggle {
@@ -1831,6 +1840,18 @@ body.is-fullscreen{
   -webkit-user-select: none;
 }
 
+.fs-portrait-top-bar .fs-top-help-btn,
+.fs-portrait-top-bar .fs-exit-btn-3d {
+  width: 96px !important;
+  min-width: 96px !important;
+  max-width: 96px !important;
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
 .fs-exit-btn-3d:hover {
   background: linear-gradient(180deg, #ffffff 0%, #fecdd3 100%);
 }
@@ -1996,6 +2017,14 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 /* Pulsante Aiuto / Posizione corretta con toggle nella fascia orizzontale */
+.fs-strip-exit,
+.fs-strip-toggle-correct {
+  width: 64px !important;
+  max-width: 64px !important;
+  box-sizing: border-box !important;
+  justify-content: center !important;
+}
+
 .fs-strip-toggle-correct{
   padding:3px 6px;
   gap:4px;
@@ -2141,7 +2170,7 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .game-panel.is-fullscreen.fs-layout-portrait .game-main-col{
-  flex:1 1 auto!important;
+  flex:0 0 auto!important;
   min-height:0!important;
   display:flex!important;
   align-items:center!important;
@@ -2168,13 +2197,14 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .game-panel.is-fullscreen.fs-layout-portrait .game-side-col{
-  flex:0 0 auto!important;
+  flex:1 1 auto!important;
+  min-height:0!important;
   display:flex!important;
   flex-direction:column!important;
   align-items:center!important;
-  justify-content:center!important;
+  justify-content:space-between!important;
   width:100%!important;
-  gap:4px!important;
+  gap:2px!important;
   margin-top:2px!important
 }
 
@@ -2183,30 +2213,50 @@ body.is-fullscreen #previewOverlay .preview-image{
   border:none!important;
   padding:0!important;
   width:100%!important;
+  flex:1 1 auto!important;
+  min-height:0!important;
   display:flex!important;
   flex-direction:column!important;
   align-items:center!important;
-  justify-content:center!important;
-  gap:4px!important
+  justify-content:space-between!important;
+  gap:2px!important
 }
 
 .game-panel.is-fullscreen.fs-layout-portrait .side-preview-header{
   display:none!important
 }
 
+.game-panel.is-fullscreen.fs-layout-portrait .preview-tile-container{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  width:100%!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:hidden!important;
+  padding:2px 0!important
+}
+
 .game-panel.is-fullscreen.fs-layout-portrait .preview-tile{
-  width:min(48vw, calc(13dvh * var(--board-aspect-num, 1)))!important;
-  height:auto!important;
-  max-height:13dvh!important;
+  height:100%!important;
+  max-height:100%!important;
+  width:auto!important;
+  max-width:92vw!important;
   aspect-ratio:var(--board-aspect, 1/1)!important;
-  border-radius:10px!important;
+  border-radius:12px!important;
   box-shadow:0 4px 14px rgba(0,0,0,.12)!important;
-  cursor:pointer!important
+  border:2px solid #cbd5e1!important;
+  cursor:pointer!important;
+  display:block!important;
+  margin:auto!important;
+  position:relative!important;
+  overflow:hidden!important
 }
 
 .game-panel.is-fullscreen.fs-layout-portrait .fullscreen-hud{
-  margin-top:2px!important;
-  padding:5px 16px!important
+  flex:0 0 auto!important;
+  margin-top:auto!important;
+  padding:4px 16px!important
 }
 
 /* LAYOUT SCHERMO INTERO ORIZZONTALE (landscape) */
@@ -2214,12 +2264,11 @@ body.is-fullscreen #previewOverlay .preview-image{
   display:flex!important;
   flex-direction:row!important;
   align-items:center!important;
-  justify-content:center!important;
+  justify-content:space-between!important;
   padding:max(4px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(4px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left))!important;
-  gap:10px!important
+  gap:12px!important
 }
 
-.game-panel.is-fullscreen.fs-layout-landscape .game-side-col,
 .game-panel.is-fullscreen.fs-layout-landscape .fullscreen-exit-btn{
   display:none!important
 }
@@ -2228,29 +2277,30 @@ body.is-fullscreen #previewOverlay .preview-image{
   display:flex!important;
   flex-direction:row!important;
   align-items:center!important;
-  justify-content:center!important;
+  justify-content:space-between!important;
   height:100%!important;
   width:auto!important;
   flex:1 1 auto!important;
   min-width:0!important;
-  gap:0!important;
+  gap:14px!important;
   margin:0!important
 }
 
 .game-panel.is-fullscreen.fs-layout-landscape .game-main-col{
   height:100%!important;
   width:auto!important;
+  flex:0 0 auto!important;
   display:flex!important;
   align-items:center!important;
   justify-content:center!important;
-  max-width:calc(100vw - 84px)!important
+  max-width:calc(100vw - 210px)!important
 }
 
 .game-panel.is-fullscreen.fs-layout-landscape .board-wrap{
   height:min(calc(100vh - 12px), calc(100dvh - 12px))!important;
   width:auto!important;
   aspect-ratio:var(--board-aspect, 1/1)!important;
-  max-width:calc(100vw - 90px)!important;
+  max-width:calc(100vw - 220px)!important;
   max-height:calc(100vh - 12px)!important;
   display:flex!important;
   align-items:center!important;
@@ -2265,13 +2315,73 @@ body.is-fullscreen #previewOverlay .preview-image{
   box-shadow:0 6px 22px rgba(0,0,0,.12)!important
 }
 
+.game-panel.is-fullscreen.fs-layout-landscape .game-side-col{
+  display:flex!important;
+  flex:1 1 auto!important;
+  height:100%!important;
+  min-width:0!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0!important;
+  margin:0!important
+}
+
+.game-panel.is-fullscreen.fs-layout-landscape .side-preview-card{
+  display:flex!important;
+  flex:1 1 auto!important;
+  height:100%!important;
+  width:100%!important;
+  min-width:0!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:transparent!important;
+  border:none!important;
+  padding:0!important;
+  margin:0!important
+}
+
+.game-panel.is-fullscreen.fs-layout-landscape .fullscreen-hud{
+  display:none!important
+}
+
+.game-panel.is-fullscreen.fs-layout-landscape .preview-tile-container{
+  display:flex!important;
+  flex:1 1 auto!important;
+  height:100%!important;
+  width:100%!important;
+  min-width:0!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:4px!important
+}
+
+.game-panel.is-fullscreen.fs-layout-landscape .preview-tile{
+  height:auto!important;
+  max-height:min(calc(100vh - 16px), calc(100dvh - 16px))!important;
+  width:auto!important;
+  max-width:100%!important;
+  aspect-ratio:var(--board-aspect, 1/1)!important;
+  border-radius:14px!important;
+  box-shadow:0 4px 18px rgba(0,0,0,.15)!important;
+  border:2px solid #cbd5e1!important;
+  cursor:pointer!important;
+  display:block!important;
+  margin:auto!important;
+  position:relative!important;
+  overflow:hidden!important
+}
+
+.game-panel.is-fullscreen.fs-layout-landscape .fs-strip-thumb-btn{
+  display:none!important
+}
+
 .game-panel.is-fullscreen.fs-layout-landscape .fs-landscape-strip{
   display:flex!important;
   flex-direction:column!important;
   align-items:center!important;
   justify-content:space-between!important;
-  width:72px!important;
-  flex:0 0 72px!important;
+  width:76px!important;
+  flex:0 0 76px!important;
   height:min(calc(100vh - 12px), calc(100dvh - 12px))!important;
   padding:8px 4px!important;
   background:rgba(255,255,255,.95)!important;
@@ -2290,16 +2400,16 @@ body.is-fullscreen #previewOverlay .preview-image{
     display:none!important
   }
   .game-panel.is-fullscreen:not(.fs-layout-landscape) .fullscreen-exit-btn{
-    display:grid!important
+    display:none!important
   }
   .game-panel.is-fullscreen:not(.fs-layout-landscape) .game-layout{
     display:flex;
     flex-direction:column;
     align-items:center;
-    justify-content:center;
+    justify-content:space-between;
     width:100%;
     height:100%;
-    gap:8px
+    gap:4px
   }
   .game-panel.is-fullscreen:not(.fs-layout-landscape) .game-main-col{
     flex:0 0 auto;
@@ -2310,41 +2420,61 @@ body.is-fullscreen #previewOverlay .preview-image{
     max-width:98vw
   }
   .game-panel.is-fullscreen:not(.fs-layout-landscape) .board-wrap{
-    width:100%;
-    margin:0
+    width:auto;
+    max-height:48dvh;
+    margin:0 auto
   }
   .game-panel.is-fullscreen:not(.fs-layout-landscape) .board{
-    width:100%;
-    max-height:52dvh;
+    width:min(94vw, calc(47dvh * var(--board-aspect-num, 1)));
+    max-height:47dvh;
+    aspect-ratio:var(--board-aspect, 1/1);
     box-shadow:0 8px 24px rgba(0,0,0,.08)
   }
   .game-panel.is-fullscreen:not(.fs-layout-landscape) .game-side-col{
-    flex:0 0 auto;
+    flex:1 1 auto;
+    min-height:0;
     display:flex;
     flex-direction:column;
     align-items:center;
-    justify-content:center;
-    width:100%;
-    max-height:42dvh
+    justify-content:space-between;
+    width:100%
   }
   .game-panel.is-fullscreen:not(.fs-layout-landscape) .side-preview-card{
     background:transparent;
     border:none;
     padding:0;
     width:100%;
+    flex:1 1 auto;
+    min-height:0;
     display:flex;
     flex-direction:column;
     align-items:center;
-    justify-content:center
+    justify-content:space-between
   }
   .game-panel.is-fullscreen:not(.fs-layout-landscape) .side-preview-header{
     display:none
   }
+  .game-panel.is-fullscreen:not(.fs-layout-landscape) .preview-tile-container{
+    flex:1 1 auto;
+    min-height:0;
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden
+  }
   .game-panel.is-fullscreen:not(.fs-layout-landscape) .preview-tile{
-    width:min(65vw, calc(20dvh * var(--board-aspect-num, 1)));
-    max-height:20dvh;
-    border-radius:10px;
-    box-shadow:0 4px 16px rgba(0,0,0,.08)
+    height:100%;
+    max-height:100%;
+    width:auto;
+    max-width:92vw;
+    aspect-ratio:var(--board-aspect, 1/1);
+    border-radius:12px;
+    box-shadow:0 4px 16px rgba(0,0,0,.08);
+    position:relative;
+    overflow:hidden;
+    margin:auto;
+    cursor:pointer
   }
 }
 
@@ -2353,11 +2483,10 @@ body.is-fullscreen #previewOverlay .preview-image{
     display:flex!important;
     flex-direction:row!important;
     align-items:center!important;
-    justify-content:center!important;
+    justify-content:space-between!important;
     padding:max(4px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(4px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left))!important;
-    gap:10px!important
+    gap:12px!important
   }
-  .game-panel.is-fullscreen:not(.fs-layout-portrait) .game-side-col,
   .game-panel.is-fullscreen:not(.fs-layout-portrait) .fullscreen-exit-btn{
     display:none!important
   }
@@ -2365,27 +2494,28 @@ body.is-fullscreen #previewOverlay .preview-image{
     display:flex!important;
     flex-direction:row!important;
     align-items:center!important;
-    justify-content:center!important;
+    justify-content:space-between!important;
     height:100%!important;
     width:auto!important;
     flex:1 1 auto!important;
     min-width:0!important;
-    gap:0!important;
+    gap:14px!important;
     margin:0!important
   }
   .game-panel.is-fullscreen:not(.fs-layout-portrait) .game-main-col{
     height:100%!important;
     width:auto!important;
+    flex:0 0 auto!important;
     display:flex!important;
     align-items:center!important;
     justify-content:center!important;
-    max-width:calc(100vw - 84px)!important
+    max-width:calc(100vw - 210px)!important
   }
   .game-panel.is-fullscreen:not(.fs-layout-portrait) .board-wrap{
     height:min(calc(100vh - 12px), calc(100dvh - 12px))!important;
     width:auto!important;
     aspect-ratio:var(--board-aspect, 1/1)!important;
-    max-width:calc(100vw - 86px)!important;
+    max-width:calc(100vw - 220px)!important;
     max-height:calc(100vh - 12px)!important;
     display:flex!important;
     align-items:center!important;
@@ -2397,6 +2527,60 @@ body.is-fullscreen #previewOverlay .preview-image{
     width:100%!important;
     max-height:100%!important;
     box-shadow:0 6px 22px rgba(0,0,0,.12)!important
+  }
+  .game-panel.is-fullscreen:not(.fs-layout-portrait) .game-side-col{
+    display:flex!important;
+    flex:1 1 auto!important;
+    height:100%!important;
+    min-width:0!important;
+    align-items:center!important;
+    justify-content:center!important;
+    padding:0!important;
+    margin:0!important
+  }
+  .game-panel.is-fullscreen:not(.fs-layout-portrait) .side-preview-card{
+    display:flex!important;
+    flex:1 1 auto!important;
+    height:100%!important;
+    width:100%!important;
+    min-width:0!important;
+    align-items:center!important;
+    justify-content:center!important;
+    background:transparent!important;
+    border:none!important;
+    padding:0!important;
+    margin:0!important
+  }
+  .game-panel.is-fullscreen:not(.fs-layout-portrait) .fullscreen-hud{
+    display:none!important
+  }
+  .game-panel.is-fullscreen:not(.fs-layout-portrait) .preview-tile-container{
+    display:flex!important;
+    flex:1 1 auto!important;
+    height:100%!important;
+    width:100%!important;
+    min-width:0!important;
+    align-items:center!important;
+    justify-content:center!important;
+    padding:4px!important
+  }
+  .game-panel.is-fullscreen:not(.fs-layout-portrait) .preview-tile{
+    height:auto!important;
+    max-height:min(calc(100vh - 16px), calc(100dvh - 16px))!important;
+    width:auto!important;
+    max-width:100%!important;
+    aspect-ratio:var(--board-aspect, 1/1)!important;
+    border-radius:14px!important;
+    box-shadow:0 4px 18px rgba(0,0,0,.15)!important;
+    border:2px solid #cbd5e1!important;
+    cursor:pointer!important;
+    display:block!important;
+    margin:auto!important;
+    position:relative!important;
+    overflow:hidden!important
+  }
+  .game-panel.is-fullscreen:not(.fs-layout-portrait) .fs-strip-thumb-btn{
+    display:none!important
   }
   .game-panel.is-fullscreen:not(.fs-layout-portrait) .fs-landscape-strip{
     display:flex!important;
@@ -2553,12 +2737,14 @@ body.is-fullscreen #previewOverlay .preview-image{
 <!-- SCHERMATA PRINCIPALE (Home / Setup v. 1.18) -->
 <div class="app home-view" id="homeView">
 
-  <!-- 1) Fascia del titolo dell'app con il numero della versione e l'icona del volume -->
   <header class="app-header">
     <div class="brand">
       <div class="logo" aria-hidden="true">🧩</div>
       <div>
-        <h1>Puzzle Magic</h1>
+        <div class="title-row">
+          <h1>Puzzle Magic</h1>
+          <span class="version">v. 1.20</span>
+        </div>
         <p class="subtitle">Ricomponi la foto, un livello alla volta!</p>
       </div>
     </div>
@@ -2567,7 +2753,6 @@ body.is-fullscreen #previewOverlay .preview-image{
       <button class="sound-toggle" id="soundToggleBtn" type="button" aria-label="Attiva o disattiva audio" title="Audio">
         <span id="soundIcon">🔊</span>
       </button>
-      <div class="version">v. 1.19</div>
     </div>
   </header>
 
@@ -2690,19 +2875,21 @@ body.is-fullscreen #previewOverlay .preview-image{
       </div>
     </div>
 
-    <!-- Sotto il puzzle (in visualizzazione verticale): Modello foto (miniatura) + Widget Mosse, Timer e Pausa -->
+    <!-- Modello foto (miniatura centrata e adattabile) + Widget Mosse, Timer e Pausa -->
     <aside class="game-side-col">
       <div class="side-preview-card">
-        <button
-          class="preview-tile"
-          id="previewTile"
-          type="button"
-          title="Clicca per ingrandire la foto originale"
-          aria-label="Apri foto originale a grandezza intera">
-          <div class="preview-zoom-stage" id="previewZoomStage">
-            <img id="previewThumb" alt="Miniatura foto originale" draggable="false">
-          </div>
-        </button>
+        <div class="preview-tile-container">
+          <button
+            class="preview-tile"
+            id="previewTile"
+            type="button"
+            title="Clicca per ingrandire la foto originale"
+            aria-label="Apri foto originale a grandezza intera">
+            <div class="preview-zoom-stage" id="previewZoomStage">
+              <img id="previewThumb" alt="Miniatura foto originale" draggable="false">
+            </div>
+          </button>
+        </div>
 
         <div class="fullscreen-hud" id="fullscreenHud" aria-label="Statistiche e timer a schermo intero">
           <div class="fullscreen-moves-box" title="Mosse effettuate">
@@ -3229,9 +3416,10 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
   ];
 
   /*
-   * Chiave per la v1.19 (con fallback di ripristino per versioni precedenti).
+   * Chiave per la v1.20 (con fallback di ripristino per versioni precedenti).
    */
-  const STORAGE_KEY = "puzzleMagic_autosave_v119";
+  const STORAGE_KEY = "puzzleMagic_autosave_v120";
+  const PREV_STORAGE_KEY_V119 = "puzzleMagic_autosave_v119";
   const PREV_STORAGE_KEY_V118 = "puzzleMagic_autosave_v118";
   const PREV_STORAGE_KEY_V117 = "puzzleMagic_autosave_v117";
   const PREV_STORAGE_KEY_V116 = "puzzleMagic_autosave_v116";
@@ -3740,17 +3928,33 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
     if(!cropSourceImg || !cropSourceImg.naturalWidth) return photoData;
     const natW = cropSourceImg.naturalWidth;
     const natH = cropSourceImg.naturalHeight;
-    const scale = imgScaledDims.scale || 1;
-
-    const frameRelX = (imgScaledDims.width - frameDims.width) / 2 - cropPanX;
-    const frameRelY = (imgScaledDims.height - frameDims.height) / 2 - cropPanY;
-
-    const sx = Math.max(0, Math.min(natW, frameRelX / scale));
-    const sy = Math.max(0, Math.min(natH, frameRelY / scale));
-    const sw = Math.min(natW - sx, frameDims.width / scale);
-    const sh = Math.min(natH - sy, frameDims.height / scale);
-
     const { cols, rows } = getGridDimensions(selectedLevel);
+    const targetRatio = cols / rows;
+
+    let sx = 0, sy = 0, sw = natW, sh = natH;
+
+    if(frameDims && frameDims.width > 0 && imgScaledDims && imgScaledDims.scale > 0){
+      const scale = imgScaledDims.scale;
+      const frameRelX = (imgScaledDims.width - frameDims.width) / 2 - cropPanX;
+      const frameRelY = (imgScaledDims.height - frameDims.height) / 2 - cropPanY;
+      sx = Math.max(0, Math.min(natW, frameRelX / scale));
+      sy = Math.max(0, Math.min(natH, frameRelY / scale));
+      sw = Math.min(natW - sx, Math.max(1, frameDims.width / scale));
+      sh = Math.min(natH - sy, Math.max(1, frameDims.height / scale));
+    } else {
+      if(natW / natH > targetRatio){
+        sw = natH * targetRatio;
+        sh = natH;
+        sx = (natW - sw) / 2;
+        sy = 0;
+      } else {
+        sw = natW;
+        sh = natW / targetRatio;
+        sx = 0;
+        sy = (natH - sh) / 2;
+      }
+    }
+
     const canvas = document.createElement("canvas");
     canvas.width = Math.round(cols * 240);
     canvas.height = Math.round(rows * 240);
@@ -3769,7 +3973,7 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
 
     const { cols, rows } = getGridDimensions(levelIndex);
     // Nei casi dei livelli 1, 3 e 5 e crop verticale -> Schermo intero verticale; crop orizzontale -> Schermo intero orizzontale
-    const isHorizontal = cols > rows;
+    const isHorizontal = cols > rows || (cols === rows && (window.innerWidth > window.innerHeight || !isPortraitPhoto));
 
     gamePanel.classList.toggle("is-fullscreen", isFullscreen);
     document.body.classList.toggle("is-fullscreen", isFullscreen);
@@ -3777,6 +3981,16 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
     if (isFullscreen) {
       gamePanel.classList.toggle("fs-layout-landscape", isHorizontal);
       gamePanel.classList.toggle("fs-layout-portrait", !isHorizontal);
+
+      // Chiamata all'API Fullscreen del browser per nascondere la barra degli indirizzi
+      const docEl = document.documentElement;
+      const req = docEl.requestFullscreen || docEl.webkitRequestFullscreen || docEl.mozRequestFullScreen || docEl.msRequestFullscreen;
+      if (req && !document.fullscreenElement && !document.webkitFullscreenElement) {
+        try {
+          const promise = req.call(docEl);
+          if (promise && promise.catch) promise.catch(() => {});
+        } catch (_) {}
+      }
 
       // Blocco orientamento se supportato dal dispositivo
       if (screen.orientation && screen.orientation.lock) {
@@ -3788,6 +4002,14 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
       resetPreviewZoom();
     } else {
       gamePanel.classList.remove("fs-layout-landscape", "fs-layout-portrait");
+
+      const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+      if (exit && (document.fullscreenElement || document.webkitFullscreenElement)) {
+        try {
+          const promise = exit.call(document);
+          if (promise && promise.catch) promise.catch(() => {});
+        } catch (_) {}
+      }
 
       if (screen.orientation && screen.orientation.unlock) {
         try { screen.orientation.unlock(); } catch(_) {}
@@ -3899,6 +4121,7 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
     try{
       const raw =
         localStorage.getItem(STORAGE_KEY) ||
+        localStorage.getItem(PREV_STORAGE_KEY_V119) ||
         localStorage.getItem(PREV_STORAGE_KEY_V118) ||
         localStorage.getItem(PREV_STORAGE_KEY_V117) ||
         localStorage.getItem(PREV_STORAGE_KEY_V116) ||
@@ -4077,9 +4300,19 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
 
     updateCorrectTogglesUI();
 
+    const thumbEl = $("previewThumb");
+    if(thumbEl && photoData){
+      thumbEl.src = photoData;
+    }
+
     const fsStripThumb = $("fsStripThumbImg");
     if(fsStripThumb && photoData){
       fsStripThumb.src = photoData;
+    }
+
+    const previewImg = $("previewImage");
+    if(previewImg && photoData){
+      previewImg.src = photoData;
     }
 
     if(fullscreenToggleBtn){
@@ -4255,7 +4488,16 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
           cropPanY = 0;
           updateLevelButtonsUI();
           updateCropFrameAndImage();
-          generateCroppedPhoto();
+          const cropped = generateCroppedPhoto();
+          if(cropped){
+            photoData = cropped;
+            const thumbEl = $("previewThumb");
+            if(thumbEl) thumbEl.src = photoData;
+            const fsThumb = $("fsStripThumbImg");
+            if(fsThumb) fsThumb.src = photoData;
+            const previewImg = $("previewImage");
+            if(previewImg) previewImg.src = photoData;
+          }
 
           if(inGameSession){
             levelIndex = selectedLevel;
@@ -6291,7 +6533,7 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
     levelsGrid.addEventListener("click", event => {
       const btn = event.target.closest(".level-btn-3d");
       if(!btn) return;
-      const lvl = parseInt(btn.dataset.level, 10) - 1;
+      const lvl = parseInt(btn.dataset.level, 10);
       if(lvl >= 0 && lvl < LEVELS.length){
         selectedLevel = lvl;
         updateLevelButtonsUI();
@@ -6346,7 +6588,11 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
   // 4. Pulsante "GIOCA" in formato 3D: avvia lo schermo intero adattivo
   function startGameFromHome(){
     const proceed = () => {
-      generateCroppedPhoto();
+      updateCropFrameAndImage();
+      const cropped = generateCroppedPhoto();
+      if(cropped){
+        photoData = cropped;
+      }
       levelIndex = selectedLevel;
       moves = 0;
       mixed = false;
@@ -6355,6 +6601,13 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
       selectedTile = null;
       activeDrag = null;
       inGameSession = true;
+
+      const imgEl = $("previewImage");
+      if(imgEl && photoData) imgEl.src = photoData;
+      const thumbEl = $("previewThumb");
+      if(thumbEl && photoData) thumbEl.src = photoData;
+      const fsThumb = $("fsStripThumbImg");
+      if(fsThumb && photoData) fsThumb.src = photoData;
 
       if(homeView) homeView.style.display = "none";
       if(gamePanel) gamePanel.classList.remove("hidden-initial");
@@ -6372,7 +6625,7 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
     };
 
     if(!cropSourceImg.src || cropSourceImg.src.endsWith("#") || !cropSourceImg.complete || cropSourceImg.naturalWidth === 0){
-      const defaultImg = getHeroDataUrl(0, "") || resolveHeroUrl(HEROES[0].image);
+      const defaultImg = rawPhotoUrl || getHeroDataUrl(0, "") || resolveHeroUrl(HEROES[0].image);
       cropSourceImg.onload = () => {
         isPortraitPhoto = cropSourceImg.naturalHeight > cropSourceImg.naturalWidth;
         updateLevelButtonsUI();
