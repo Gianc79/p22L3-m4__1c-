@@ -6,8 +6,7 @@
 <meta name="theme-color" content="#f4f7fb">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Puzzle Magic v. 1.17</title>
+<title>Puzzle Magic v. 1.18</title>
 
 <style>
 :root{
@@ -23,121 +22,399 @@
 }
 
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-
-body{
-  margin:0;
-  min-height:100vh;
-  background:var(--bg);
-  color:var(--text);
-  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-text-size-adjust: 100%;
 }
 
-button,input{font:inherit}
-button{-webkit-tap-highlight-color:transparent}
+button, input { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
 
-button:focus-visible{
-  outline:3px solid #aab5ff;
-  outline-offset:3px
+button:focus-visible {
+  outline: 3px solid #aab5ff;
+  outline-offset: 3px;
 }
 
-.app{
-  width:min(100% - 28px,920px);
-  margin:0 auto;
-  padding:24px 0 36px
+/* SCHERMATA PRINCIPALE (Home / Setup v. 1.18) - Zero scrollbar */
+.app.home-view {
+  width: min(100% - 20px, 640px);
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0 auto;
+  padding: clamp(8px, 1.8vh, 16px) 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  margin-bottom:22px
+.app.home-view.is-hidden {
+  display: none !important;
 }
 
-.brand{
-  display:flex;
-  align-items:center;
-  gap:12px
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex: 0 0 auto;
+  margin-bottom: clamp(4px, 1.2vh, 10px);
 }
 
-.logo{
-  width:48px;
-  height:48px;
-  display:grid;
-  place-items:center;
-  border-radius:15px;
-  background:#e8ebff;
-  font-size:27px;
-  flex:0 0 auto
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-h1{
-  margin:0;
-  font-size:clamp(24px,5vw,32px);
-  line-height:1.15;
-  letter-spacing:-.7px
+.logo {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: #e8ebff;
+  font-size: 24px;
+  flex: 0 0 auto;
 }
 
-.subtitle{
-  margin:5px 0 0;
-  color:var(--muted);
-  font-size:14px
+h1 {
+  margin: 0;
+  font-size: clamp(20px, 4.5vw, 26px);
+  line-height: 1.15;
+  letter-spacing: -.6px;
 }
 
-.header-actions{
-  display:flex;
-  align-items:center;
-  gap:8px
+.subtitle {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.2;
 }
 
-.sound-toggle{
-  display:grid;
-  place-items:center;
-  width:36px;
-  height:36px;
-  padding:0;
-  border:1px solid var(--border);
-  border-radius:50%;
-  background:white;
-  cursor:pointer;
-  font-size:16px;
-  line-height:1;
-  transition:background .15s ease,transform .15s ease
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.sound-toggle:hover{
-  background:#f0f2ff
+.sound-toggle {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  transition: background .15s ease, transform .15s ease;
 }
 
-.sound-toggle:active{
-  transform:scale(.94)
+.sound-toggle:hover { background: #f0f2ff; }
+.sound-toggle:active { transform: scale(.94); }
+
+.version {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 30px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
 }
 
-.version{
-  flex:0 0 auto;
-  padding:6px 10px;
-  background:white;
-  border:1px solid var(--border);
-  border-radius:30px;
-  color:var(--muted);
-  font-size:12px
+/* Riquadri della Home */
+.home-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: clamp(8px, 1.4vh, 12px) 12px;
+  box-shadow: 0 4px 16px rgba(42, 57, 85, .035);
+  box-sizing: border-box;
 }
 
-.panel{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  box-shadow:0 5px 22px rgba(42,57,85,.035)
+.home-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: clamp(5px, 1vh, 8px);
 }
 
-.upload-panel{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:16px;
-  padding:16px 18px;
-  margin-bottom:16px
+.home-panel-title {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: var(--muted);
+}
+
+.home-level-summary {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--primary-dark);
+}
+
+/* 2) Griglia 7 Pulsanti 3D (Livelli 1-7) con colorazione progressiva verdino -> arancione */
+.levels-3d-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: clamp(4px, 1vw, 8px);
+}
+
+.level-btn-3d {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(5px, 1vh, 8px) 2px;
+  min-height: clamp(46px, 7vh, 58px);
+  border-radius: 12px;
+  cursor: pointer;
+  border-style: solid;
+  border-width: 1px 1px 3.5px 1px;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform .08s ease, box-shadow .08s ease, border-bottom-width .08s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .07);
+  outline: none;
+}
+
+.level-btn-3d .lvl-num {
+  font-size: clamp(16px, 3.5vw, 20px);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.level-btn-3d .lvl-grid {
+  font-size: 9px;
+  font-weight: 800;
+  opacity: .88;
+  margin-top: 3px;
+  line-height: 1;
+  letter-spacing: -.2px;
+}
+
+.level-btn-3d:active {
+  transform: translateY(2px);
+  border-bottom-width: 1.5px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
+}
+
+/* Stato SELEZIONATO visibilmente premuto */
+.level-btn-3d.is-selected {
+  transform: translateY(2.5px);
+  border-bottom-width: 1px;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, .22), 0 0 0 2.5px var(--primary);
+}
+
+/* Palette progressiva 1 -> 7 (verdino -> arancione) */
+.level-btn-3d[data-level="0"] {
+  background: linear-gradient(180deg, #ecfdf5 0%, #a7f3d0 100%);
+  border-color: #6ee7b7 #6ee7b7 #059669 #6ee7b7;
+  color: #065f46;
+}
+.level-btn-3d[data-level="1"] {
+  background: linear-gradient(180deg, #f0fdf4 0%, #bbf7d0 100%);
+  border-color: #86efac #86efac #16a34a #86efac;
+  color: #14532d;
+}
+.level-btn-3d[data-level="2"] {
+  background: linear-gradient(180deg, #f7fee7 0%, #d9f99d 100%);
+  border-color: #bef264 #bef264 #65a30d #bef264;
+  color: #365314;
+}
+.level-btn-3d[data-level="3"] {
+  background: linear-gradient(180deg, #fefce8 0%, #fef08a 100%);
+  border-color: #fde047 #fde047 #ca8a04 #fde047;
+  color: #713f12;
+}
+.level-btn-3d[data-level="4"] {
+  background: linear-gradient(180deg, #fffbeb 0%, #fde68a 100%);
+  border-color: #fcd34d #fcd34d #d97706 #fcd34d;
+  color: #78350f;
+}
+.level-btn-3d[data-level="5"] {
+  background: linear-gradient(180deg, #fff7ed 0%, #fed7aa 100%);
+  border-color: #fdba74 #fdba74 #ea580c #fdba74;
+  color: #7c2d12;
+}
+.level-btn-3d[data-level="6"] {
+  background: linear-gradient(180deg, #ffedd5 0%, #fdba74 100%);
+  border-color: #fb923c #fb923c #c2410c #fb923c;
+  color: #431407;
+}
+
+/* 3) Riquadro "MODELLO FOTO" */
+.home-photo-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 52dvh;
+  margin-top: clamp(4px, 1vh, 8px);
+  margin-bottom: clamp(4px, 1vh, 8px);
+}
+
+.home-photo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: clamp(4px, 1vh, 8px);
+  flex: 0 0 auto;
+}
+
+.upload-btn-3d {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid #93c5fd;
+  border-bottom: 3px solid #2563eb;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%);
+  color: #1e40af;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, .15);
+  transition: transform .08s ease, box-shadow .08s ease, border-bottom .08s ease;
+}
+
+.upload-btn-3d:hover {
+  background: linear-gradient(180deg, #ffffff 0%, #dbeafe 100%);
+}
+
+.upload-btn-3d:active {
+  transform: translateY(2px);
+  border-bottom-width: 1px;
+}
+
+/* Box anteprima e selezione ritaglio con Pan/spostamento */
+.crop-preview-box {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  border-radius: 14px;
+  background: #0b1120;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, .4);
+}
+
+.crop-preview-box.is-dragging {
+  cursor: grabbing;
+}
+
+.crop-source-img {
+  position: absolute;
+  max-width: none;
+  max-height: none;
+  pointer-events: none;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.crop-selection-frame {
+  position: absolute;
+  pointer-events: none;
+  border: 2px solid #60a5fa;
+  border-radius: 8px;
+  box-shadow: 0 0 0 9999px rgba(11, 17, 32, 0.65);
+  z-index: 5;
+  transition: width .18s ease, height .18s ease;
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 6px;
+}
+
+.crop-guide-hint {
+  background: rgba(11, 17, 32, 0.78);
+  backdrop-filter: blur(4px);
+  color: #f1f5f9;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 12px;
+  letter-spacing: .2px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: .92;
+  box-shadow: 0 1px 4px rgba(0,0,0,.3);
+}
+
+/* 4) Pulsante 3D "GIOCA" */
+.home-play-wrap {
+  flex: 0 0 auto;
+}
+
+.home-play-btn {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 20px;
+  border: 1px solid #4338ca;
+  border-bottom: 4px solid #312e81;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #6366f1 0%, #4f46e5 100%);
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: .8px;
+  cursor: pointer;
+  text-align: center;
+  text-transform: uppercase;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, .32);
+  transition: transform .08s ease, box-shadow .08s ease, border-bottom .08s ease;
+}
+
+.home-play-btn:hover {
+  background: linear-gradient(180deg, #6b6ef4 0%, #4338ca 100%);
+}
+
+.home-play-btn:active {
+  transform: translateY(3px);
+  border-bottom-width: 1px;
+  box-shadow: 0 1px 3px rgba(79, 70, 229, .2);
+}
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 5px 22px rgba(42, 57, 85, .035);
 }
 
 .upload-copy h2{
@@ -1483,61 +1760,60 @@ body.is-fullscreen{
   cursor:pointer!important
 }
 
-/* Pulsante esci da schermo intero (in alto a destra in visualizzazione verticale) */
-.game-panel.is-fullscreen .fullscreen-exit-btn{
-  position:fixed;
-  top:max(10px, env(safe-area-inset-top));
-  right:max(10px, env(safe-area-inset-right));
-  z-index:1005;
-  display:grid;
-  place-items:center;
-  width:40px;
-  height:40px;
-  padding:0;
-  border:1px solid var(--border);
-  border-radius:50%;
-  background:rgba(255,255,255,.94);
-  backdrop-filter:blur(6px);
-  color:var(--text);
-  cursor:pointer;
-  box-shadow:0 4px 16px rgba(0,0,0,.1);
-  transition:all .15s ease
+/* Barra superiore Schermo Intero VERTICALE: AIUTO (sx), MIX (centro), ESCI (dx) */
+.fs-portrait-top-bar {
+  display: none;
+  width: min(98vw, calc(100vw - 8px));
+  max-width: 620px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 auto 6px;
+  flex: 0 0 auto;
+  box-sizing: border-box;
 }
 
-.game-panel.is-fullscreen .fullscreen-exit-btn:hover{
-  background:#f0f2ff;
-  color:var(--primary-dark);
-  transform:scale(1.05)
+.game-panel.is-fullscreen.fs-layout-portrait .fs-portrait-top-bar,
+.game-panel.is-fullscreen:not(.fs-layout-landscape) .fs-portrait-top-bar {
+  display: flex !important;
 }
 
-.game-panel.is-fullscreen .fullscreen-exit-btn:active{
-  transform:scale(.95)
+.game-panel.is-fullscreen.fs-layout-landscape .fs-portrait-top-bar {
+  display: none !important;
 }
 
-/* Pulsante aiuto in schermo intero verticale: in alto a sinistra, alla stessa altezza del pulsante visualizzazione normale */
-.fullscreen-portrait-help-btn{
-  display:none;
+/* Pulsante 3D ESCI per visualizzazione verticale */
+.fs-exit-btn-3d {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 14px;
+  border: 1px solid #fca5a5;
+  border-bottom: 3px solid #dc2626;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffffff 0%, #ffe4e6 100%);
+  color: #991b1b;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  line-height: 1;
+  letter-spacing: .5px;
+  box-shadow: 0 2px 4px rgba(220, 38, 38, .12);
+  transition: transform .08s ease, box-shadow .08s ease, border-bottom-width .08s ease;
+  touch-action: manipulation;
+  outline: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-.game-panel.is-fullscreen.fs-layout-portrait .fullscreen-portrait-help-btn,
-.game-panel.is-fullscreen:not(.fs-layout-landscape) .fullscreen-portrait-help-btn{
-  position:fixed;
-  top:max(10px, env(safe-area-inset-top));
-  left:max(10px, env(safe-area-inset-left));
-  z-index:1005;
-  display:inline-flex!important;
-  align-items:center;
-  gap:6px;
-  height:40px;
-  padding:4px 10px;
-  border-radius:20px;
-  background:rgba(255,255,255,.94);
-  backdrop-filter:blur(6px);
-  box-shadow:0 4px 16px rgba(0,0,0,.1);
+.fs-exit-btn-3d:hover {
+  background: linear-gradient(180deg, #ffffff 0%, #fecdd3 100%);
 }
 
-.game-panel.is-fullscreen.fs-layout-landscape .fullscreen-portrait-help-btn{
-  display:none!important;
+.fs-exit-btn-3d:active {
+  transform: translateY(2px);
+  border-bottom-width: 1px;
+  box-shadow: 0 1px 2px rgba(220, 38, 38, .1);
 }
 
 /* Modale foto in schermo intero: sola foto, senza titolo, senza chiudi, senza scrollbar */
@@ -1809,38 +2085,61 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .game-panel.is-fullscreen.fs-layout-portrait .fullscreen-exit-btn{
-  display:grid!important
+  display:none!important
+}
+
+.game-panel.is-fullscreen.fs-layout-portrait{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  width:100%!important;
+  height:100%!important;
+  height:100dvh!important;
+  max-height:100dvh!important;
+  padding:max(6px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left))!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important
 }
 
 .game-panel.is-fullscreen.fs-layout-portrait .game-layout{
   display:flex!important;
   flex-direction:column!important;
   align-items:center!important;
-  justify-content:center!important;
+  justify-content:space-between!important;
   width:100%!important;
-  height:100%!important;
-  gap:8px!important;
-  padding:max(6px, env(safe-area-inset-top)) max(6px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-left))!important
-}
-
-.game-panel.is-fullscreen.fs-layout-portrait .game-main-col{
-  flex:0 0 auto!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  width:min(98vw, calc(100vw - 8px))!important;
-  max-width:98vw!important
-}
-
-.game-panel.is-fullscreen.fs-layout-portrait .board-wrap{
-  width:100%!important;
+  flex:1 1 auto!important;
+  min-height:0!important;
+  gap:4px!important;
+  padding:0!important;
   margin:0!important
 }
 
+.game-panel.is-fullscreen.fs-layout-portrait .game-main-col{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important
+}
+
+.game-panel.is-fullscreen.fs-layout-portrait .board-wrap{
+  width:auto!important;
+  height:auto!important;
+  max-width:min(96vw, calc(100vw - 12px))!important;
+  max-height:48dvh!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  margin:0 auto!important
+}
+
 .game-panel.is-fullscreen.fs-layout-portrait .board{
-  width:100%!important;
-  max-height:52dvh!important;
-  box-shadow:0 8px 24px rgba(0,0,0,.08)!important
+  width:min(94vw, calc(47dvh * var(--board-aspect-num, 1)))!important;
+  max-height:47dvh!important;
+  aspect-ratio:var(--board-aspect, 1/1)!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.1)!important
 }
 
 .game-panel.is-fullscreen.fs-layout-portrait .game-side-col{
@@ -1850,7 +2149,8 @@ body.is-fullscreen #previewOverlay .preview-image{
   align-items:center!important;
   justify-content:center!important;
   width:100%!important;
-  max-height:42dvh!important
+  gap:4px!important;
+  margin-top:2px!important
 }
 
 .game-panel.is-fullscreen.fs-layout-portrait .side-preview-card{
@@ -1861,7 +2161,8 @@ body.is-fullscreen #previewOverlay .preview-image{
   display:flex!important;
   flex-direction:column!important;
   align-items:center!important;
-  justify-content:center!important
+  justify-content:center!important;
+  gap:4px!important
 }
 
 .game-panel.is-fullscreen.fs-layout-portrait .side-preview-header{
@@ -1869,10 +2170,18 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .game-panel.is-fullscreen.fs-layout-portrait .preview-tile{
-  width:min(65vw, calc(20dvh * var(--board-aspect-num, 1)))!important;
-  max-height:20dvh!important;
+  width:min(48vw, calc(13dvh * var(--board-aspect-num, 1)))!important;
+  height:auto!important;
+  max-height:13dvh!important;
+  aspect-ratio:var(--board-aspect, 1/1)!important;
   border-radius:10px!important;
-  box-shadow:0 4px 16px rgba(0,0,0,.08)!important
+  box-shadow:0 4px 14px rgba(0,0,0,.12)!important;
+  cursor:pointer!important
+}
+
+.game-panel.is-fullscreen.fs-layout-portrait .fullscreen-hud{
+  margin-top:2px!important;
+  padding:5px 16px!important
 }
 
 /* LAYOUT SCHERMO INTERO ORIZZONTALE (landscape) */
@@ -2216,291 +2525,160 @@ body.is-fullscreen #previewOverlay .preview-image{
 </head>
 
 <body>
+<!-- SCHERMATA PRINCIPALE (Home / Setup v. 1.18) -->
+<div class="app home-view" id="homeView">
 
-<div class="app">
-
-<header>
-  <div class="brand">
-    <div class="logo" aria-hidden="true">🧩</div>
-    <div>
-      <h1>Puzzle Magic</h1>
-      <p class="subtitle">Ricomponi la foto, un livello alla volta!</p>
-    </div>
-  </div>
-
-  <div class="header-actions">
-    <button class="sound-toggle" id="soundToggleBtn" type="button" aria-label="Attiva o disattiva audio" title="Audio">
-      <span id="soundIcon">🔊</span>
-    </button>
-    <div class="version">v. 1.17</div>
-  </div>
-</header>
-
-
-<section class="panel upload-panel">
-
-  <div class="upload-copy">
-    <h2>Nuova partita</h2>
-    <p>Scegli il livello e la foto con cui giocare.</p>
-  </div>
-
-  <div class="upload-actions">
-    <button
-      class="button primary upload-btn"
-      id="newPhotoBtn"
-      type="button">
-      Nuova partita
-    </button>
-
-    <button
-      class="button secondary upload-btn"
-      id="restartLevelBtn"
-      type="button"
-      title="Ricomincia il livello corrente"
-      disabled>
-      Ricomincia livello
-    </button>
-  </div>
-
-  <input
-    id="photoInput"
-    type="file"
-    accept="image/*">
-
-</section>
-
-
-<section class="stats" aria-label="Statistiche del gioco">
-
-  <div class="panel stat">
-
-    <div class="stat-label">Livello</div>
-
-    <div class="stat-value" id="levelValue">
-      1 / 4
-    </div>
-
-    <div
-      class="level-indicators"
-      id="levelIndicators"
-      aria-label="Avanzamento livelli">
-
-      <span class="level-square"></span>
-      <span class="level-square"></span>
-      <span class="level-square"></span>
-      <span class="level-square"></span>
-
-    </div>
-
-  </div>
-
-
-  <div class="panel stat stat-moves">
-
-    <div class="stat-label">Mosse</div>
-
-    <div
-      class="stat-value"
-      id="movesValue">
-      0
-    </div>
-
-  </div>
-
-
-  <div class="panel stat">
-
-    <div class="stat-header-row">
-      <div class="stat-label">Tempo</div>
-      <div class="status" id="gameStatus">IN ATTESA</div>
-    </div>
-
-    <div class="stat-timer-row">
-      <div
-        class="stat-value"
-        id="timerValue">
-        00:00
+  <!-- 1) Fascia del titolo dell'app con il numero della versione e l'icona del volume -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">🧩</div>
+      <div>
+        <h1>Puzzle Magic</h1>
+        <p class="subtitle">Ricomponi la foto, un livello alla volta!</p>
       </div>
+    </div>
 
-      <button
-        class="timer-pause-btn"
-        id="timerPauseBtn"
-        type="button"
-        title="Metti in pausa il timer"
-        aria-label="Metti in pausa il timer"
-        disabled>
-        <span id="pauseBtnIcon">⏸️</span>
+    <div class="header-actions">
+      <button class="sound-toggle" id="soundToggleBtn" type="button" aria-label="Attiva o disattiva audio" title="Audio">
+        <span id="soundIcon">🔊</span>
+      </button>
+      <div class="version">v. 1.18</div>
+    </div>
+  </header>
+
+  <!-- 2) Riquadro "SCEGLI LIVELLO" con 7 pulsanti 3D con colorazione progressiva verdino -> arancione -->
+  <section class="home-panel" id="levelPanel">
+    <div class="home-panel-header">
+      <h2 class="home-panel-title">SCEGLI LIVELLO</h2>
+      <span class="home-level-summary" id="homeLevelSummary">Livello 1 (3×3)</span>
+    </div>
+    <div class="levels-3d-grid" id="levelsGrid" role="radiogroup" aria-label="Scegli livello di gioco">
+      <button class="level-btn-3d is-selected" type="button" data-level="0" aria-label="Livello 1: 3 per 3">
+        <span class="lvl-num">1</span>
+        <span class="lvl-grid">3×3</span>
+      </button>
+      <button class="level-btn-3d" type="button" data-level="1" aria-label="Livello 2: 3 per 4">
+        <span class="lvl-num">2</span>
+        <span class="lvl-grid" id="lvlGridLabel1">3×4</span>
+      </button>
+      <button class="level-btn-3d" type="button" data-level="2" aria-label="Livello 3: 4 per 4">
+        <span class="lvl-num">3</span>
+        <span class="lvl-grid">4×4</span>
+      </button>
+      <button class="level-btn-3d" type="button" data-level="3" aria-label="Livello 4: 4 per 5">
+        <span class="lvl-num">4</span>
+        <span class="lvl-grid" id="lvlGridLabel3">4×5</span>
+      </button>
+      <button class="level-btn-3d" type="button" data-level="4" aria-label="Livello 5: 5 per 5">
+        <span class="lvl-num">5</span>
+        <span class="lvl-grid">5×5</span>
+      </button>
+      <button class="level-btn-3d" type="button" data-level="5" aria-label="Livello 6: 5 per 6">
+        <span class="lvl-num">6</span>
+        <span class="lvl-grid" id="lvlGridLabel5">5×6</span>
+      </button>
+      <button class="level-btn-3d" type="button" data-level="6" aria-label="Livello 7: 5 per 7">
+        <span class="lvl-num">7</span>
+        <span class="lvl-grid" id="lvlGridLabel6">5×7</span>
       </button>
     </div>
+  </section>
 
+  <!-- 3) Riquadro "MODELLO FOTO" con pulsante "Carica foto" e anteprima foto con riquadro di selezione e pan -->
+  <section class="home-panel home-photo-panel" id="photoModelPanel">
+    <div class="home-photo-header">
+      <h2 class="home-panel-title">MODELLO FOTO</h2>
+      <button class="upload-btn-3d" id="uploadPhotoBtn" type="button" title="Carica una nuova foto">
+        📷 Carica foto
+      </button>
+      <input id="photoInput" type="file" accept="image/*" style="display:none">
+    </div>
+
+    <div class="crop-preview-box" id="cropPreviewBox" title="Trascina la foto per centrare l'inquadratura">
+      <img id="cropSourceImg" class="crop-source-img" alt="Foto modello" draggable="false">
+      <div class="crop-selection-frame" id="cropSelectionFrame" aria-hidden="true">
+        <span class="crop-guide-hint">Trascina la foto per centrare</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4) Pulsante "GIOCA" che apre lo schermo intero (verticale o orizzontale) -->
+  <div class="home-play-wrap">
+    <button class="home-play-btn" id="homePlayBtn" type="button">
+      GIOCA
+    </button>
   </div>
 
-</section>
+</div>
 
 
-<main class="panel game-panel" id="gamePanel">
+<!-- SCHERMO INTERO: AREA DI GIOCO IMMERSIVA (Verticale e Orizzontale) -->
+<main class="panel game-panel is-fullscreen" id="gamePanel" style="display:none;">
 
-  <button
-    class="fullscreen-exit-btn"
-    id="fullscreenExitBtn"
-    type="button"
-    title="Visualizzazione normale"
-    aria-label="Visualizzazione normale">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M4 14h6m0 0v6m0-6L3 21m17-7h-6m0 0v6m0-6l7 7M10 10H4m6 0V4m0 6L3 3m11 7h6m-6 0V4m0 6l7-7"/>
-    </svg>
-  </button>
+  <!-- SCHERMO INTERO VERTICALE: Fascia in alto con AIUTO (sx), MIX (centro), ESCI (dx) -->
+  <div class="fs-portrait-top-bar" id="fsPortraitTopBar">
+    <button
+      class="toggle-correct-btn fs-top-help-btn"
+      id="fsPortraitHelpBtn"
+      type="button"
+      role="switch"
+      aria-checked="false"
+      title="Evidenzia i tasselli già nella posizione corretta">
+      <span class="toggle-icon">✨</span>
+      <span class="toggle-pill" aria-hidden="true">
+        <span class="toggle-knob"></span>
+        <span class="toggle-state" id="fsPortraitHelpToggleState">OFF</span>
+      </span>
+    </button>
 
-  <!-- Pulsante Aiuto / Posizione corretta a schermo intero verticale: sopra il puzzle sulla sx alla stessa altezza -->
-  <button
-    class="fullscreen-portrait-help-btn toggle-correct-btn"
-    id="fullscreenPortraitHelpBtn"
-    type="button"
-    role="switch"
-    aria-checked="false"
-    title="Evidenzia i tasselli già nella posizione corretta">
-    <span class="toggle-icon">✨</span>
-    <span class="toggle-pill" aria-hidden="true">
-      <span class="toggle-knob"></span>
-      <span class="toggle-state" id="fullscreenPortraitHelpToggleState">OFF</span>
-    </span>
-  </button>
+    <button
+      class="mix-icon-btn fs-top-mix-btn"
+      id="fsPortraitMixBtn"
+      type="button"
+      title="Mescola i tasselli (MIX)"
+      disabled>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="16 3 21 3 21 8"></polyline>
+        <line x1="4" y1="20" x2="21" y2="3"></line>
+        <polyline points="21 16 21 21 16 21"></polyline>
+        <line x1="15" y1="15" x2="21" y2="21"></line>
+        <line x1="4" y1="4" x2="9" y2="9"></line>
+      </svg>
+      <span>MIX</span>
+    </button>
+
+    <button
+      class="fs-exit-btn-3d"
+      id="fsPortraitExitBtn"
+      type="button"
+      title="Termina partita ed esci">
+      ESCI
+    </button>
+  </div>
 
   <div class="game-layout">
 
-    <!-- Area principale con tavola puzzle, aiuti e suggerimenti -->
+    <!-- Tavola del puzzle -->
     <div class="game-main-col">
-
-      <div class="game-top">
-
-        <div class="game-top-header">
-          <h2 id="gameTitle">
-            Livello 1 · Principiante
-          </h2>
-
-          <div class="game-top-actions">
-            <button
-              class="fullscreen-toggle-btn"
-              id="fullscreenToggleBtn"
-              type="button"
-              title="Visualizzazione a schermo intero"
-              aria-label="Schermo intero">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <p
-          class="level-description"
-          id="levelDescription">
-          Griglia 3 × 3 - 9 tasselli.
-        </p>
-
-        <!-- Riga controlli sopra il puzzle: Posizione corretta tutta a sinistra, MIX a destra (v. 1.16) -->
-        <div class="game-top-controls-row">
-          <button
-            class="toggle-correct-btn"
-            id="toggleCorrectBtn"
-            type="button"
-            role="switch"
-            aria-checked="false"
-            title="Evidenzia i tasselli già nella posizione corretta">
-            <span class="toggle-icon">✨</span>
-            <span class="toggle-pill" aria-hidden="true">
-              <span class="toggle-knob"></span>
-              <span class="toggle-state" id="toggleStateLabel">OFF</span>
-            </span>
-          </button>
-
-          <button
-            class="mix-icon-btn"
-            id="mixBtn"
-            type="button"
-            title="Mescola i tasselli (MIX)"
-            aria-label="Mescola i tasselli"
-            disabled>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="16 3 21 3 21 8"></polyline>
-              <line x1="4" y1="20" x2="21" y2="3"></line>
-              <polyline points="21 16 21 21 16 21"></polyline>
-              <line x1="15" y1="15" x2="21" y2="21"></line>
-              <line x1="4" y1="4" x2="9" y2="9"></line>
-            </svg>
-            <span>MIX</span>
-          </button>
-        </div>
-
-      </div>
-
       <div class="board-wrap">
-
-        <div
-          class="board"
-          id="board"
-          aria-label="Tavola del puzzle">
-
-          <div class="empty-state">
-
-            <div
-              class="empty-icon"
-              aria-hidden="true">
-              🖼️
-            </div>
-
-            <strong>Scegli la tua foto</strong>
-
-            <p>
-              Carica un'immagine per iniziare la partita.
-            </p>
-
-          </div>
-
-        </div>
-
+        <div class="board" id="board" aria-label="Tavola del puzzle"></div>
       </div>
-
     </div>
 
-
-    <!-- Fascia laterale destra con anteprima modello -->
+    <!-- Sotto il puzzle (in visualizzazione verticale): Modello foto (miniatura) + Widget Mosse, Timer e Pausa -->
     <aside class="game-side-col">
-
       <div class="side-preview-card">
-
-        <div class="side-preview-header">
-          <span class="side-preview-title">Modello foto</span>
-          <span class="side-format-badge" id="formatBadge">1:1</span>
-        </div>
-
-        <div
+        <button
           class="preview-tile"
           id="previewTile"
-          role="region"
-          aria-label="Modello foto originale con zoom">
-
+          type="button"
+          title="Clicca per ingrandire la foto originale"
+          aria-label="Apri foto originale a grandezza intera">
           <div class="preview-zoom-stage" id="previewZoomStage">
-            <img
-              id="previewThumb"
-              alt="Miniatura della foto originale"
-              draggable="false">
+            <img id="previewThumb" alt="Miniatura foto originale" draggable="false">
           </div>
+        </button>
 
-          <button
-            class="preview-reset-btn"
-            id="previewResetBtn"
-            type="button"
-            title="Visualizzazione normale"
-            aria-label="Visualizzazione normale">
-            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 14h6m0 0v6m0-6L3 21m17-7h-6m0 0v6m0-6l7 7M10 10H4m6 0V4m0 6L3 3m11 7h6m-6 0V4m0 6l7-7"/>
-            </svg>
-          </button>
-
-        </div>
-
-        <!-- Statistiche a schermo intero verticale: Mosse a sinistra, Timer al centro, Pausa a destra (v. 1.16) -->
         <div class="fullscreen-hud" id="fullscreenHud" aria-label="Statistiche e timer a schermo intero">
           <div class="fullscreen-moves-box" title="Mosse effettuate">
             <span class="fullscreen-moves-icon" aria-hidden="true">🔄</span>
@@ -2515,41 +2693,36 @@ body.is-fullscreen #previewOverlay .preview-image{
             id="fullscreenPauseBtn"
             type="button"
             title="Metti in pausa il timer"
-            aria-label="Metti in pausa il timer"
-            disabled>
+            aria-label="Metti in pausa il timer">
             <span id="fullscreenPauseIcon">⏸️</span>
           </button>
         </div>
-
       </div>
-
     </aside>
 
   </div>
 
-  <!-- Fascia laterale destra per schermo intero ORIZZONTALE (v. 1.16) -->
+  <!-- SCHERMO INTERO ORIZZONTALE: Fascia laterale destra con comandi (ESCI, AIUTO, MIX, MOSSE, TIMER, PAUSA, MODELLO FOTO) -->
   <aside class="fs-landscape-strip" id="fsLandscapeStrip" aria-label="Controlli schermo intero orizzontale">
 
-    <!-- 1. Icona della visualizzazione normale -->
+    <!-- 1. ESCI -->
     <button
       class="fs-strip-btn fs-strip-exit"
       id="fsStripExitBtn"
       type="button"
-      title="Visualizzazione normale"
-      aria-label="Visualizzazione normale">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M4 14h6m0 0v6m0-6L3 21m17-7h-6m0 0v6m0-6l7 7M10 10H4m6 0V4m0 6L3 3m11 7h6m-6 0V4m0 6l7-7"/>
-      </svg>
+      title="Termina partita ed esci"
+      aria-label="Termina partita ed esci">
+      <span style="font-size:11px;font-weight:900;letter-spacing:.3px;">ESCI</span>
     </button>
 
-    <!-- 2. Pulsante Posizione corretta con toggle ON/OFF (come punto 2) -->
+    <!-- 2. AIUTO (stelline + toggle ON/OFF) -->
     <button
       class="toggle-correct-btn fs-strip-toggle-correct"
       id="fsHelpBtn"
       type="button"
       role="switch"
       aria-checked="false"
-      title="Evidenzia i tasselli già nella posizione corretta">
+      title="Evidenzia i tasselli corretti">
       <span class="toggle-icon">✨</span>
       <span class="toggle-pill" aria-hidden="true">
         <span class="toggle-knob"></span>
@@ -2557,32 +2730,47 @@ body.is-fullscreen #previewOverlay .preview-image{
       </span>
     </button>
 
-    <!-- 3. Numero di mosse -->
+    <!-- 3. MIX -->
+    <button
+      class="fs-strip-btn fs-strip-mix"
+      id="fsStripMixBtn"
+      type="button"
+      title="Mescola i tasselli (MIX)"
+      disabled>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="16 3 21 3 21 8"></polyline>
+        <line x1="4" y1="20" x2="21" y2="3"></line>
+        <polyline points="21 16 21 21 16 21"></polyline>
+        <line x1="15" y1="15" x2="21" y2="21"></line>
+        <line x1="4" y1="4" x2="9" y2="9"></line>
+      </svg>
+    </button>
+
+    <!-- 4. MOSSE -->
     <div class="fs-strip-stat" title="Numero di mosse">
       <span class="fs-strip-icon" aria-hidden="true">🔄</span>
       <span class="fs-strip-val" id="fsStripMovesVal">0</span>
       <span class="fs-strip-lbl">Mosse</span>
     </div>
 
-    <!-- 4. Timer -->
+    <!-- 5. TIMER -->
     <div class="fs-strip-stat" title="Tempo di gioco">
       <span class="fs-strip-icon" aria-hidden="true">⏱️</span>
       <span class="fs-strip-val" id="fsStripTimerVal">00:00</span>
       <span class="fs-strip-lbl">Tempo</span>
     </div>
 
-    <!-- 5. Tasto pausa -->
+    <!-- 6. PAUSA -->
     <button
       class="fs-strip-btn fs-strip-pause"
       id="fsStripPauseBtn"
       type="button"
       title="Metti in pausa il timer"
-      aria-label="Metti in pausa il timer"
-      disabled>
+      aria-label="Metti in pausa il timer">
       <span id="fsStripPauseIcon">⏸️</span>
     </button>
 
-    <!-- 6. Piccola miniatura del modello foto (cliccandoci sopra si apre a grandezza intera) -->
+    <!-- 7. MODELLO FOTO (miniatura che apre la foto ingrandita senza bottoni/scroll) -->
     <button
       class="fs-strip-thumb-btn"
       id="fsStripThumbBtn"
@@ -2596,11 +2784,22 @@ body.is-fullscreen #previewOverlay .preview-image{
 
 </main>
 
-
-<footer>
-  Puzzle Magic · Salvataggio automatico su questo dispositivo
-</footer>
-
+<!-- Dialog di conferma Uscita dalla partita (v. 1.18) -->
+<div
+  class="overlay"
+  id="exitConfirmOverlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="exitConfirmTitle">
+  <div class="dialog">
+    <div class="dialog-emoji" aria-hidden="true">🚪</div>
+    <h2 id="exitConfirmTitle">Terminare la partita?</h2>
+    <p>La partita verrà terminata. Continuare?</p>
+    <div class="dialog-actions choice-actions">
+      <button class="button primary" id="confirmExitBtn" type="button">OK</button>
+      <button class="button secondary" id="cancelExitBtn" type="button">Annulla</button>
+    </div>
+  </div>
 </div>
 
 
@@ -2967,38 +3166,48 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
 (() => {
 
   const LEVELS = [
-
     {
-      size:3,
-      name:"Principiante",
-      description:"Inizia con 9 tasselli."
+      level: 1,
+      name: "Livello 1",
+      description: "Griglia 3 × 3 (9 tasselli)."
     },
-
     {
-      size:4,
-      name:"Esploratore",
-      description:"Ora ci sono 16 tasselli."
+      level: 2,
+      name: "Livello 2",
+      description: "Griglia 3 × 4 o 4 × 3 (12 tasselli)."
     },
-
     {
-      size:5,
-      name:"Investigatore",
-      description:"Metti alla prova la memoria."
+      level: 3,
+      name: "Livello 3",
+      description: "Griglia 4 × 4 (16 tasselli)."
     },
-
     {
-      size:6,
-      name:"Esperto",
-      description:"La sfida diventa davvero difficile."
+      level: 4,
+      name: "Livello 4",
+      description: "Griglia 4 × 5 o 5 × 4 (20 tasselli)."
+    },
+    {
+      level: 5,
+      name: "Livello 5",
+      description: "Griglia 5 × 5 (25 tasselli)."
+    },
+    {
+      level: 6,
+      name: "Livello 6",
+      description: "Griglia 5 × 6 o 6 × 5 (30 tasselli)."
+    },
+    {
+      level: 7,
+      name: "Livello 7",
+      description: "Griglia 5 × 7 o 7 × 5 (35 tasselli)."
     }
-
   ];
 
-
   /*
-   * Chiave per la v1.17 (con fallback di ripristino per v116, v115, v114 e v113).
+   * Chiave per la v1.18 (con fallback di ripristino per versioni precedenti).
    */
-  const STORAGE_KEY = "puzzleMagic_autosave_v117";
+  const STORAGE_KEY = "puzzleMagic_autosave_v118";
+  const PREV_STORAGE_KEY_V117 = "puzzleMagic_autosave_v117";
   const PREV_STORAGE_KEY_V116 = "puzzleMagic_autosave_v116";
   const PREV_STORAGE_KEY = "puzzleMagic_autosave_v115";
   const PREV_STORAGE_KEY_V114 = "puzzleMagic_autosave_v114";
@@ -3026,9 +3235,7 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
     }
   }
 
-
   const HEROES = [
-
     {
       name: "Spider-Man",
       tagline: "L'amichevole eroe di quartiere",
@@ -3038,11 +3245,10 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
       dark: "#1e3a8a",
       power: "Senso di ragno & ragnatele",
       image: getHeroDataUrl(0, "./assets/aistudio/Livello_1_d004bcb3.jpg"),
-      objectPosition: "center bottom"
+      objectPosition: "center center"
     },
-
     {
-      name: "Venom Spider-Man",
+      name: "Venom",
       tagline: "La potenza del costume simbiotico",
       type: "symbiote",
       glow: "#ccfbf1",
@@ -3052,7 +3258,6 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
       image: getHeroDataUrl(1, "./assets/aistudio/Livello_2_a50f1e7a.jpg"),
       objectPosition: "center 25%"
     },
-
     {
       name: "Batman",
       tagline: "Il Cavaliere Oscuro di Gotham",
@@ -3064,7 +3269,6 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
       image: getHeroDataUrl(2, "./assets/aistudio/Livello_3_0edbdf4e.jpg"),
       objectPosition: "center 20%"
     },
-
     {
       name: "Superman",
       tagline: "L'Uomo d'Acciaio di Metropolis",
@@ -3076,7 +3280,6 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
       image: getHeroDataUrl(3, "./assets/aistudio/Livello_4_2ea5ea85.jpg"),
       objectPosition: "center 25%"
     }
-
   ];
 
   /* Precaricamento immediato per garantire visualizzazione istantanea su smartphone */
@@ -3087,10 +3290,19 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
     });
   } catch (_) {}
 
-
   const $ = id => document.getElementById(id);
 
+  /* Elementi della Schermata Principale (v. 1.18) */
+  const homeView = $("homeView");
+  const levelsGrid = $("levelsGrid");
+  const homeLevelSummary = $("homeLevelSummary");
+  const uploadPhotoBtn = $("uploadPhotoBtn");
+  const cropPreviewBox = $("cropPreviewBox");
+  const cropSourceImg = $("cropSourceImg");
+  const cropSelectionFrame = $("cropSelectionFrame");
+  const homePlayBtn = $("homePlayBtn");
 
+  /* Elementi di Gioco a Schermo Intero */
   const board = $("board");
   const photoInput = $("photoInput");
   const newPhotoBtn = $("newPhotoBtn");
@@ -3107,6 +3319,17 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
   const gamePanel = $("gamePanel");
   const fullscreenToggleBtn = $("fullscreenToggleBtn");
   const fullscreenExitBtn = $("fullscreenExitBtn");
+
+  /* Controlli top bar Schermo Intero Verticale */
+  const fsPortraitHelpBtn = $("fsPortraitHelpBtn");
+  const fsPortraitHelpToggleState = $("fsPortraitHelpToggleState");
+  const fsPortraitMixBtn = $("fsPortraitMixBtn");
+  const fsPortraitExitBtn = $("fsPortraitExitBtn");
+
+  /* Dialog Uscita Partita (ESCI) */
+  const exitConfirmOverlay = $("exitConfirmOverlay");
+  const confirmExitBtn = $("confirmExitBtn");
+  const cancelExitBtn = $("cancelExitBtn");
 
   const closePreviewBtn = $("closePreviewBtn");
 
@@ -3149,9 +3372,9 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
   const gameStatus = $("gameStatus");
   const hint = $("hint");
 
-
   let levelIndex = 0;
   let photoData = null;
+  let rawPhotoUrl = "";
   let pieces = [];
   let moves = 0;
 
@@ -3167,6 +3390,22 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
 
   let photoLoadMode = "newGame";
   let selectedStartLevel = 0;
+  let inGameSession = false;
+
+  /*
+   * Gestione selezione livello e ritaglio foto (v. 1.18)
+   */
+  let selectedLevel = 0; // 0..6
+  let isPortraitPhoto = false;
+  let cropPanX = 0;
+  let cropPanY = 0;
+  let isPanningCrop = false;
+  let startCropPointerX = 0;
+  let startCropPointerY = 0;
+  let initialCropPanX = 0;
+  let initialCropPanY = 0;
+  let frameDims = { left: 0, top: 0, width: 100, height: 100 };
+  let imgScaledDims = { width: 100, height: 100, scale: 1 };
 
   /*
    * Nuove funzionalità v1.09
@@ -3359,39 +3598,162 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
 
 
   function currentLevel(){
-    return LEVELS[levelIndex];
+    return LEVELS[levelIndex] || LEVELS[0];
   }
 
+  function getGridDimensions(lvlIdx){
+    const idx = typeof lvlIdx === "number" ? lvlIdx : levelIndex;
+    switch(idx){
+      case 0:
+        return { cols: 3, rows: 3 }; // Livello 1: 3x3
+      case 1:
+        return isPortraitPhoto ? { cols: 3, rows: 4 } : { cols: 4, rows: 3 }; // Livello 2: 3x4 o 4x3
+      case 2:
+        return { cols: 4, rows: 4 }; // Livello 3: 4x4
+      case 3:
+        return isPortraitPhoto ? { cols: 4, rows: 5 } : { cols: 5, rows: 4 }; // Livello 4: 4x5 o 5x4
+      case 4:
+        return { cols: 5, rows: 5 }; // Livello 5: 5x5
+      case 5:
+        return isPortraitPhoto ? { cols: 5, rows: 6 } : { cols: 6, rows: 5 }; // Livello 6: 5x6 o 6x5
+      case 6:
+        return isPortraitPhoto ? { cols: 5, rows: 7 } : { cols: 7, rows: 5 }; // Livello 7: 5x7 o 7x5
+      default:
+        return { cols: 3, rows: 3 };
+    }
+  }
 
   function totalTiles(){
-    const n=currentLevel().size;
-    return n*n;
+    const { cols, rows } = getGridDimensions(levelIndex);
+    return cols * rows;
   }
 
+  function getCropAspectRatio(lvlIdx){
+    const { cols, rows } = getGridDimensions(lvlIdx);
+    return cols / rows;
+  }
+
+  function updateLevelButtonsUI(){
+    const btn1 = $("lvlGridLabel1");
+    const btn3 = $("lvlGridLabel3");
+    const btn5 = $("lvlGridLabel5");
+    const btn6 = $("lvlGridLabel6");
+    if(btn1) btn1.textContent = isPortraitPhoto ? "3×4" : "4×3";
+    if(btn3) btn3.textContent = isPortraitPhoto ? "4×5" : "5×4";
+    if(btn5) btn5.textContent = isPortraitPhoto ? "5×6" : "6×5";
+    if(btn6) btn6.textContent = isPortraitPhoto ? "5×7" : "7×5";
+
+    if(levelsGrid){
+      levelsGrid.querySelectorAll(".level-btn-3d").forEach(btn => {
+        const lvl = Number(btn.dataset.level);
+        btn.classList.toggle("is-selected", lvl === selectedLevel);
+      });
+    }
+
+    const { cols, rows } = getGridDimensions(selectedLevel);
+    if(homeLevelSummary){
+      homeLevelSummary.textContent = `Livello ${selectedLevel + 1} (${cols}×${rows})`;
+    }
+  }
+
+  function updateCropFrameAndImage(){
+    if(!cropPreviewBox || !cropSourceImg || !cropSelectionFrame) return;
+    const boxW = cropPreviewBox.clientWidth;
+    const boxH = cropPreviewBox.clientHeight;
+    if(!boxW || !boxH || boxW < 20 || boxH < 20) return;
+
+    const natW = cropSourceImg.naturalWidth || 600;
+    const natH = cropSourceImg.naturalHeight || 600;
+
+    const targetRatio = getCropAspectRatio(selectedLevel); // cols / rows
+
+    const maxFrameW = Math.max(40, boxW - 24);
+    const maxFrameH = Math.max(40, boxH - 24);
+
+    let frameW = maxFrameW;
+    let frameH = frameW / targetRatio;
+    if(frameH > maxFrameH){
+      frameH = maxFrameH;
+      frameW = frameH * targetRatio;
+    }
+
+    const frameLeft = (boxW - frameW) / 2;
+    const frameTop = (boxH - frameH) / 2;
+
+    cropSelectionFrame.style.width = `${frameW}px`;
+    cropSelectionFrame.style.height = `${frameH}px`;
+    cropSelectionFrame.style.left = `${frameLeft}px`;
+    cropSelectionFrame.style.top = `${frameTop}px`;
+
+    frameDims = { left: frameLeft, top: frameTop, width: frameW, height: frameH };
+
+    // Scala l'immagine in modo che copra interamente il riquadro di selezione
+    const scale = Math.max(frameW / natW, frameH / natH);
+    const imgW = natW * scale;
+    const imgH = natH * scale;
+    imgScaledDims = { width: imgW, height: imgH, scale };
+
+    cropSourceImg.style.width = `${imgW}px`;
+    cropSourceImg.style.height = `${imgH}px`;
+
+    // Clamping dello spostamento (pan) per non lasciare mai vuoti dentro al riquadro
+    const maxPanX = Math.max(0, (imgW - frameW) / 2);
+    const maxPanY = Math.max(0, (imgH - frameH) / 2);
+    cropPanX = Math.max(-maxPanX, Math.min(maxPanX, cropPanX));
+    cropPanY = Math.max(-maxPanY, Math.min(maxPanY, cropPanY));
+
+    const imgLeft = frameLeft + (frameW - imgW) / 2 + cropPanX;
+    const imgTop = frameTop + (frameH - imgH) / 2 + cropPanY;
+
+    cropSourceImg.style.left = `${imgLeft}px`;
+    cropSourceImg.style.top = `${imgTop}px`;
+  }
+
+  function generateCroppedPhoto(){
+    if(!cropSourceImg || !cropSourceImg.naturalWidth) return photoData;
+    const natW = cropSourceImg.naturalWidth;
+    const natH = cropSourceImg.naturalHeight;
+    const scale = imgScaledDims.scale || 1;
+
+    const frameRelX = (imgScaledDims.width - frameDims.width) / 2 - cropPanX;
+    const frameRelY = (imgScaledDims.height - frameDims.height) / 2 - cropPanY;
+
+    const sx = Math.max(0, Math.min(natW, frameRelX / scale));
+    const sy = Math.max(0, Math.min(natH, frameRelY / scale));
+    const sw = Math.min(natW - sx, frameDims.width / scale);
+    const sh = Math.min(natH - sy, frameDims.height / scale);
+
+    const { cols, rows } = getGridDimensions(selectedLevel);
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(cols * 240);
+    canvas.height = Math.round(rows * 240);
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(cropSourceImg, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+
+    return canvas.toDataURL("image/jpeg", 0.88);
+  }
 
   function setHint(message){
-    if(hint) hint.textContent=message;
+    if(hint) hint.textContent = message;
   }
-
 
   function toggleFullscreen(enable){
     isFullscreen = typeof enable === "boolean" ? enable : !isFullscreen;
 
-    const isHorizontalPhoto = (currentAspectRatio === "16:9" || currentAspectRatio === "4:3") || (()=>{
-      const p = String(currentAspectRatio).split(":");
-      return p.length === 2 && (parseFloat(p[0]) / parseFloat(p[1])) > 1.05;
-    })();
+    const { cols, rows } = getGridDimensions(levelIndex);
+    // Nei casi dei livelli 1, 3 e 5 e crop verticale -> Schermo intero verticale; crop orizzontale -> Schermo intero orizzontale
+    const isHorizontal = cols > rows;
 
     gamePanel.classList.toggle("is-fullscreen", isFullscreen);
     document.body.classList.toggle("is-fullscreen", isFullscreen);
 
     if (isFullscreen) {
-      gamePanel.classList.toggle("fs-layout-landscape", isHorizontalPhoto);
-      gamePanel.classList.toggle("fs-layout-portrait", !isHorizontalPhoto);
+      gamePanel.classList.toggle("fs-layout-landscape", isHorizontal);
+      gamePanel.classList.toggle("fs-layout-portrait", !isHorizontal);
 
-      // Blocco orientamento automatico se supportato (senza popup nativo)
+      // Blocco orientamento se supportato dal dispositivo
       if (screen.orientation && screen.orientation.lock) {
-        const targetOrient = isHorizontalPhoto ? "landscape" : "portrait";
+        const targetOrient = isHorizontal ? "landscape" : "portrait";
         try { screen.orientation.lock(targetOrient).catch(() => {}); } catch(_) {}
       }
 
@@ -3412,8 +3774,9 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
     updateUI();
   }
 
-
   function getVisibleOverlay(){
+    if(exitConfirmOverlay && exitConfirmOverlay.classList.contains("show"))
+      return "exitConfirm";
 
     if(previewOverlay && previewOverlay.classList.contains("show"))
       return "preview";
@@ -3430,34 +3793,22 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
     return "";
   }
 
-
-  /*
-   * Salvataggio automatico completo.
-   *
-   * Vengono conservati:
-   * - foto
-   * - livello
-   * - posizione di tutti i tasselli
-   * - mosse
-   * - stato MIX
-   * - stato completamento
-   *
-   * In questo modo, uscendo dall'app e rientrando,
-   * la partita riparte esattamente dal punto precedente.
-   */
   function isGameFinished(){
     return gameCompleted || (levelIndex >= LEVELS.length - 1 && locked && isSolved());
   }
 
-
   function saveGame(){
-
     try{
-
-      const data={
-        version:2,
+      const data = {
+        version: 3,
         photoData,
+        rawPhotoUrl,
         levelIndex,
+        selectedLevel,
+        isPortraitPhoto,
+        cropPanX,
+        cropPanY,
+        inGameSession,
         pieces,
         moves,
         timerSeconds,
@@ -3467,228 +3818,158 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
         mixed,
         locked,
         gameCompleted: isGameFinished(),
-        overlay:getVisibleOverlay(),
-        savedAt:Date.now()
+        overlay: getVisibleOverlay(),
+        savedAt: Date.now()
       };
 
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(data)
-      );
-
-      lastStorageWarning=false;
-
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      lastStorageWarning = false;
       return true;
-
     }catch(error){
-
-      console.warn(
-        "Salvataggio automatico non riuscito:",
-        error
-      );
-
+      console.warn("Salvataggio automatico non riuscito:", error);
       if(!lastStorageWarning){
-
-        lastStorageWarning=true;
-
-        setHint(
-          "Attenzione: il browser non è riuscito " +
-          "a salvare la partita. Libera spazio nel " +
-          "browser e riprova."
-        );
+        lastStorageWarning = true;
+        setHint("Attenzione: il browser non è riuscito a salvare la partita.");
       }
-
       return false;
     }
   }
 
-
   function isValidSavedGame(data){
+    if(!data || typeof data !== "object") return false;
 
-    if(!data || typeof data!=="object")
-      return false;
-
-    if(
-      !Number.isInteger(data.levelIndex) ||
-      data.levelIndex<0 ||
-      data.levelIndex>=LEVELS.length
-    ){
+    if(!Number.isInteger(data.levelIndex) || data.levelIndex < 0 || data.levelIndex >= LEVELS.length){
       return false;
     }
 
-    if(
-      !Number.isInteger(data.moves) ||
-      data.moves<0
-    ){
+    if(!Number.isInteger(data.moves) || data.moves < 0){
       return false;
     }
 
-    if(
-      typeof data.photoData!=="string" ||
-      !data.photoData.startsWith("data:image/")
-    ){
+    if(typeof data.photoData !== "string" || !data.photoData.startsWith("data:image/")){
       return false;
     }
 
-    const expected=
-      LEVELS[data.levelIndex].size ** 2;
+    const { cols, rows } = getGridDimensions(data.levelIndex);
+    const expected = cols * rows;
 
-    if(
-      !Array.isArray(data.pieces) ||
-      data.pieces.length!==expected
-    ){
+    if(!Array.isArray(data.pieces) || data.pieces.length !== expected){
       return false;
     }
 
-    const seen=new Set();
-
+    const seen = new Set();
     for(const piece of data.pieces){
-
-      if(
-        !Number.isInteger(piece) ||
-        piece<0 ||
-        piece>=expected ||
-        seen.has(piece)
-      ){
+      if(!Number.isInteger(piece) || piece < 0 || piece >= expected || seen.has(piece)){
         return false;
       }
-
       seen.add(piece);
     }
 
-    return(
-      typeof data.mixed==="boolean" &&
-      typeof data.locked==="boolean"
-    );
+    return typeof data.mixed === "boolean" && typeof data.locked === "boolean";
   }
 
-
   function restoreGame(){
-
     try{
-
-      /*
-       * Cerca prima la v1.14, altrimenti tenta il ripristino
-       * compatibile dalle versioni precedenti.
-       */
-      const raw=
+      const raw =
         localStorage.getItem(STORAGE_KEY) ||
+        localStorage.getItem(PREV_STORAGE_KEY_V117) ||
         localStorage.getItem(PREV_STORAGE_KEY_V116) ||
         localStorage.getItem(PREV_STORAGE_KEY) ||
         localStorage.getItem(PREV_STORAGE_KEY_V114) ||
         localStorage.getItem(PREV_STORAGE_KEY_V113);
 
-      if(!raw)
-        return false;
+      if(!raw) return false;
 
-      const data=JSON.parse(raw);
+      const data = JSON.parse(raw);
+
+      if(typeof data.rawPhotoUrl === "string" && data.rawPhotoUrl){
+        rawPhotoUrl = data.rawPhotoUrl;
+        if(cropSourceImg) cropSourceImg.src = rawPhotoUrl;
+      }
+      if(Number.isInteger(data.selectedLevel)){
+        selectedLevel = Math.max(0, Math.min(data.selectedLevel, LEVELS.length - 1));
+      }
+      if(typeof data.isPortraitPhoto === "boolean"){
+        isPortraitPhoto = data.isPortraitPhoto;
+      }
+      if(typeof data.cropPanX === "number") cropPanX = data.cropPanX;
+      if(typeof data.cropPanY === "number") cropPanY = data.cropPanY;
+
+      updateLevelButtonsUI();
 
       if(!isValidSavedGame(data)){
-
         localStorage.removeItem(STORAGE_KEY);
-
         return false;
       }
 
-
-      photoData=data.photoData;
-      levelIndex=data.levelIndex;
-      pieces=data.pieces.slice();
-      moves=data.moves;
-      timerSeconds=Number.isInteger(data.timerSeconds)?data.timerSeconds:0;
-      currentAspectRatio=typeof data.currentAspectRatio==="string"?data.currentAspectRatio:"1:1";
-      showNumbers=Boolean(data.showNumbers);
-      showCorrect=Boolean(data.showCorrect);
-      mixed=data.mixed;
-      locked=data.locked;
-      gameCompleted=Boolean(data.gameCompleted || (data.levelIndex>=LEVELS.length-1 && data.locked));
-      selectedTile=null;
+      photoData = data.photoData;
+      levelIndex = data.levelIndex;
+      pieces = data.pieces.slice();
+      moves = data.moves;
+      timerSeconds = Number.isInteger(data.timerSeconds) ? data.timerSeconds : 0;
+      currentAspectRatio = typeof data.currentAspectRatio === "string" ? data.currentAspectRatio : "1:1";
+      showNumbers = Boolean(data.showNumbers);
+      showCorrect = Boolean(data.showCorrect);
+      mixed = data.mixed;
+      locked = data.locked;
+      gameCompleted = Boolean(data.gameCompleted || (data.levelIndex >= LEVELS.length - 1 && data.locked));
+      selectedTile = null;
+      inGameSession = Boolean(data.inGameSession);
 
       updateTimerDisplay();
-
 
       const imgEl = $("previewImage");
       if(imgEl) imgEl.src = photoData;
       const thumbEl = $("previewThumb");
       if(thumbEl) thumbEl.src = photoData;
+      const fsThumb = $("fsStripThumbImg");
+      if(fsThumb) fsThumb.src = photoData;
 
+      const savedOverlay = data.overlay || "";
 
-      const savedOverlay=
-        data.overlay || "";
+      if(inGameSession && photoData){
+        homeView.classList.add("is-hidden");
+        gamePanel.style.display = "";
+        toggleFullscreen(true);
+        renderBoard();
 
-
-      renderBoard();
-
-
-      if(savedOverlay==="preview"){
-
-        activeOverlay="preview";
-        if(previewOverlay) previewOverlay.classList.add("show");
-
-      }else if(savedOverlay==="actionChoice" || savedOverlay==="restartChoice"){
-
-        activeOverlay="actionChoice";
-        if(actionChoiceOverlay) actionChoiceOverlay.classList.add("show");
-
-      }else if(savedOverlay==="restartConfirm"){
-
-        activeOverlay="restartConfirm";
-        if(restartConfirmOverlay) restartConfirmOverlay.classList.add("show");
-
-      }else if(savedOverlay==="win" && locked){
-
-        showWinDialog(false);
-
-      }else if(locked){
-
-        showWinDialog(false);
-
-      }
-
-
-      /*
-       * Se la partita era stata salvata prima del MIX,
-       * la mescoliamo ora.
-       */
-      if(!mixed && !locked){
-
-        shufflePieces(true);
-
-      }else{
-
-        if(moves>0 && !locked){
-          startTimer();
+        if(savedOverlay === "preview"){
+          activeOverlay = "preview";
+          if(previewOverlay) previewOverlay.classList.add("show");
+        }else if(savedOverlay === "exitConfirm"){
+          activeOverlay = "exitConfirm";
+          if(exitConfirmOverlay) exitConfirmOverlay.classList.add("show");
+        }else if(savedOverlay === "win" && locked){
+          showWinDialog(false);
+        }else if(locked){
+          showWinDialog(false);
         }
 
-        saveGame();
+        if(!mixed && !locked){
+          shufflePieces(true);
+        }else{
+          if(moves > 0 && !locked){
+            startTimer();
+          }
+          saveGame();
+        }
 
+        setHint("Partita ripristinata: puoi continuare da dove avevi lasciato.");
+        return true;
       }
 
-
-      setHint(
-        "Partita ripristinata: puoi continuare " +
-        "da dove avevi lasciato."
-      );
-
-      return true;
-
+      return false;
     }catch(error){
-
-      console.warn(
-        "Non è stato possibile ripristinare la partita:",
-        error
-      );
-
+      console.warn("Non è stato possibile ripristinare la partita:", error);
       return false;
     }
   }
-
 
   function updateCorrectTogglesUI(){
     const list = [
       { btn: toggleCorrectBtn, lbl: $("toggleStateLabel") },
       { btn: $("fsHelpBtn"), lbl: $("fsHelpToggleStateLabel") },
-      { btn: $("fullscreenPortraitHelpBtn"), lbl: $("fullscreenPortraitHelpToggleState") }
+      { btn: fsPortraitHelpBtn, lbl: fsPortraitHelpToggleState }
     ];
     const loaded = Boolean(photoData);
     list.forEach(item => {
@@ -3704,23 +3985,22 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
     });
   }
 
-
   function updateUI(){
+    const level = currentLevel();
+    const { cols, rows } = getGridDimensions(levelIndex);
+    const loaded = Boolean(photoData);
 
-    const level=currentLevel();
-    const loaded=Boolean(photoData);
-
-
-    levelValue.textContent=
-      `${levelIndex+1} / ${LEVELS.length}`;
-
-    if(difficultyValue){
-      difficultyValue.textContent=
-        `${level.size} × ${level.size}`;
+    if(levelValue){
+      levelValue.textContent = `${levelIndex + 1} / ${LEVELS.length}`;
     }
 
-    movesValue.textContent=
-      String(moves);
+    if(difficultyValue){
+      difficultyValue.textContent = `${cols} × ${rows}`;
+    }
+
+    if(movesValue){
+      movesValue.textContent = String(moves);
+    }
     const fsMoves = $("fullscreenMovesVal");
     if(fsMoves){
       fsMoves.textContent = String(moves);
@@ -3730,28 +4010,22 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
       fsStripMoves.textContent = String(moves);
     }
 
-
-    levelIndicators
-      .querySelectorAll(".level-square")
-      .forEach((square,index)=>{
-
-        square.classList.toggle(
-          "active",
-          index<=levelIndex
-        );
-
+    if(levelIndicators){
+      levelIndicators.querySelectorAll(".level-square").forEach((square, index) => {
+        square.classList.toggle("active", index <= levelIndex);
       });
+    }
 
+    if(gameTitle){
+      gameTitle.textContent = `Livello ${levelIndex + 1} · ${level.name}`;
+    }
 
-    gameTitle.textContent=
-      `Livello ${levelIndex+1} · ${level.name}`;
+    if(levelDescription){
+      levelDescription.textContent = `Griglia ${cols} × ${rows} - ${cols * rows} tasselli.`;
+    }
 
-    levelDescription.textContent=
-      `Griglia ${level.size} × ${level.size} - ${level.size * level.size} tasselli.`;
-
-
-    gameStatus.textContent=
-      !loaded
+    if(gameStatus){
+      gameStatus.textContent = !loaded
         ? "IN ATTESA"
         : locked
           ? "COMPLETATO"
@@ -3760,27 +4034,18 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
             : mixed
               ? "IN CORSO"
               : "PRONTO";
-
-
-    /*
-     * MIX è disponibile soltanto prima della prima mossa.
-     */
-    mixBtn.disabled=
-      !loaded ||
-      locked ||
-      moves>0;
-
-    if(restartLevelBtn){
-      restartLevelBtn.disabled = !loaded || locked;
     }
 
-    if(previewBtn){
-      previewBtn.disabled = !loaded;
-    }
+    /* MIX è disponibile soltanto prima della prima mossa */
+    const canMix = loaded && !locked && moves === 0;
+    if(mixBtn) mixBtn.disabled = !canMix;
+    if(fsPortraitMixBtn) fsPortraitMixBtn.disabled = !canMix;
+    const fsStripMix = $("fsStripMixBtn");
+    if(fsStripMix) fsStripMix.disabled = !canMix;
 
-    if(previewResetBtn){
-      previewResetBtn.disabled = !loaded;
-    }
+    if(restartLevelBtn) restartLevelBtn.disabled = !loaded || locked;
+    if(previewBtn) previewBtn.disabled = !loaded;
+    if(previewResetBtn) previewResetBtn.disabled = !loaded;
 
     updateCorrectTogglesUI();
 
@@ -3790,17 +4055,15 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
     }
 
     if(fullscreenToggleBtn){
-      fullscreenToggleBtn.disabled=!loaded;
+      fullscreenToggleBtn.disabled = !loaded;
     }
 
     updatePauseBtnUI();
     updateTimerDisplay();
   }
 
-
   function emptyState(){
-
-    board.innerHTML=
+    board.innerHTML =
       '<div class="empty-state">' +
         '<div class="empty-icon" aria-hidden="true">🖼️</div>' +
         '<strong>Scegli la tua foto</strong>' +
@@ -3808,138 +4071,76 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
       '</div>';
   }
 
-
   function createSolvedPieces(){
-
-    pieces=
-      Array.from(
-        {length:totalTiles()},
-        (_,i)=>i
-      );
-
-    selectedTile=null;
+    pieces = Array.from({ length: totalTiles() }, (_, i) => i);
+    selectedTile = null;
   }
 
-
   function renderBoard(){
+    const { cols, rows } = getGridDimensions(levelIndex);
 
-    const n=currentLevel().size;
+    board.innerHTML = "";
+    board.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+    board.style.gridTemplateRows = `repeat(${rows}, minmax(0, 1fr))`;
 
-    board.innerHTML="";
-
-    board.style.gridTemplateColumns=
-      `repeat(${n},minmax(0,1fr))`;
-
-    let aspectCss = "1 / 1";
-    let aspectNum = 1;
-    if(currentAspectRatio === "16:9"){
-      aspectCss = "16 / 9";
-      aspectNum = 16 / 9;
-    }else if(currentAspectRatio === "4:3"){
-      aspectCss = "4 / 3";
-      aspectNum = 4 / 3;
-    }
+    const aspectCss = `${cols} / ${rows}`;
+    const aspectNum = cols / rows;
     board.style.setProperty("--board-aspect", aspectCss);
+    board.style.setProperty("--board-aspect-num", String(aspectNum));
     document.documentElement.style.setProperty("--board-aspect", aspectCss);
     document.documentElement.style.setProperty("--board-aspect-num", String(aspectNum));
-
-    if(formatBadge) formatBadge.textContent = currentAspectRatio;
 
     board.classList.toggle("show-correct", showCorrect);
     updateCorrectTogglesUI();
 
-
     if(!photoData){
-
       emptyState();
       updateUI();
-
       return;
     }
 
+    const fragment = document.createDocumentFragment();
 
-    const fragment=
-      document.createDocumentFragment();
+    pieces.forEach((piece, position) => {
+      const tile = document.createElement("button");
+      tile.type = "button";
+      tile.className = "tile";
+      tile.setAttribute("aria-label", `Tassello ${position + 1}`);
+      tile.dataset.position = String(position);
+      tile.dataset.piece = String(piece);
+      tile.draggable = false;
 
+      tile.style.backgroundImage = `url("${photoData}")`;
+      tile.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
 
-    pieces.forEach((piece,position)=>{
+      const col = piece % cols;
+      const row = Math.floor(piece / cols);
 
-      const tile=
-        document.createElement("button");
+      const posX = cols === 1 ? 0 : (col / (cols - 1)) * 100;
+      const posY = rows === 1 ? 0 : (row / (rows - 1)) * 100;
+      tile.style.backgroundPosition = `${posX}% ${posY}%`;
 
-
-      tile.type="button";
-
-      tile.className="tile";
-
-      tile.setAttribute(
-        "aria-label",
-        `Tassello ${position+1}`
-      );
-
-
-      tile.dataset.position=
-        String(position);
-
-      tile.dataset.piece=
-        String(piece);
-
-      tile.draggable=false;
-
-
-      tile.style.backgroundImage=
-        `url("${photoData}")`;
-
-      tile.style.backgroundSize=
-        `${n*100}% ${n*100}%`;
-
-
-      const col=piece%n;
-      const row=Math.floor(piece/n);
-
-
-      tile.style.backgroundPosition=
-        `${n===1?0:(col/(n-1))*100}% ` +
-        `${n===1?0:(row/(n-1))*100}%`;
-
-
-      if(piece===position){
+      if(piece === position){
         tile.classList.add("is-correct");
       }
 
-
-      if(selectedTile===position){
-
+      if(selectedTile === position){
         tile.classList.add("selected");
       }
 
-
       /* Indicatore discreto di posizione corretta */
-      const markSpan=document.createElement("span");
-      markSpan.className="tile-correct-mark";
-      markSpan.textContent="✓";
+      const markSpan = document.createElement("span");
+      markSpan.className = "tile-correct-mark";
+      markSpan.textContent = "✓";
       tile.appendChild(markSpan);
 
-
-      tile.addEventListener(
-        "click",
-        ()=>handleTileClick(position)
-      );
-
-
-      tile.addEventListener(
-        "pointerdown",
-        onTilePointerDown
-      );
-
+      tile.addEventListener("click", () => handleTileClick(position));
+      tile.addEventListener("pointerdown", onTilePointerDown);
 
       fragment.appendChild(tile);
-
     });
 
-
     board.appendChild(fragment);
-
     updateUI();
   }
 
@@ -4002,207 +4203,53 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
 
 
   function loadPhoto(file){
-
-    if(
-      !file ||
-      !file.type.startsWith("image/")
-    ){
-
-      setHint(
-        "Seleziona un file immagine valido."
-      );
-
+    if(!file || !file.type.startsWith("image/")){
+      setHint("Seleziona un file immagine valido.");
       return;
     }
 
+    const reader = new FileReader();
+    reader.onload = event => {
+      const dataUrl = event.target.result;
+      rawPhotoUrl = dataUrl;
+      if(cropSourceImg){
+        cropSourceImg.onload = () => {
+          isPortraitPhoto = cropSourceImg.naturalHeight > cropSourceImg.naturalWidth;
+          cropPanX = 0;
+          cropPanY = 0;
+          updateLevelButtonsUI();
+          updateCropFrameAndImage();
+          generateCroppedPhoto();
 
-    /*
-     * Copiamo le variabili prima di aprire il processo
-     * di caricamento, così una successiva interazione
-     * non può modificare la scelta.
-     */
-    const requestedStartLevel=
-      selectedStartLevel;
-
-    const requestedFormat=
-      selectedFormat;
-
-
-    const objectUrl=
-      URL.createObjectURL(file);
-
-    const image=
-      new Image();
-
-
-    image.onload=()=>{
-
-      try{
-
-        const natW=image.naturalWidth;
-        const natH=image.naturalHeight;
-        const natRatio=natW/natH;
-
-        let targetRatio=1;
-        let ratioName="1:1";
-
-        if(requestedFormat==="16:9"){
-          targetRatio=16/9;
-          ratioName="16:9";
-        }else if(requestedFormat==="4:3"){
-          targetRatio=4/3;
-          ratioName="4:3";
-        }else if(requestedFormat==="1:1"){
-          targetRatio=1;
-          ratioName="1:1";
-        }else{
-          // Rilevamento automatico
-          if(natRatio>=1.55){
-            targetRatio=16/9;
-            ratioName="16:9";
-          }else if(natRatio>=1.15){
-            targetRatio=4/3;
-            ratioName="4:3";
-          }else{
-            targetRatio=1;
-            ratioName="1:1";
+          if(inGameSession){
+            levelIndex = selectedLevel;
+            moves = 0;
+            mixed = false;
+            locked = false;
+            gameCompleted = false;
+            selectedTile = null;
+            activeOverlay = "";
+            resetTimer();
+            createSolvedPieces();
+            shufflePieces(true);
+            resetPreviewZoom();
+            renderBoard();
+            updateUI();
+            if(isFullscreen){
+              toggleFullscreen(true);
+            }
           }
-        }
 
-        currentAspectRatio=ratioName;
-
-        let cropW, cropH;
-        if(natRatio>targetRatio){
-          cropH=natH;
-          cropW=cropH*targetRatio;
-        }else{
-          cropW=natW;
-          cropH=cropW/targetRatio;
-        }
-
-        const sx=(natW-cropW)/2;
-        const sy=(natH-cropH)/2;
-
-
-        const canvas=
-          document.createElement("canvas");
-
-        if(ratioName==="16:9"){
-          canvas.width=1280;
-          canvas.height=720;
-        }else if(ratioName==="4:3"){
-          canvas.width=960;
-          canvas.height=720;
-        }else{
-          canvas.width=900;
-          canvas.height=900;
-        }
-
-
-        const context=
-          canvas.getContext("2d");
-
-
-        context.drawImage(
-          image,
-          sx,
-          sy,
-          cropW,
-          cropH,
-          0,
-          0,
-          canvas.width,
-          canvas.height
-        );
-
-
-        photoData=
-          canvas.toDataURL(
-            "image/jpeg",
-            0.84
-          );
-
-
-      }catch(error){
-
-        console.error(
-          "Impossibile elaborare l'immagine:",
-          error
-        );
-
-        setHint(
-          "Non è stato possibile caricare questa immagine."
-        );
-
-        URL.revokeObjectURL(objectUrl);
-
-        return;
+          setHint("Foto caricata con successo.");
+          saveGame();
+        };
+        cropSourceImg.src = dataUrl;
       }
-
-
-      URL.revokeObjectURL(objectUrl);
-
-
-      /*
-       * Il livello scelto dall'utente è SEMPRE
-       * quello da cui parte la nuova foto.
-       */
-      levelIndex=
-        requestedStartLevel;
-
-
-      moves=0;
-      mixed=false;
-      locked=false;
-      gameCompleted=false;
-      selectedTile=null;
-      activeOverlay="";
-      photoLoadMode="newGame";
-
-      resetTimer();
-
-
-      levelChoiceOverlay.classList.remove("show");
-      previewOverlay.classList.remove("show");
-      winOverlay.classList.remove("show");
-      if(actionChoiceOverlay) actionChoiceOverlay.classList.remove("show");
-
-
-      if($("previewImage")) $("previewImage").src = photoData;
-      if($("previewThumb")) $("previewThumb").src = photoData;
-
-      resetPreviewZoom();
-
-      createSolvedPieces();
-
-      shufflePieces(true);
-
-
-      setHint(
-        `Nuova foto caricata (${currentAspectRatio}) dal livello ` +
-        `${levelIndex+1} ` +
-        `(${currentLevel().size}×${currentLevel().size}). ` +
-        `I tasselli sono già mescolati.`
-      );
-
-
-      saveGame();
-
     };
-
-
-    image.onerror=()=>{
-
-      URL.revokeObjectURL(objectUrl);
-
-      setHint(
-        "Non è stato possibile aprire " +
-        "il file selezionato."
-      );
+    reader.onerror = () => {
+      setHint("Non è stato possibile aprire il file selezionato.");
     };
-
-
-    image.src=objectUrl;
+    reader.readAsDataURL(file);
   }
 
 
@@ -4706,10 +4753,62 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
 
 
   function showHero(index){
+    if(index < 3){
+      // Livelli 1, 2, 3: Addestramento e sprono per raggiungere i supereroi
+      const trainingGlows = ["#86efac", "#93c5fd", "#fde047"];
+      const trainingBadges = ["🥉", "🥈", "🥇"];
+      const trainingTitles = [
+        "Recluta dei Puzzle 🥉",
+        "Eroe in Addestramento 🥈",
+        "Maestro d'Addestramento 🥇"
+      ];
+      const trainingTaglines = [
+        "Ottimo inizio! Continua ad allenarti per sbloccare la lega dei supereroi!",
+        "Grande ritmo! Sei sempre più vicino a incontrare i supereroi leggendari!",
+        "Complimenti, hai superato l'addestramento base! I supereroi ti stanno aspettando!"
+      ];
 
-    const hero=
-      HEROES[index] ||
-      HEROES[0];
+      if(heroStage){
+        heroStage.style.setProperty("--hero-glow", trainingGlows[index] || "#86efac");
+      }
+
+      if(heroRank){
+        heroRank.textContent = `ADDESTRAMENTO · LIVELLO ${index + 1} / 7 · ${trainingBadges[index]}`;
+      }
+
+      if(heroName){
+        heroName.textContent = trainingTitles[index];
+      }
+
+      if(heroTagline){
+        heroTagline.textContent = trainingTaglines[index];
+      }
+
+      if(heroPhoto) heroPhoto.style.display = "none";
+
+      if(heroArt){
+        heroArt.style.display = "flex";
+        heroArt.style.alignItems = "center";
+        heroArt.style.justifyContent = "center";
+        heroArt.style.flexDirection = "column";
+        heroArt.innerHTML = `
+          <div style="font-size: 5rem; line-height: 1; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3)); animation: floatHero 3s ease-in-out infinite;">
+            ${trainingBadges[index]}
+          </div>
+          <div style="margin-top: 12px; font-weight: 900; font-size: 1.15rem; color: #f8fafc; letter-spacing: 0.05em; text-transform: uppercase;">
+            ${index === 2 ? "Passaggio di Grado!" : "Obiettivo Raggiunto!"}
+          </div>
+          <div style="margin-top: 6px; font-size: 0.82rem; color: #94a3b8; text-align: center; max-width: 220px;">
+            ${index === 2 ? "Dal prossimo livello sblocchi i veri Supereroi!" : "Completa il livello 3 per sbloccare i Supereroi!"}
+          </div>
+        `;
+      }
+      return;
+    }
+
+    // Livelli 4, 5, 6, 7: Supereroi (Livello 4 -> Spiderman, 5 -> Venom, 6 -> Batman, 7 -> Superman)
+    const heroIdx = index - 3;
+    const hero = HEROES[heroIdx] || HEROES[0];
 
     if(heroStage){
       heroStage.style.setProperty(
@@ -4719,50 +4818,50 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
     }
 
     if(heroRank){
-      heroRank.textContent=
-        `SUPEREROE ${index+1} / ${HEROES.length} · ` +
+      heroRank.textContent =
+        `SUPEREROE ${heroIdx + 1} / 4 · ` +
         hero.power.toUpperCase();
     }
 
     if(heroName){
-      heroName.textContent=
-        hero.name;
+      heroName.textContent = hero.name;
     }
 
     if(heroTagline){
-      heroTagline.textContent=
-        hero.tagline;
+      heroTagline.textContent = hero.tagline;
     }
 
-    /*
-     * Mostra la foto del livello reale su smartphone e PC
-     */
-    if(heroArt) heroArt.style.display="none";
+    if(heroArt) heroArt.style.display = "none";
 
     if(heroPhoto){
-      heroPhoto.style.display="block";
+      heroPhoto.style.display = "block";
       const resolved = (hero.image && (hero.image.startsWith("data:") || hero.image.startsWith("blob:")))
         ? hero.image
-        : (getHeroDataUrl(index, "") || resolveHeroUrl(hero.image));
-      heroPhoto.src=resolved;
-      heroPhoto.alt=hero.name;
-      heroPhoto.style.objectFit="cover";
-      heroPhoto.style.objectPosition=hero.objectPosition || "center top";
-      heroPhoto.onerror=()=>{
+        : (getHeroDataUrl(heroIdx, "") || resolveHeroUrl(hero.image));
+      heroPhoto.src = resolved;
+      heroPhoto.alt = hero.name;
+      heroPhoto.style.objectFit = "cover";
+      // Spiderman (Livello 4, index 3): taglio prendendo la parte centrale
+      if(index === 3){
+        heroPhoto.style.objectPosition = "center center";
+      }else{
+        heroPhoto.style.objectPosition = hero.objectPosition || "center top";
+      }
+      heroPhoto.onerror = ()=>{
         if(!heroPhoto.dataset.retry){
-          heroPhoto.dataset.retry="1";
-          const mem = getHeroDataUrl(index, "");
+          heroPhoto.dataset.retry = "1";
+          const mem = getHeroDataUrl(heroIdx, "");
           if(mem) {
             heroPhoto.src = mem;
             return;
           }
-          heroPhoto.src=hero.image;
-        }else if(heroPhoto.dataset.retry==="1"){
-          heroPhoto.dataset.retry="2";
-          heroPhoto.src="/" + hero.image.replace(/^\.?\//, "");
-        }else if(heroPhoto.dataset.retry==="2"){
-          heroPhoto.dataset.retry="3";
-          heroPhoto.src="./public/" + hero.image.replace(/^\.?\//, "");
+          heroPhoto.src = hero.image;
+        }else if(heroPhoto.dataset.retry === "1"){
+          heroPhoto.dataset.retry = "2";
+          heroPhoto.src = "/" + hero.image.replace(/^\.?\//, "");
+        }else if(heroPhoto.dataset.retry === "2"){
+          heroPhoto.dataset.retry = "3";
+          heroPhoto.src = "./public/" + hero.image.replace(/^\.?\//, "");
         }
       };
     }
@@ -4779,53 +4878,80 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
         `<span>⏱️ Tempo: <strong>${formatTime(timerSeconds)}</strong></span>`;
     }
 
-
-    if(levelIndex===LEVELS.length-1){
-
-      $("winTitle").textContent=
+    if(levelIndex === LEVELS.length - 1){
+      $("winTitle").textContent =
         "Hai vinto! 🏆";
 
-
-      $("winMessage").textContent=
-        `Superman ti applaude: hai completato tutti e quattro i livelli! ` +
+      $("winMessage").textContent =
+        `Superman ti applaude: hai completato tutti e sette i livelli! ` +
         `Hai chiuso l'ultima sfida in ${moves} mosse (${formatTime(timerSeconds)}).`;
 
-
-      $("nextLevelBtn").textContent=
+      $("nextLevelBtn").textContent =
         "Chiudi";
 
-      $("nextLevelBtn").disabled=
+      $("nextLevelBtn").disabled =
         false;
 
-      $("newGameBtn").textContent=
+      $("newGameBtn").textContent =
         "Nuova partita";
 
-    }else{
+    }else if(levelIndex === 2){
+      // Messaggio specifico approvato per il livello 3
+      $("winTitle").textContent =
+        "Addestramento Superato! 🥇";
 
-      $("winTitle").textContent=
-        "Livello completato! 🏆";
+      $("winMessage").textContent =
+        "Complimenti, hai superato l'addestramento base! Scopri chi ti sta aspettando alla fine del prossimo livello!";
 
+      $("nextLevelBtn").textContent =
+        "Incontra Spider-Man →";
 
-      $("winMessage").textContent=
-        `Hai ricomposto la foto in ${moves} mosse e ${formatTime(timerSeconds)}.\n` +
-        `Scopri chi ti sta aspettando alla fine del prossimo livello!`;
-
-
-      $("nextLevelBtn").textContent=
-        "Prossimo livello →";
-
-      $("nextLevelBtn").disabled=
+      $("nextLevelBtn").disabled =
         false;
 
-      $("newGameBtn").textContent=
+      $("newGameBtn").textContent =
+        "📷 Cambia foto";
+
+    }else if(levelIndex < 2){
+      $("winTitle").textContent =
+        `Livello ${levelIndex + 1} completato! ${levelIndex === 0 ? "🥉" : "🥈"}`;
+
+      $("winMessage").textContent =
+        `Hai ricomposto la foto in ${moves} mosse e ${formatTime(timerSeconds)}.\n` +
+        `Continua ad aumentare di livello per incontrare i tuoi supereroi!`;
+
+      $("nextLevelBtn").textContent =
+        "Prossimo livello →";
+
+      $("nextLevelBtn").disabled =
+        false;
+
+      $("newGameBtn").textContent =
+        "📷 Cambia foto";
+
+    }else{
+      // Livelli 4, 5, 6
+      const currentHero = HEROES[levelIndex - 3] || HEROES[0];
+      const nextHero = HEROES[levelIndex - 2];
+      $("winTitle").textContent =
+        `Livello ${levelIndex + 1} completato! 🦸`;
+
+      $("winMessage").textContent =
+        `Hai ricomposto la foto in ${moves} mosse e ${formatTime(timerSeconds)}!\n` +
+        `Hai sbloccato ${currentHero.name}. Scopri chi ti aspetta al prossimo livello: ${nextHero ? nextHero.name : "la sfida finale"}!`;
+
+      $("nextLevelBtn").textContent =
+        "Prossimo livello →";
+
+      $("nextLevelBtn").disabled =
+        false;
+
+      $("newGameBtn").textContent =
         "📷 Cambia foto";
     }
 
-
-    activeOverlay="win";
-
+    activeOverlay = "win";
     winOverlay.classList.add("show");
-
 
     if(celebrate)
       launchConfetti();
@@ -4834,11 +4960,11 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
 
   function completeLevel(){
 
-    locked=true;
-    selectedTile=null;
+    locked = true;
+    selectedTile = null;
 
-    if(levelIndex>=LEVELS.length-1){
-      gameCompleted=true;
+    if(levelIndex >= LEVELS.length - 1){
+      gameCompleted = true;
     }
 
     stopTimer();
@@ -4851,7 +4977,7 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
     saveGame();
 
     setHint(
-      levelIndex>=LEVELS.length-1
+      levelIndex >= LEVELS.length - 1
         ? "Congratulazioni! Hai completato tutti i livelli!"
         : "Livello completato!"
     );
@@ -4860,58 +4986,52 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
 
   function nextLevel(){
 
-    if(levelIndex>=LEVELS.length-1){
-
+    if(levelIndex >= LEVELS.length - 1){
       winOverlay.classList.remove("show");
-
-      activeOverlay="";
-
+      activeOverlay = "";
+      if(isFullscreen) toggleFullscreen(false);
+      inGameSession = false;
+      if(homeView) homeView.style.display = "";
+      if(gamePanel) gamePanel.classList.add("hidden-initial");
+      document.body.classList.remove("in-game");
       saveGame();
 
       setHint(
         "Hai completato tutti i livelli! " +
-        "Carica una nuova foto per iniziare " +
+        "Carica una nuova foto o scegli un livello per iniziare " +
         "un'altra partita."
       );
-
       return;
     }
 
-
     winOverlay.classList.remove("show");
-
-    activeOverlay="";
-
+    activeOverlay = "";
 
     levelIndex++;
+    selectedLevel = levelIndex;
+    updateLevelButtonsUI();
 
-    moves=0;
-    mixed=false;
-    locked=false;
-    selectedTile=null;
+    moves = 0;
+    mixed = false;
+    locked = false;
+    selectedTile = null;
 
     resetTimer();
 
-
+    generateCroppedPhoto();
     createSolvedPieces();
-
     shufflePieces(true);
-
     resetPreviewZoom();
 
+    if(isFullscreen){
+      toggleFullscreen(true);
+    }
+
     setHint(
-      `Livello ${levelIndex+1}: la foto è la stessa ` +
-      `e i tasselli sono già mescolati.`
+      `Livello ${levelIndex + 1}: tasselli mescolati. Buona fortuna!`
     );
 
-
     saveGame();
-
-
-    window.scrollTo({
-      top:0,
-      behavior:"smooth"
-    });
   }
 
 
@@ -5445,7 +5565,96 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
     );
   }
 
-  /* Pulsante pausa in HUD verticale a schermo intero */
+  /*
+   * CONTROLLI MODALITÀ SCHERMO INTERO VERTICALE & ORIZZONTALE (v. 1.18)
+   */
+
+  function requestExitGame(){
+    activeOverlay = "exitConfirm";
+    if(exitConfirmOverlay) exitConfirmOverlay.classList.add("show");
+  }
+
+  function confirmExitGame(){
+    if(exitConfirmOverlay) exitConfirmOverlay.classList.remove("show");
+    activeOverlay = "";
+    stopTimer();
+    inGameSession = false;
+    toggleFullscreen(false);
+    if(homeView) homeView.style.display = "";
+    if(gamePanel) gamePanel.classList.add("hidden-initial");
+    document.body.classList.remove("in-game");
+    saveGame();
+  }
+
+  function cancelExitGame(){
+    if(exitConfirmOverlay) exitConfirmOverlay.classList.remove("show");
+    activeOverlay = "";
+  }
+
+  if(confirmExitBtn){
+    confirmExitBtn.addEventListener("click", confirmExitGame);
+  }
+
+  if(cancelExitBtn){
+    cancelExitBtn.addEventListener("click", cancelExitGame);
+  }
+
+  if(exitConfirmOverlay){
+    exitConfirmOverlay.addEventListener("click", event => {
+      if(event.target === exitConfirmOverlay){
+        cancelExitGame();
+      }
+    });
+  }
+
+  // Pulsante ESCI in top bar verticale a schermo intero
+  if(fsPortraitExitBtn){
+    fsPortraitExitBtn.addEventListener("click", requestExitGame);
+  }
+
+  // Pulsante ESCI in fascia laterale orizzontale a schermo intero
+  const fsStripExitBtn = $("fsStripExitBtn");
+  if(fsStripExitBtn){
+    fsStripExitBtn.addEventListener("click", requestExitGame);
+  }
+
+  if(fullscreenExitBtn){
+    fullscreenExitBtn.addEventListener("click", requestExitGame);
+  }
+
+  // Widget AIUTO in top bar verticale (stelline + ON/OFF)
+  if(fsPortraitHelpBtn){
+    fsPortraitHelpBtn.addEventListener("click", ()=>{
+      showCorrect = !showCorrect;
+      if(fsPortraitHelpToggleState){
+        fsPortraitHelpToggleState.textContent = showCorrect ? "ON" : "OFF";
+      }
+      if(toggleStateLabel){
+        toggleStateLabel.textContent = showCorrect ? "ON" : "OFF";
+      }
+      renderBoard();
+      saveGame();
+    });
+  }
+
+  // Pulsante MIX in top bar verticale
+  if(fsPortraitMixBtn){
+    fsPortraitMixBtn.addEventListener("click", ()=>{
+      if(!locked){
+        shufflePieces(false);
+        playSound("swap");
+      }
+    });
+  }
+
+  // Thumbnail modello foto sotto il puzzle in verticale
+  if(fullscreenPortraitThumb){
+    fullscreenPortraitThumb.addEventListener("click", ()=>{
+      openPreviewModal();
+    });
+  }
+
+  // Pulsante pausa in HUD verticale
   const fullscreenPauseBtn = $("fullscreenPauseBtn");
   if(fullscreenPauseBtn){
     fullscreenPauseBtn.addEventListener("click", ()=>{
@@ -5457,27 +5666,29 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
     });
   }
 
-  /* Controlli fascia laterale a schermo intero orizzontale (v. 1.16) */
-  const fsStripExitBtn = $("fsStripExitBtn");
-  if(fsStripExitBtn){
-    fsStripExitBtn.addEventListener("click", ()=>toggleFullscreen(false));
-  }
-
-  const fsHelpBtn = $("fsHelpBtn");
-  if(fsHelpBtn){
-    fsHelpBtn.addEventListener("click", ()=>{
+  // Controlli fascia laterale a schermo intero orizzontale
+  const fsStripHelpBtn = $("fsStripHelpBtn") || $("fsHelpBtn");
+  if(fsStripHelpBtn){
+    fsStripHelpBtn.addEventListener("click", ()=>{
       showCorrect = !showCorrect;
+      if(fsPortraitHelpToggleState){
+        fsPortraitHelpToggleState.textContent = showCorrect ? "ON" : "OFF";
+      }
+      if(toggleStateLabel){
+        toggleStateLabel.textContent = showCorrect ? "ON" : "OFF";
+      }
       renderBoard();
       saveGame();
     });
   }
 
-  const fullscreenPortraitHelpBtn = $("fullscreenPortraitHelpBtn");
-  if(fullscreenPortraitHelpBtn){
-    fullscreenPortraitHelpBtn.addEventListener("click", ()=>{
-      showCorrect = !showCorrect;
-      renderBoard();
-      saveGame();
+  const fsStripMixBtn = $("fsStripMixBtn");
+  if(fsStripMixBtn){
+    fsStripMixBtn.addEventListener("click", ()=>{
+      if(!locked){
+        shufflePieces(false);
+        playSound("swap");
+      }
     });
   }
 
@@ -5910,22 +6121,10 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
 
 
   if(previewOverlay){
-    previewOverlay.addEventListener(
-      "click",
-      event=>{
-        if(isFullscreen){
-          if(event.target !== $("previewImage")){
-            closePreview();
-          }
-        }else{
-          if(event.target===previewOverlay){
-            closePreview();
-          }
-        }
-      }
-    );
+    previewOverlay.addEventListener("click", () => {
+      closePreview();
+    });
   }
-
 
   /*
    * RICOMINCIA LIVELLO (v. 1.14)
@@ -5962,86 +6161,165 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
     });
   }
 
-
   /*
    * PROSSIMO LIVELLO
    */
   $("nextLevelBtn").addEventListener(
     "click",
     ()=>{
-
-      if(
-        levelIndex<LEVELS.length-1
-      ){
-
+      if(levelIndex < LEVELS.length - 1){
         nextLevel();
-
       }else{
-
-        winOverlay.classList.remove(
-          "show"
-        );
-
+        winOverlay.classList.remove("show");
         activeOverlay="";
-
         saveGame();
       }
     }
   );
 
-
   /*
-   * CAMBIA FOTO DALLA SCHERMATA DI VITTORIA (v. 1.10 / v. 1.14).
-   *
-   * Non chiude la schermata di vittoria finché la foto non viene effettivamente
-   * caricata; se l'utente annulla la finestra file, la schermata di fine livello
-   * resta visibile permettendo di passare al livello successivo.
+   * CAMBIA FOTO DALLA SCHERMATA DI VITTORIA (v. 1.10 / v. 1.14 / v. 1.18)
    */
   $("newGameBtn").addEventListener(
     "click",
     ()=>{
-
-      if(levelIndex>=LEVELS.length-1){
+      if(levelIndex >= LEVELS.length - 1){
         winOverlay.classList.remove("show");
         activeOverlay="";
-        openLevelChoice("newGame", 0);
+        if(isFullscreen) toggleFullscreen(false);
+        inGameSession = false;
+        if(homeView) homeView.style.display = "";
+        if(gamePanel) gamePanel.classList.add("hidden-initial");
+        document.body.classList.remove("in-game");
+        saveGame();
         return;
       }
 
-      const targetLevel=
-        levelIndex<LEVELS.length-1
-          ? levelIndex+1
-          : 0;
+      const targetLevel = levelIndex < LEVELS.length - 1 ? levelIndex + 1 : 0;
+      selectedStartLevel = targetLevel;
+      selectedLevel = targetLevel;
+      photoLoadMode = "continueNext";
+      awaitingWinPhoto = true;
 
-      selectedStartLevel=targetLevel;
-      photoLoadMode="continueNext";
-      awaitingWinPhoto=true;
-
-      /*
-       * Apre direttamente la Galleria o il selettore del dispositivo.
-       */
-      photoInput.value="";
+      photoInput.value = "";
       photoInput.click();
     }
   );
 
-
   winOverlay.addEventListener(
     "click",
     event=>{
-
-      /*
-       * La schermata di vittoria non si chiude
-       * cliccando sullo sfondo.
-       */
-      if(
-        event.target===winOverlay
-      ){
+      if(event.target === winOverlay){
         /* intenzionale */
       }
     }
   );
 
+  /*
+   * EVENTI SCHERMATA PRINCIPALE (HOME VIEW v. 1.18)
+   */
+  // 1. Selezione dei 7 livelli in formato 3D
+  if(levelsGrid){
+    levelsGrid.addEventListener("click", event => {
+      const btn = event.target.closest(".level-btn-3d");
+      if(!btn) return;
+      const lvl = parseInt(btn.dataset.level, 10) - 1;
+      if(lvl >= 0 && lvl < LEVELS.length){
+        selectedLevel = lvl;
+        updateLevelButtonsUI();
+        updateCropFrameAndImage();
+        saveGame();
+      }
+    });
+  }
+
+  // 2. Pulsante "Carica foto"
+  if(uploadPhotoBtn){
+    uploadPhotoBtn.addEventListener("click", () => {
+      photoInput.value = "";
+      photoInput.click();
+    });
+  }
+
+  // 3. Trascinamento / spostamento della foto all'interno del riquadro di selezione
+  if(cropPreviewBox){
+    cropPreviewBox.addEventListener("pointerdown", event => {
+      if(!cropSourceImg || !cropSourceImg.complete || cropSourceImg.naturalWidth === 0) return;
+      isPanningCrop = true;
+      startCropPointerX = event.clientX;
+      startCropPointerY = event.clientY;
+      initialCropPanX = cropPanX;
+      initialCropPanY = cropPanY;
+      cropPreviewBox.classList.add("is-panning");
+      try { cropPreviewBox.setPointerCapture(event.pointerId); } catch(_){}
+    });
+
+    cropPreviewBox.addEventListener("pointermove", event => {
+      if(!isPanningCrop) return;
+      cropPanX = initialCropPanX + (event.clientX - startCropPointerX);
+      cropPanY = initialCropPanY + (event.clientY - startCropPointerY);
+      updateCropFrameAndImage();
+    });
+
+    const finishCropPan = event => {
+      if(isPanningCrop){
+        isPanningCrop = false;
+        cropPreviewBox.classList.remove("is-panning");
+        try { cropPreviewBox.releasePointerCapture(event.pointerId); } catch(_){}
+        updateCropFrameAndImage();
+        saveGame();
+      }
+    };
+
+    cropPreviewBox.addEventListener("pointerup", finishCropPan);
+    cropPreviewBox.addEventListener("pointercancel", finishCropPan);
+  }
+
+  // 4. Pulsante "GIOCA" in formato 3D: avvia lo schermo intero adattivo
+  function startGameFromHome(){
+    const proceed = () => {
+      generateCroppedPhoto();
+      levelIndex = selectedLevel;
+      moves = 0;
+      mixed = false;
+      locked = false;
+      gameCompleted = false;
+      selectedTile = null;
+      activeDrag = null;
+      inGameSession = true;
+
+      if(homeView) homeView.style.display = "none";
+      if(gamePanel) gamePanel.classList.remove("hidden-initial");
+      document.body.classList.add("in-game");
+
+      resetTimer();
+      createSolvedPieces();
+      shufflePieces(true);
+      resetPreviewZoom();
+      renderBoard();
+      updateUI();
+
+      toggleFullscreen(true);
+      saveGame();
+    };
+
+    if(!cropSourceImg.src || cropSourceImg.src.endsWith("#") || !cropSourceImg.complete || cropSourceImg.naturalWidth === 0){
+      const defaultImg = getHeroDataUrl(0, "") || resolveHeroUrl(HEROES[0].image);
+      cropSourceImg.onload = () => {
+        isPortraitPhoto = cropSourceImg.naturalHeight > cropSourceImg.naturalWidth;
+        updateLevelButtonsUI();
+        updateCropFrameAndImage();
+        proceed();
+      };
+      cropSourceImg.src = defaultImg;
+    }else{
+      proceed();
+    }
+  }
+
+  if(homePlayBtn){
+    homePlayBtn.addEventListener("click", startGameFromHome);
+  }
 
   /*
    * TASTO ESC (gestione schermo intero e modali)
@@ -6049,98 +6327,89 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
   document.addEventListener(
     "keydown",
     event=>{
+      if(event.key !== "Escape") return;
 
-      if(event.key!=="Escape")
-        return;
-
-
-      if(isFullscreen){
-
-        toggleFullscreen(false);
+      if(activeOverlay === "exitConfirm"){
+        cancelExitGame();
         return;
       }
 
-
-      if(activeOverlay==="preview"){
-
+      if(activeOverlay === "preview"){
         closePreview();
-
-      }else if(activeOverlay==="restartConfirm"){
-
-        if(restartConfirmOverlay) restartConfirmOverlay.classList.remove("show");
-        activeOverlay="";
-
-      }else if(
-        activeOverlay==="actionChoice"
-      ){
-
-        /*
-         * La modale Nuova partita richiede una scelta esplicita
-         * tra "Nuova partita" e "Continua la partita".
-         */
         return;
+      }
 
-      }else if(
-        activeOverlay==="levelChoice"
-      ){
+      if(activeOverlay === "restartConfirm"){
+        if(restartConfirmOverlay) restartConfirmOverlay.classList.remove("show");
+        activeOverlay = "";
+        return;
+      }
 
-        levelChoiceOverlay.classList.remove(
-          "show"
-        );
-
-        activeOverlay="";
+      if(isFullscreen){
+        requestExitGame();
       }
     }
   );
 
-
   /*
-   * SALVATAGGIO AUTOMATICO QUANDO SI ESCE
-   * DALL'APP / SI CAMBIA PAGINA / SI NASCONDE
-   * LA PAGINA.
+   * SALVATAGGIO AUTOMATICO
    */
   window.addEventListener(
     "pagehide",
     saveGame
   );
 
-
   document.addEventListener(
     "visibilitychange",
     ()=>{
-
-      if(
-        document.visibilityState==="hidden"
-      ){
-
+      if(document.visibilityState === "hidden"){
         saveGame();
       }
     }
   );
 
+  window.addEventListener("resize", () => {
+    updateCropFrameAndImage();
+    if(inGameSession){
+      renderBoard();
+    }
+  });
 
   /*
-   * AVVIO
-   *
-   * Prima cerca una partita v1.09 o v1.08 salvata.
-   * Se esiste, la ripristina esattamente.
-   * Altrimenti parte da una schermata vuota.
+   * AVVIO DELL'APPLICAZIONE (v. 1.18)
    */
   updateSoundUI();
   updateTimerDisplay();
 
-  if(!restoreGame()){
+  const restored = restoreGame();
 
-    createSolvedPieces();
+  if(!restored){
+    // Inizializza la schermata principale (Home View)
+    inGameSession = false;
+    if(homeView) homeView.style.display = "";
+    if(gamePanel) gamePanel.classList.add("hidden-initial");
+    document.body.classList.remove("in-game");
 
-    renderBoard();
+    const defaultImg = rawPhotoUrl || getHeroDataUrl(0, "") || resolveHeroUrl(HEROES[0].image);
+    cropSourceImg.onload = () => {
+      isPortraitPhoto = cropSourceImg.naturalHeight > cropSourceImg.naturalWidth;
+      updateLevelButtonsUI();
+      updateCropFrameAndImage();
+    };
+    cropSourceImg.src = defaultImg;
 
-    updateUI();
-
-    setHint(
-      "Carica una foto per iniziare una nuova partita. " +
-      "Il salvataggio è automatico."
-    );
+    updateLevelButtonsUI();
+    setHint("Scegli il livello, posiziona la foto nel riquadro e premi GIOCA!");
+  }else{
+    if(!cropSourceImg.src || cropSourceImg.src.endsWith("#")){
+      const defaultImg = rawPhotoUrl || getHeroDataUrl(0, "") || resolveHeroUrl(HEROES[0].image);
+      cropSourceImg.onload = () => {
+        isPortraitPhoto = cropSourceImg.naturalHeight > cropSourceImg.naturalWidth;
+        updateLevelButtonsUI();
+        updateCropFrameAndImage();
+      };
+      cropSourceImg.src = defaultImg;
+    }
   }
 
 })();
