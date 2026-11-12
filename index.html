@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#f4f7fb">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Puzzle Magic v. 1.18</title>
+<title>Puzzle Magic v. 1.19</title>
 
 <style>
 :root{
@@ -860,6 +860,31 @@ h1 {
 /* Evidenziazione tasselli in posizione corretta */
 .board.show-correct .tile.is-correct{
   box-shadow:inset 0 0 0 2.5px rgba(32,151,119,.85)
+}
+
+/* Animazione pulse sottile quando un tassello viene posizionato correttamente (v. 1.19) */
+@keyframes tilePulseCorrect {
+  0% {
+    transform: scale(1);
+    box-shadow: inset 0 0 0 0 rgba(32, 151, 119, 0);
+  }
+  35% {
+    transform: scale(1.045);
+    box-shadow: inset 0 0 0 3px #209777, 0 0 12px rgba(32, 151, 119, 0.55);
+    z-index: 10;
+  }
+  70% {
+    transform: scale(0.985);
+    box-shadow: inset 0 0 0 2px rgba(32, 151, 119, 0.7);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.tile.tile-pulse {
+  animation: tilePulseCorrect 0.42s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 8;
 }
 
 .tile-correct-mark{
@@ -2542,7 +2567,7 @@ body.is-fullscreen #previewOverlay .preview-image{
       <button class="sound-toggle" id="soundToggleBtn" type="button" aria-label="Attiva o disattiva audio" title="Audio">
         <span id="soundIcon">🔊</span>
       </button>
-      <div class="version">v. 1.18</div>
+      <div class="version">v. 1.19</div>
     </div>
   </header>
 
@@ -3204,9 +3229,10 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
   ];
 
   /*
-   * Chiave per la v1.18 (con fallback di ripristino per versioni precedenti).
+   * Chiave per la v1.19 (con fallback di ripristino per versioni precedenti).
    */
-  const STORAGE_KEY = "puzzleMagic_autosave_v118";
+  const STORAGE_KEY = "puzzleMagic_autosave_v119";
+  const PREV_STORAGE_KEY_V118 = "puzzleMagic_autosave_v118";
   const PREV_STORAGE_KEY_V117 = "puzzleMagic_autosave_v117";
   const PREV_STORAGE_KEY_V116 = "puzzleMagic_autosave_v116";
   const PREV_STORAGE_KEY = "puzzleMagic_autosave_v115";
@@ -3325,6 +3351,7 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
   const fsPortraitHelpToggleState = $("fsPortraitHelpToggleState");
   const fsPortraitMixBtn = $("fsPortraitMixBtn");
   const fsPortraitExitBtn = $("fsPortraitExitBtn");
+  const fullscreenPortraitThumb = $("fullscreenPortraitThumb");
 
   /* Dialog Uscita Partita (ESCI) */
   const exitConfirmOverlay = $("exitConfirmOverlay");
@@ -3872,6 +3899,7 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
     try{
       const raw =
         localStorage.getItem(STORAGE_KEY) ||
+        localStorage.getItem(PREV_STORAGE_KEY_V118) ||
         localStorage.getItem(PREV_STORAGE_KEY_V117) ||
         localStorage.getItem(PREV_STORAGE_KEY_V116) ||
         localStorage.getItem(PREV_STORAGE_KEY) ||
@@ -4076,7 +4104,7 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
     selectedTile = null;
   }
 
-  function renderBoard(){
+  function renderBoard(newlyCorrect = []){
     const { cols, rows } = getGridDimensions(levelIndex);
 
     board.innerHTML = "";
@@ -4122,6 +4150,14 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
 
       if(piece === position){
         tile.classList.add("is-correct");
+      }
+
+      /* Animazione pulse sottile se il tassello è appena stato posizionato correttamente */
+      if(newlyCorrect.includes(position)){
+        tile.classList.add("tile-pulse");
+        tile.addEventListener("animationend", () => {
+          tile.classList.remove("tile-pulse");
+        }, { once: true });
       }
 
       if(selectedTile === position){
@@ -4378,10 +4414,20 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
       return;
     }
 
+    const wasFromCorrect = pieces[from] === from;
+    const wasToCorrect = pieces[to] === to;
 
     [pieces[from],pieces[to]]=
       [pieces[to],pieces[from]];
 
+    /* Rileva se uno o entrambi i tasselli scambiati sono appena andati in posizione corretta */
+    const newlyCorrect = [];
+    if(!wasFromCorrect && pieces[from] === from){
+      newlyCorrect.push(from);
+    }
+    if(!wasToCorrect && pieces[to] === to){
+      newlyCorrect.push(to);
+    }
 
     moves++;
     selectedTile=null;
@@ -4396,7 +4442,7 @@ window.HERO_DATA_URLS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gx
       }catch(_){}
     }
 
-    renderBoard();
+    renderBoard(newlyCorrect);
 
 
     if(isSolved()){
