@@ -2731,10 +2731,6 @@ body.is-fullscreen #previewOverlay .preview-image{
   }
 }
 </style>
-<link rel="preload" as="image" href="./Livello4.webp">
-<link rel="preload" as="image" href="./Livello5.webp">
-<link rel="preload" as="image" href="./Livello6.webp">
-<link rel="preload" as="image" href="./Livello7.webp">
 </head>
 
 <body>
@@ -3499,13 +3495,19 @@ window.HERO_DATA_URLS = ["./Livello4.webp", "./Livello5.webp", "./Livello6.webp"
     }
   ];
 
-  /* Precaricamento immediato per garantire visualizzazione istantanea su smartphone */
-  try {
-    HEROES.forEach(h => {
-      const preImg = new Image();
-      preImg.src = resolveHeroUrl(h.image);
-    });
-  } catch (_) {}
+  /* Precaricamento e decodifica persistente per smartphone */
+window._preloadedHeroImgs = [];
+try {
+  HEROES.forEach(h => {
+    const preImg = new Image();
+    preImg.decoding = "async";
+    preImg.src = resolveHeroUrl(h.image);
+    if (preImg.decode) {
+      preImg.decode().catch(() => {});
+    }
+    window._preloadedHeroImgs.push(preImg);
+  });
+} catch (_) {}
 
   const $ = id => document.getElementById(id);
 
@@ -5125,37 +5127,44 @@ window.HERO_DATA_URLS = ["./Livello4.webp", "./Livello5.webp", "./Livello6.webp"
     if(heroArt) heroArt.style.display = "none";
 
     if(heroPhoto){
+      delete heroPhoto.dataset.retry;
+      heroPhoto.decoding = "sync";
       heroPhoto.style.display = "block";
       const resolved = (hero.image && (hero.image.startsWith("data:") || hero.image.startsWith("blob:")))
         ? hero.image
         : (getHeroDataUrl(heroIdx, "") || resolveHeroUrl(hero.image));
-      heroPhoto.src = resolved;
-      heroPhoto.alt = hero.name;
-      heroPhoto.style.objectFit = "cover";
-      // Spiderman (Livello 4, index 3): taglio prendendo la parte centrale
-      if(index === 3){
-        heroPhoto.style.objectPosition = "center center";
-      }else{
-        heroPhoto.style.objectPosition = hero.objectPosition || "center top";
-      }
+
       heroPhoto.onerror = ()=>{
         if(!heroPhoto.dataset.retry){
           heroPhoto.dataset.retry = "1";
           const mem = getHeroDataUrl(heroIdx, "");
           if(mem) {
             heroPhoto.src = mem;
-            return;
-          }
-          heroPhoto.src = hero.image;
-        }else if(heroPhoto.dataset.retry === "1"){
-          heroPhoto.dataset.retry = "2";
-          heroPhoto.src = "/" + hero.image.replace(/^\.?\//, "");
-        }else if(heroPhoto.dataset.retry === "2"){
-          heroPhoto.dataset.retry = "3";
-          heroPhoto.src = "./public/" + hero.image.replace(/^\.?\//, "");
+          return;
         }
-      };
+        heroPhoto.src = hero.image;
+      }else if(heroPhoto.dataset.retry === "1"){
+        heroPhoto.dataset.retry = "2";
+        heroPhoto.src = "/" + hero.image.replace(/^\.?\//, "");
+      }else if(heroPhoto.dataset.retry === "2"){
+        heroPhoto.dataset.retry = "3";
+        heroPhoto.src = "./public/" + hero.image.replace(/^\.?\//, "");
     }
+  };
+
+  heroPhoto.removeAttribute("src");
+  heroPhoto.src = resolved;
+  if(heroPhoto.decode){
+    heroPhoto.decode().catch(() => {});
+  }
+  heroPhoto.alt = hero.name;
+  heroPhoto.style.objectFit = "cover";
+  if(index === 3){
+    heroPhoto.style.objectPosition = "center center";
+  }else{
+    heroPhoto.style.objectPosition = hero.objectPosition || "center top";
+  }
+}
   }
 
 
