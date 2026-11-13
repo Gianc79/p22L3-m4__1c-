@@ -1,7 +1,7 @@
 {
-  "name": "Puzzle Magic",
-  "short_name": "Puzzle Magic",
-  "description": "Ricomponi la tua foto, un livello alla volta.",
+  "name": "Puzzle Hero",
+  "short_name": "Puzzle Hero",
+  "description": "Ricomponi la foto, con l'aiuto dei tuoi Supereroi!",
   "start_url": "./",
   "scope": "./",
   "display": "fullscreen",

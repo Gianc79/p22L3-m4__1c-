@@ -7,10 +7,10 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Puzzle Magic v. 1.29</title>
-<meta name="description" content="Ricomponi la tua foto, un livello alla volta. Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
-<meta property="og:title" content="Puzzle Magic">
-<meta property="og:description" content="Ricomponi la tua foto, un livello alla volta. Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
+<title>Puzzle Hero v. 1.30</title>
+<meta name="description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
+<meta property="og:title" content="Puzzle Hero">
+<meta property="og:description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="preload" as="image" href="./assets/aistudio/training_celebration.jpg">
@@ -1938,9 +1938,12 @@ footer{
 }
 
 .hero-art{
+  position:absolute;
+  inset:0;
+  z-index:2;
   width:100%;
   height:100%;
-  padding:10px 14px;
+  padding:0;
   box-sizing:border-box;
   display:flex;
   flex-direction:column;
@@ -3205,6 +3208,10 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 /* Finestra ESCI compatta con icona moderna (v. 1.23) */
+#exitConfirmOverlay{
+  z-index:10055;
+}
+
 .exit-confirm-dialog{
   width:fit-content;
   min-width:240px;
@@ -3900,8 +3907,8 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .podium-col.rank-1 .podium-block{
-  height:62%;
-  min-height:64px;
+  height:74%;
+  min-height:78px;
   background:linear-gradient(180deg, #fef08a 0%, #facc15 100%);
   border-color:#eab308;
   color:#713f12;
@@ -3909,8 +3916,8 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .podium-col.rank-2 .podium-block{
-  height:52%;
-  min-height:54px;
+  height:58%;
+  min-height:62px;
   background:linear-gradient(180deg, #f1f5f9 0%, #cbd5e1 100%);
   border-color:#94a3b8;
   color:#1e293b;
@@ -4277,32 +4284,32 @@ body.is-fullscreen #previewOverlay .preview-image{
   font-size:13px;
 }
 
-/* Finestra Riepilogo Fine Partita (v. 1.29) */
+/* Finestra Riepilogo Fine Partita (v. 1.30 - schermata unica senza scroll) */
 .summary-dialog{
-  width:min(100%, 430px);
-  max-height:92dvh;
-  padding:20px 18px 18px;
+  width:min(100%, 440px);
+  max-height:94dvh;
+  padding:clamp(12px, 2.2dvh, 20px) 16px clamp(12px, 2dvh, 18px);
   border-radius:23px;
-  overflow-y:auto;
+  overflow:hidden;
   display:flex;
   flex-direction:column;
-  gap:12px;
+  gap:clamp(6px, 1.3dvh, 11px);
 }
 
 .summary-dialog h2{
   margin:0;
-  font-size:22px;
+  font-size:clamp(18px, 3dvh, 22px);
 }
 
 .summary-player-sub{
-  margin:-6px 0 0;
-  font-size:13px;
+  margin:-4px 0 0;
+  font-size:clamp(11.5px, 1.8dvh, 13px);
   font-weight:700;
   color:var(--muted);
 }
 
 .summary-top3-banner{
-  padding:12px 14px;
+  padding:clamp(7px, 1.3dvh, 11px) 12px;
   border-radius:16px;
   background:linear-gradient(135deg, #fef9c3 0%, #fde68a 100%);
   border:2px solid #eab308;
@@ -4310,24 +4317,24 @@ body.is-fullscreen #previewOverlay .preview-image{
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:4px;
+  gap:2px;
   box-shadow:0 6px 20px rgba(234, 179, 8, 0.28);
   animation:summaryBannerPop .55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .summary-top3-medal{
-  font-size:40px;
+  font-size:clamp(26px, 4.5dvh, 36px);
   line-height:1;
   animation:summaryMedalBounce 1.4s ease-in-out infinite;
 }
 
 .summary-top3-title{
-  font-size:16px;
+  font-size:clamp(14px, 2.2dvh, 16px);
   font-weight:900;
 }
 
 .summary-top3-sub{
-  font-size:12.5px;
+  font-size:clamp(11px, 1.7dvh, 12.5px);
   font-weight:700;
 }
 
@@ -4344,12 +4351,12 @@ body.is-fullscreen #previewOverlay .preview-image{
 .summary-stats-grid{
   display:grid;
   grid-template-columns:repeat(2, minmax(0, 1fr));
-  gap:8px;
+  gap:clamp(6px, 1dvh, 8px);
   width:100%;
 }
 
 .summary-stat-card{
-  padding:10px 12px;
+  padding:clamp(6px, 1.1dvh, 10px) 10px;
   border-radius:14px;
   background:#f8fafc;
   border:1px solid var(--border);
@@ -4366,7 +4373,7 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .summary-stat-lbl{
-  font-size:10.5px;
+  font-size:10px;
   font-weight:800;
   text-transform:uppercase;
   letter-spacing:.4px;
@@ -4378,7 +4385,7 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .summary-stat-val{
-  font-size:20px;
+  font-size:clamp(16px, 2.6dvh, 20px);
   font-weight:900;
   color:var(--text);
   font-variant-numeric:tabular-nums;
@@ -4386,82 +4393,121 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .summary-stat-card.is-highlight .summary-stat-val{
-  font-size:28px;
+  font-size:clamp(22px, 3.8dvh, 28px);
   color:#1e1b4b;
 }
 
 .summary-medals-section{
   width:100%;
-  text-align:left;
+  text-align:center;
   background:#f8fafc;
   border:1px solid var(--border);
   border-radius:14px;
-  padding:10px 12px;
+  padding:clamp(7px, 1.2dvh, 10px) 10px;
   box-sizing:border-box;
 }
 
 .summary-medals-title{
-  font-size:11px;
+  font-size:10.5px;
   font-weight:800;
   text-transform:uppercase;
   letter-spacing:.5px;
   color:var(--muted);
-  margin-bottom:8px;
+  margin-bottom:clamp(5px, 0.9dvh, 8px);
   text-align:center;
 }
 
 .summary-medals-list{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  max-height:150px;
-  overflow-y:auto;
+  display:grid;
+  grid-template-columns:repeat(7, minmax(0, 1fr));
+  gap:clamp(3px, 1vw, 6px);
+  width:100%;
 }
 
-.summary-medal-row{
+.summary-medal-cell{
   display:flex;
+  flex-direction:column;
   align-items:center;
-  justify-content:space-between;
-  gap:8px;
-  padding:6px 10px;
+  justify-content:center;
+  gap:2px;
+  padding:clamp(5px, 1dvh, 8px) 2px;
   border-radius:10px;
   background:#ffffff;
   border:1px solid var(--border);
-  font-size:12.5px;
-  font-weight:700;
+  min-width:0;
+  box-sizing:border-box;
 }
 
-.summary-medal-row.has-medal{
-  border-color:#fde047;
-  background:#fefce8;
+.summary-medal-cell.has-medal{
+  border-color:#eab308;
+  background:linear-gradient(180deg, #fefce8 0%, #fef08a 100%);
+  box-shadow:0 2px 6px rgba(234, 179, 8, 0.18);
 }
 
-.summary-medal-lvl{
-  color:var(--text);
+.summary-medal-cell.rank-2{
+  border-color:#94a3b8;
+  background:linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+  box-shadow:0 2px 6px rgba(148, 163, 184, 0.18);
+}
+
+.summary-medal-cell.rank-3{
+  border-color:#ea580c;
+  background:linear-gradient(180deg, #fff7ed 0%, #fed7aa 100%);
+  box-shadow:0 2px 6px rgba(234, 88, 12, 0.16);
+}
+
+.summary-medal-cell-lvl{
+  font-size:clamp(8.5px, 2.2vw, 10.5px);
   font-weight:800;
-}
-
-.summary-medal-meta{
   color:var(--muted);
-  font-size:11.5px;
-  font-weight:600;
+  line-height:1.1;
+  white-space:nowrap;
 }
 
-.summary-medal-badge{
-  font-size:20px;
-  line-height:1;
+.summary-medal-cell.has-medal .summary-medal-cell-lvl{
+  color:var(--text);
+}
+
+.summary-medal-cell-val{
+  font-size:clamp(16px, 3.6vw, 22px);
+  font-weight:900;
+  line-height:1.15;
+  color:var(--muted);
 }
 
 .summary-actions{
   width:100%;
   display:flex;
   gap:10px;
-  margin-top:2px;
+  margin-top:0;
 }
 
 .summary-actions .button{
   flex:1 1 0;
-  min-height:42px;
+  min-height:clamp(38px, 5.5dvh, 42px);
+}
+
+@media (orientation: landscape) and (max-height: 540px){
+  .summary-dialog{
+    width:min(94vw, 560px);
+    padding:10px 14px;
+    gap:6px;
+  }
+  .summary-top3-banner{
+    flex-direction:row;
+    justify-content:center;
+    gap:8px;
+    padding:6px 10px;
+  }
+  .summary-top3-medal{
+    font-size:24px;
+  }
+  .summary-stat-card.is-highlight .summary-stat-val{
+    font-size:20px;
+  }
+  .summary-medal-cell{
+    padding:4px 2px;
+  }
 }
 </style>
 </head>
@@ -4475,10 +4521,10 @@ body.is-fullscreen #previewOverlay .preview-image{
       <div class="logo" aria-hidden="true">🧩</div>
       <div>
         <div class="title-row">
-          <h1>Puzzle Magic</h1>
-          <span class="version">v. 1.29</span>
+          <h1>Puzzle Hero</h1>
+          <span class="version">v. 1.30</span>
         </div>
-        <p class="subtitle">Ricomponi la foto, un livello alla volta!</p>
+        <p class="subtitle">Ricomponi la foto, con l'aiuto dei tuoi Supereroi!</p>
       </div>
     </div>
 
@@ -5526,6 +5572,26 @@ window.HERO_DATA_URLS = ["./Livello4.webp", "./Livello5.webp", "./Livello6.webp"
 window._preloadedHeroImgs = [];
 const heroBlobCache = new Map();
 const heroStageImgs = new Map();
+let trainingCelebrationImg = null;
+let trainingCelebrationUrl = "";
+
+function getTrainingCandidateUrls(){
+  const rawList = [
+    "./assets/aistudio/training_celebration.jpg",
+    "/assets/aistudio/training_celebration.jpg",
+    "./public/assets/aistudio/training_celebration.jpg"
+  ];
+  const seen = new Set();
+  const out = [];
+  rawList.forEach(item => {
+    const resolved = resolveHeroUrl(item);
+    if(resolved && !seen.has(resolved)){
+      seen.add(resolved);
+      out.push(resolved);
+    }
+  });
+  return out;
+}
 
 function getHeroCandidateUrls(heroIdx){
   const hero = HEROES[heroIdx];
@@ -5582,6 +5648,39 @@ function initPreloadedHeroElements(){
     heroStageImgs.set(idx, preImg);
     window._preloadedHeroImgs.push(preImg);
   });
+
+  // Precarica anche l'immagine di celebrazione per i primi 3 livelli con fallback multipli
+  const trainCandidates = getTrainingCandidateUrls();
+  if(trainCandidates.length){
+    const trainImg = document.createElement("img");
+    trainImg.className = "hero-photo-pre";
+    trainImg.alt = "Livello completato";
+    trainImg.decoding = "sync";
+    trainImg.loading = "eager";
+    try { trainImg.fetchPriority = "high"; } catch(_){}
+    trainImg.style.objectFit = "cover";
+    trainImg.style.objectPosition = "center center";
+
+    let tIdx = 0;
+    const tryNextTrain = () => {
+      if(tIdx >= trainCandidates.length) return;
+      trainImg.src = trainCandidates[tIdx++];
+    };
+    trainImg.addEventListener("error", tryNextTrain);
+    trainImg.addEventListener("load", () => {
+      trainingCelebrationUrl = trainImg.currentSrc || trainImg.src;
+      if(trainImg.decode){
+        trainImg.decode().catch(() => {});
+      }
+    });
+    tryNextTrain();
+
+    if(stageEl){
+      stageEl.appendChild(trainImg);
+    }
+    trainingCelebrationImg = trainImg;
+    window._preloadedHeroImgs.push(trainImg);
+  }
 }
 
 try {
@@ -7126,6 +7225,8 @@ try {
         renderBoard();
 
         if(savedOverlay === "exitConfirm"){
+          if(locked) showWinDialog(false);
+          exitConfirmReturnToWin = Boolean(locked);
           activeOverlay = "exitConfirm";
           if(exitConfirmOverlay) exitConfirmOverlay.classList.add("show");
         }else if(savedOverlay === "win" && locked){
@@ -8639,15 +8740,52 @@ try {
       if(heroPhoto) heroPhoto.style.display = "none";
       heroStageImgs.forEach(img => img.classList.remove("is-active"));
 
+      const preloadedTrainReady = Boolean(
+        trainingCelebrationImg &&
+        trainingCelebrationImg.complete &&
+        trainingCelebrationImg.naturalWidth > 0
+      );
+      if(trainingCelebrationImg){
+        trainingCelebrationImg.classList.toggle("is-active", preloadedTrainReady);
+      }
+
       if(heroArt){
-        heroArt.style.display = "flex";
-        heroArt.style.alignItems = "center";
-        heroArt.style.justifyContent = "center";
-        heroArt.style.padding = "0";
-        heroArt.style.width = "100%";
-        heroArt.style.height = "100%";
-        const imgUrl = resolveHeroUrl("./assets/aistudio/training_celebration.jpg");
-        heroArt.innerHTML = `<img class="hero-training-img" src="${imgUrl}" alt="Livello completato" draggable="false">`;
+        if(preloadedTrainReady){
+          heroArt.style.display = "none";
+        } else {
+          heroArt.style.display = "flex";
+          heroArt.style.alignItems = "center";
+          heroArt.style.justifyContent = "center";
+          heroArt.style.padding = "0";
+          heroArt.style.width = "100%";
+          heroArt.style.height = "100%";
+          heroArt.innerHTML = "";
+
+          const imgEl = document.createElement("img");
+          imgEl.className = "hero-training-img";
+          imgEl.alt = "Livello completato";
+          imgEl.draggable = false;
+
+          const candidates = getTrainingCandidateUrls();
+          if(trainingCelebrationUrl && !candidates.includes(trainingCelebrationUrl)){
+            candidates.unshift(trainingCelebrationUrl);
+          }
+          let candIdx = 0;
+          const tryLoadTrainImg = () => {
+            if(candIdx < candidates.length){
+              imgEl.src = candidates[candIdx++];
+            } else {
+              // Fallback SVG di sicurezza se nessuna risorsa immagine è raggiungibile
+              heroArt.innerHTML = `<svg viewBox="0 0 240 180" width="82%" height="82%" aria-hidden="true"><defs><radialGradient id="trBg" cx="50%" cy="45%" r="55%"><stop offset="0%" stop-color="#fef08a" stop-opacity="0.9"/><stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/></radialGradient></defs><circle cx="120" cy="90" r="78" fill="url(#trBg)"/><path d="M120 26 L136 66 L179 70 L146 98 L156 140 L120 118 L84 140 L94 98 L61 70 L104 66 Z" fill="#facc15" stroke="#ca8a04" stroke-width="5" stroke-linejoin="round"/><circle cx="72" cy="46" r="6" fill="#60a5fa"/><circle cx="170" cy="48" r="5" fill="#34d399"/><circle cx="64" cy="126" r="5" fill="#f472b6"/><circle cx="176" cy="124" r="6" fill="#fbbf24"/></svg>`;
+            }
+          };
+          imgEl.addEventListener("error", tryLoadTrainImg);
+          imgEl.addEventListener("load", () => {
+            trainingCelebrationUrl = imgEl.currentSrc || imgEl.src;
+          });
+          heroArt.appendChild(imgEl);
+          tryLoadTrainImg();
+        }
       }
       return;
     }
@@ -8674,6 +8812,7 @@ try {
     }
 
     if(heroArt) heroArt.style.display = "none";
+    if(trainingCelebrationImg) trainingCelebrationImg.classList.remove("is-active");
 
     // Mostra istantaneamente l'immagine già decodificata nello stage se disponibile
     let shownPreloaded = false;
@@ -8820,6 +8959,18 @@ try {
   }
 
 
+  function resetHomeSelectionAndCrop(){
+    selectedLevel = 0;
+    cropZoom = 1;
+    cropPanX = 0;
+    cropPanY = 0;
+    cropPanRatioX = 0;
+    cropPanRatioY = 0;
+    updateLevelButtonsUI();
+    updateCropFrameAndImage();
+  }
+
+
   function openGameSummaryModal(celebrate=true){
     if(winOverlay) winOverlay.classList.remove("show");
     if(exitConfirmOverlay) exitConfirmOverlay.classList.remove("show");
@@ -8828,6 +8979,7 @@ try {
     finalizeSessionScore();
     inGameSession = false;
     toggleFullscreen(false);
+    resetHomeSelectionAndCrop();
     showHomeView();
 
     const activeName = (currentPlayerName || savedPlayerName || "Giocatore").trim().slice(0, MAX_RECORD_NAME_LEN) || "Giocatore";
@@ -8868,43 +9020,41 @@ try {
 
     if(summaryMedalsList){
       summaryMedalsList.innerHTML = "";
-      if(!Array.isArray(currentSessionDetails) || currentSessionDetails.length === 0){
-        const emptyEl = document.createElement("div");
-        emptyEl.className = "summary-medal-row";
-        emptyEl.textContent = "Nessun livello completato in questa partita.";
-        summaryMedalsList.appendChild(emptyEl);
-      } else {
-        let medalsCount = 0;
+      const rankByLevel = new Map();
+      if(Array.isArray(currentSessionDetails)){
         currentSessionDetails.forEach(item => {
-          const row = document.createElement("div");
-          const hasMedal = item.rank === 1 || item.rank === 2 || item.rank === 3;
-          if(hasMedal) medalsCount++;
-          row.className = "summary-medal-row" + (hasMedal ? " has-medal" : "");
-
-          const leftDiv = document.createElement("div");
-          const lvlSpan = document.createElement("div");
-          lvlSpan.className = "summary-medal-lvl";
-          lvlSpan.textContent = `Livello ${item.levelIndex + 1} · ${item.score} pt`;
-          const metaSpan = document.createElement("div");
-          metaSpan.className = "summary-medal-meta";
-          metaSpan.textContent = `${item.moves} mosse · ${formatTime(item.time)}`;
-          leftDiv.append(lvlSpan, metaSpan);
-
-          const badgeSpan = document.createElement("span");
-          badgeSpan.className = "summary-medal-badge";
-          badgeSpan.textContent = hasMedal ? medalIcons[item.rank] : "—";
-
-          row.append(leftDiv, badgeSpan);
-          summaryMedalsList.appendChild(row);
+          if(item && Number.isInteger(item.levelIndex)){
+            const prev = rankByLevel.get(item.levelIndex);
+            const r = (item.rank === 1 || item.rank === 2 || item.rank === 3) ? item.rank : null;
+            if(r !== null && (prev === undefined || prev === null || r < prev)){
+              rankByLevel.set(item.levelIndex, r);
+            } else if(prev === undefined){
+              rankByLevel.set(item.levelIndex, r);
+            }
+          }
         });
-        if(medalsCount === 0){
-          const note = document.createElement("div");
-          note.className = "summary-medal-meta";
-          note.style.textAlign = "center";
-          note.style.marginTop = "4px";
-          note.textContent = "Nessuna medaglia ottenuta nei livelli di questa partita.";
-          summaryMedalsList.appendChild(note);
-        }
+      }
+
+      for(let i = 0; i < LEVELS.length; i++){
+        const rank = rankByLevel.get(i) ?? null;
+        const hasMedal = rank === 1 || rank === 2 || rank === 3;
+        const cell = document.createElement("div");
+        cell.className = "summary-medal-cell" + (hasMedal ? ` has-medal rank-${rank}` : "");
+        cell.setAttribute(
+          "aria-label",
+          hasMedal ? `Livello ${i + 1}: ${rank}° posto` : `Livello ${i + 1}: nessuna medaglia`
+        );
+
+        const lvlSpan = document.createElement("span");
+        lvlSpan.className = "summary-medal-cell-lvl";
+        lvlSpan.textContent = `Liv. ${i + 1}`;
+
+        const valSpan = document.createElement("span");
+        valSpan.className = "summary-medal-cell-val";
+        valSpan.textContent = hasMedal ? medalIcons[rank] : "-";
+
+        cell.append(lvlSpan, valSpan);
+        summaryMedalsList.appendChild(cell);
       }
     }
 
@@ -9586,13 +9736,18 @@ try {
    * CONTROLLI MODALITÀ SCHERMO INTERO VERTICALE & ORIZZONTALE (v. 1.18)
    */
 
+  let exitConfirmReturnToWin = false;
+
   function requestExitGame(){
+    exitConfirmReturnToWin = Boolean(winOverlay && winOverlay.classList.contains("show"));
     activeOverlay = "exitConfirm";
     if(exitConfirmOverlay) exitConfirmOverlay.classList.add("show");
   }
 
   function confirmExitGame(){
+    exitConfirmReturnToWin = false;
     if(exitConfirmOverlay) exitConfirmOverlay.classList.remove("show");
+    if(winOverlay) winOverlay.classList.remove("show");
     activeOverlay = "";
     stopTimer();
     if(currentSessionLevelsCleared > 0){
@@ -9602,12 +9757,23 @@ try {
     finalizeSessionScore();
     inGameSession = false;
     toggleFullscreen(false);
+    resetHomeSelectionAndCrop();
     showHomeView();
     saveGame();
   }
 
   function cancelExitGame(){
     if(exitConfirmOverlay) exitConfirmOverlay.classList.remove("show");
+    if(exitConfirmReturnToWin || (winOverlay && winOverlay.classList.contains("show"))){
+      exitConfirmReturnToWin = false;
+      if(winOverlay && !winOverlay.classList.contains("show")){
+        showWinDialog(false);
+      } else {
+        activeOverlay = "win";
+      }
+      return;
+    }
+    exitConfirmReturnToWin = false;
     activeOverlay = "";
   }
 
@@ -10008,9 +10174,7 @@ try {
   }
 
   if(winExitBtn){
-    winExitBtn.addEventListener("click", () => {
-      openGameSummaryModal(true);
-    });
+    winExitBtn.addEventListener("click", requestExitGame);
   }
 
   if(summaryExitBtn){
