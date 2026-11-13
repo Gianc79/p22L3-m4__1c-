@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Puzzle Magic v. 1.23</title>
+<title>Puzzle Magic v. 1.24</title>
 <meta name="description" content="Ricomponi la tua foto, un livello alla volta. Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
 <meta property="og:title" content="Puzzle Magic">
 <meta property="og:description" content="Ricomponi la tua foto, un livello alla volta. Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
@@ -188,8 +188,17 @@ h1 {
   color: var(--primary-dark);
 }
 
-.home-level-record {
+.home-record-row {
   margin-top: clamp(5px, 0.9vh, 8px);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.home-level-record {
+  margin-top: 0;
+  flex: 1 1 auto;
+  min-width: 0;
   padding: 5px 10px;
   border-radius: 10px;
   background: #f8fafc;
@@ -204,6 +213,33 @@ h1 {
   align-items: center;
   gap: 5px;
   line-height: 1.25;
+}
+
+.records-icon-btn {
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 29px;
+  padding: 0;
+  border: 1px solid #cbd5e1;
+  border-bottom: 2.5px solid #94a3b8;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+  color: var(--primary-dark);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform .08s ease, background .12s ease, border-color .12s ease;
+}
+
+.records-icon-btn:hover {
+  background: #eef2ff;
+  border-color: var(--primary);
+}
+
+.records-icon-btn:active {
+  transform: translateY(1.5px);
+  border-bottom-width: 1px;
 }
 
 .home-level-record.is-empty {
@@ -456,24 +492,69 @@ h1 {
 }
 
 .crop-zoom-controls {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 4px;
-  flex: 0 0 auto;
+  gap: 7px;
+  flex: 1 1 auto;
+  max-width: 215px;
+  min-width: 120px;
 }
 
-.crop-zoom-btn,
+.crop-zoom-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1 1 auto;
+  min-width: 72px;
+  height: 7px;
+  margin: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary) var(--zoom-pct, 0%), #cbd5e1 var(--zoom-pct, 0%));
+  outline: none;
+  cursor: pointer;
+  touch-action: pan-x;
+}
+
+.crop-zoom-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2.5px solid var(--primary);
+  box-shadow: 0 2px 6px rgba(36, 50, 71, 0.24);
+  cursor: grab;
+  transition: transform .1s ease;
+}
+
+.crop-zoom-slider::-webkit-slider-thumb:active {
+  transform: scale(1.12);
+  cursor: grabbing;
+}
+
+.crop-zoom-slider::-moz-range-thumb {
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2.5px solid var(--primary);
+  box-shadow: 0 2px 6px rgba(36, 50, 71, 0.24);
+  cursor: grab;
+}
+
 .crop-zoom-reset {
   display: inline-grid;
   place-items: center;
-  height: 26px;
-  padding: 0 8px;
+  height: 25px;
+  min-width: 38px;
+  padding: 0 6px;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
   background: #f8fafc;
   color: var(--text);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
+  font-variant-numeric: tabular-nums;
   line-height: 1;
   cursor: pointer;
   touch-action: manipulation;
@@ -482,33 +563,18 @@ h1 {
   transition: background .12s ease, border-color .12s ease, transform .08s ease;
 }
 
-.crop-zoom-btn {
-  width: 28px;
-  padding: 0;
-  font-size: 15px;
-}
-
-.crop-zoom-reset {
-  min-width: 40px;
-  font-size: 11px;
-  font-variant-numeric: tabular-nums;
-}
-
-.crop-zoom-btn:hover:not(:disabled),
 .crop-zoom-reset:hover:not(:disabled) {
   background: #eef2ff;
   border-color: var(--primary);
   color: var(--primary-dark);
 }
 
-.crop-zoom-btn:active:not(:disabled),
 .crop-zoom-reset:active:not(:disabled) {
   transform: scale(0.94);
 }
 
-.crop-zoom-btn:disabled,
 .crop-zoom-reset:disabled {
-  opacity: 0.42;
+  opacity: 0.55;
   cursor: default;
 }
 
@@ -1753,21 +1819,35 @@ footer{
 /* v. 1.10 / v. 1.12 - Supereroi a fine livello con foto */
 
 .win-dialog{
-  overflow:hidden
+  max-height:92dvh;
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding:clamp(14px, 2.5vh, 22px);
 }
 
 .hero-stage{
   position:relative;
   width:100%;
-  height:clamp(190px, 32vh, 250px);
+  height:clamp(175px, 28dvh, 235px);
   margin:-2px auto 10px;
   display:flex;
-  align-items:flex-start;
+  align-items:center;
   justify-content:center;
   border-radius:18px;
   overflow:hidden;
   background:radial-gradient(circle at 50% 25%, #1e293b 0%, #0f172a 100%);
   box-shadow:0 4px 18px rgba(0,0,0,.12)
+}
+
+.hero-art{
+  width:100%;
+  height:100%;
+  padding:10px 14px;
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
 }
 
 .hero-photo{
@@ -1816,11 +1896,11 @@ footer{
   font-size:12px;
   font-weight:800;
   color:var(--primary-dark);
-  margin:0 0 10px
+  margin:0 0 8px
 }
 
 .win-dialog #winMessage{
-  margin-bottom:18px;
+  margin-bottom:12px;
   white-space:pre-line
 }
 
@@ -1828,23 +1908,30 @@ footer{
   display:contents
 }
 
-/* Adattamento schermo orizzontale / landscape per la schermata di fine livello (v. 1.12) */
+/* Adattamento schermo orizzontale / landscape per la schermata di fine livello (v. 1.24) */
 @media (orientation: landscape) and (max-height: 640px), (orientation: landscape) and (min-width: 640px) {
+  .overlay{
+    padding:clamp(8px, 2dvh, 18px);
+  }
+
   .win-dialog{
-    width:min(94vw,680px);
-    max-height:88vh;
-    padding:18px 20px;
+    width:min(94vw,700px);
+    max-height:94dvh;
+    padding:clamp(10px, 2.2dvh, 18px) 18px;
     display:flex;
     flex-direction:row;
-    align-items:center;
-    gap:18px;
-    text-align:left
+    align-items:stretch;
+    gap:16px;
+    text-align:left;
+    overflow:hidden;
   }
 
   .win-dialog .hero-stage{
-    flex:0 0 44%;
-    max-width:46%;
-    height:260px;
+    flex:0 0 42%;
+    max-width:44%;
+    height:auto;
+    min-height:170px;
+    max-height:100%;
     margin:0;
     align-self:stretch
   }
@@ -1853,41 +1940,59 @@ footer{
     display:flex;
     flex:1 1 auto;
     flex-direction:column;
-    justify-content:center;
+    justify-content:safe center;
     align-items:flex-start;
     text-align:left;
-    min-width:0
+    min-width:0;
+    min-height:0;
+    overflow-y:auto;
+    padding:2px 2px;
   }
 
   .win-dialog h2{
-    margin:0 0 4px;
-    font-size:20px
+    margin:0 0 2px;
+    font-size:clamp(16px, 4.2dvh, 20px)
   }
 
   .win-dialog .hero-name{
-    font-size:18px;
+    font-size:clamp(15px, 3.8dvh, 18px);
     margin:0 0 2px
   }
 
   .win-dialog .hero-tagline{
-    font-size:12px;
-    margin:0 0 8px
+    font-size:11.5px;
+    line-height:1.25;
+    margin:0 0 5px
   }
 
   .win-dialog #winMessage{
-    margin:0 0 10px;
-    font-size:13px;
-    line-height:1.45;
+    margin:0 0 8px;
+    font-size:12.5px;
+    line-height:1.35;
     white-space:pre-line
   }
 
   .win-dialog .win-stats-summary{
-    margin:0 0 14px
+    margin:0 0 6px;
+    padding:5px 10px;
+    font-size:12px;
+    gap:6px 12px;
+  }
+
+  .win-dialog .win-record-box{
+    margin:0 0 8px;
   }
 
   .win-dialog .dialog-actions{
     justify-content:flex-start;
-    width:100%
+    width:100%;
+    gap:8px;
+  }
+
+  .win-dialog .dialog-actions .button{
+    min-height:36px;
+    padding:7px 12px;
+    font-size:13.5px;
   }
 }
 
@@ -2935,12 +3040,7 @@ body.is-fullscreen #previewOverlay .preview-image{
   }
 
   .hero-stage{
-    height:158px
-  }
-
-  .hero-art{
-    width:151px;
-    height:151px
+    height:clamp(172px, 26dvh, 210px)
   }
 
   .hero-aura{
@@ -3019,23 +3119,621 @@ body.is-fullscreen #previewOverlay .preview-image{
   background:linear-gradient(180deg, #dc2626 0%, #b91c1c 100%);
 }
 
-/* Overlay compatto per ripristinare schermo intero e orientamento dopo Cambia foto (v. 1.23) */
-.resume-fs-dialog{
-  width:fit-content;
-  min-width:250px;
-  max-width:min(90vw, 320px);
-  padding:22px 22px 18px;
-  border-radius:20px;
+/* Modale Nome Giocatore con Tastiera Virtuale a 21 lettere (v. 1.24) */
+.name-dialog{
+  width:min(100%, 420px);
+  padding:18px 14px 16px;
+  border-radius:22px;
 }
 
-.resume-fs-dialog h2{
+.name-dialog h2{
   font-size:19px;
+  margin:0 0 4px;
+}
+
+.name-dialog-sub{
+  font-size:12.5px;
+  color:var(--muted);
+  margin:0 0 12px;
+}
+
+.name-display-box{
+  width:100%;
+  height:52px;
+  padding:0 14px;
+  border:2px solid var(--primary);
+  border-radius:14px;
+  background:#f8faff;
+  color:var(--text);
+  font-size:clamp(22px, 5.5vw, 27px);
+  font-weight:900;
+  letter-spacing:1.6px;
+  text-align:center;
+  text-transform:uppercase;
+  outline:none;
+  box-shadow:inset 0 2px 5px rgba(91,110,225,0.08);
+}
+
+.name-tip-error{
+  min-height:18px;
+  margin:6px 0 10px;
+  font-size:12px;
+  font-weight:700;
+  color:#dc2626;
+  transition:opacity .15s ease;
+}
+
+.name-tip-error.is-hidden{
+  opacity:0;
+  visibility:hidden;
+}
+
+.vk-grid{
+  display:grid;
+  grid-template-columns:repeat(7, minmax(0, 1fr));
+  gap:6px;
+  margin-bottom:7px;
+}
+
+.vk-key{
+  height:clamp(40px, 6vh, 48px);
+  padding:0;
+  border:1px solid #cbd5e1;
+  border-bottom:3px solid #94a3b8;
+  border-radius:10px;
+  background:linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+  color:var(--text);
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+  touch-action:manipulation;
+  user-select:none;
+  -webkit-user-select:none;
+  display:grid;
+  place-items:center;
+  transition:transform .07s ease, border-bottom-width .07s ease, background .1s ease;
+}
+
+.vk-key:active:not(:disabled){
+  transform:translateY(2px);
+  border-bottom-width:1px;
+  background:#e2e8f0;
+}
+
+.vk-bottom-row{
+  display:grid;
+  grid-template-columns:1.25fr 1.65fr 1.25fr;
+  gap:6px;
+}
+
+.vk-key-action{
+  font-size:13.5px;
+  font-weight:800;
+}
+
+.vk-key-backspace{
+  background:linear-gradient(180deg, #fff1f2 0%, #ffe4e6 100%);
+  border-color:#fda4af;
+  border-bottom-color:#e11d48;
+  color:#9f1239;
+}
+
+.vk-key-ok{
+  background:linear-gradient(180deg, #6366f1 0%, #4f46e5 100%);
+  border-color:#4338ca;
+  border-bottom-color:#312e81;
+  color:#ffffff;
+}
+
+.vk-key-ok:disabled{
+  opacity:.38;
+  cursor:not-allowed;
+  transform:none;
+}
+
+/* Finestra Record Fissa Verticale senza scroll (v. 1.24) */
+#recordsOverlay{
+  padding:clamp(6px, 1.5dvh, 14px);
+  overflow:hidden;
+}
+
+.records-dialog{
+  width:min(100%, 440px);
+  height:min(100%, 96dvh);
+  max-height:96dvh;
+  padding:clamp(10px, 1.8dvh, 16px);
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  gap:clamp(6px, 1.1dvh, 10px);
+  overflow:hidden;
+  border-radius:22px;
+  background:linear-gradient(180deg, #ffffff 0%, #f8faff 100%);
+}
+
+.records-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex:0 0 auto;
+}
+
+.records-title-wrap{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  text-align:left;
+}
+
+.records-crest{
+  width:34px;
+  height:34px;
+  border-radius:10px;
+  background:linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color:#b45309;
+  display:grid;
+  place-items:center;
+  flex-shrink:0;
+  box-shadow:0 2px 6px rgba(217,119,6,0.18);
+}
+
+.records-header h2{
+  margin:0;
+  font-size:clamp(17px, 2.4dvh, 21px);
+  line-height:1.1;
+}
+
+.records-subtitle{
+  margin:1px 0 0;
+  font-size:11px;
+  color:var(--muted);
+  font-weight:700;
+}
+
+.records-close-x{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  border:1px solid var(--border);
+  background:#f8fafc;
+  color:var(--text);
+  font-size:15px;
+  font-weight:800;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  flex-shrink:0;
+}
+
+.records-section{
+  background:#ffffff;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:clamp(8px, 1.3dvh, 12px);
+  box-shadow:0 2px 10px rgba(36,50,71,0.04);
+  display:flex;
+  flex-direction:column;
+  gap:clamp(6px, 0.9dvh, 8px);
+  min-height:0;
+}
+
+.records-section-level{
+  flex:1.15 1 0;
+}
+
+.records-section-session{
+  flex:1 1 0;
+}
+
+.records-sec-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:6px;
+  flex:0 0 auto;
+}
+
+.records-sec-title{
+  font-size:11px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  color:var(--primary-dark);
+}
+
+.records-lvl-tabs{
+  display:flex;
+  align-items:center;
+  gap:3px;
+}
+
+.records-lvl-tab{
+  width:22px;
+  height:22px;
+  padding:0;
+  border:1px solid var(--border);
+  border-radius:6px;
+  background:#f8fafc;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:800;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+}
+
+.records-lvl-tab.is-active{
+  background:var(--primary);
+  border-color:var(--primary);
+  color:#ffffff;
+}
+
+/* Podio creativo a 3 colonne per i primi 3 del livello */
+.podium-stage{
+  flex:1 1 auto;
+  min-height:0;
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+  align-items:end;
+  gap:6px;
+  padding-top:4px;
+}
+
+.podium-col{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-end;
+  height:100%;
+  min-width:0;
+}
+
+.podium-player{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin-bottom:4px;
+  width:100%;
+  min-width:0;
+}
+
+.podium-medal{
+  font-size:clamp(16px, 2.5dvh, 22px);
+  line-height:1;
+}
+
+.podium-name{
+  font-size:clamp(11px, 1.7dvh, 13px);
+  font-weight:900;
+  color:var(--text);
+  max-width:100%;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.podium-date{
+  font-size:9.5px;
+  font-weight:600;
+  color:var(--muted);
+}
+
+.podium-block{
+  width:100%;
+  border-radius:12px 12px 6px 6px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:4px;
+  font-variant-numeric:tabular-nums;
+  border:1px solid transparent;
+}
+
+.podium-col.rank-1 .podium-block{
+  height:58%;
+  min-height:44px;
+  background:linear-gradient(180deg, #fef08a 0%, #facc15 100%);
+  border-color:#eab308;
+  color:#713f12;
+  box-shadow:0 4px 12px rgba(234,179,8,0.22);
+}
+
+.podium-col.rank-2 .podium-block{
+  height:44%;
+  min-height:36px;
+  background:linear-gradient(180deg, #f1f5f9 0%, #cbd5e1 100%);
+  border-color:#94a3b8;
+  color:#1e293b;
+}
+
+.podium-col.rank-3 .podium-block{
+  height:34%;
+  min-height:30px;
+  background:linear-gradient(180deg, #ffedd5 0%, #fdba74 100%);
+  border-color:#ea580c;
+  color:#7c2d12;
+}
+
+.podium-col.is-empty .podium-block{
+  background:#f8fafc;
+  border:1px dashed #cbd5e1;
+  color:var(--muted);
+  box-shadow:none;
+}
+
+.podium-score{
+  font-size:clamp(12px, 1.9dvh, 15px);
+  font-weight:900;
+  line-height:1.1;
+}
+
+.podium-rank-lbl{
+  font-size:9.5px;
+  font-weight:800;
+  opacity:0.8;
+}
+
+/* Lista Classifica Partita Completa */
+.session-rank-list{
+  flex:1 1 auto;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-evenly;
+  gap:5px;
+}
+
+.session-rank-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:clamp(5px, 0.9dvh, 8px) 10px;
+  border-radius:12px;
+  background:#f8fafc;
+  border:1px solid var(--border);
+  min-width:0;
+}
+
+.session-rank-row.rank-1{
+  background:linear-gradient(90deg, #fefce8 0%, #fef9c3 100%);
+  border-color:#fde047;
+}
+
+.session-rank-row.rank-2{
+  background:linear-gradient(90deg, #f8fafc 0%, #f1f5f9 100%);
+  border-color:#cbd5e1;
+}
+
+.session-rank-row.rank-3{
+  background:linear-gradient(90deg, #fff7ed 0%, #ffedd5 100%);
+  border-color:#fdba74;
+}
+
+.session-rank-badge{
+  font-size:17px;
+  line-height:1;
+  flex-shrink:0;
+}
+
+.session-rank-info{
+  flex:1 1 auto;
+  min-width:0;
+  text-align:left;
+}
+
+.session-rank-name{
+  font-size:13px;
+  font-weight:900;
+  color:var(--text);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.session-rank-meta{
+  font-size:10.5px;
+  font-weight:600;
+  color:var(--muted);
+}
+
+.session-rank-score{
+  font-size:14px;
+  font-weight:900;
+  color:var(--primary-dark);
+  font-variant-numeric:tabular-nums;
+  flex-shrink:0;
+}
+
+/* Modale Ritaglio e Zoom Nuovo Livello dopo Cambia Foto (v. 1.24) */
+.next-crop-dialog{
+  width:min(100%, 480px);
+  height:min(92dvh, 560px);
+  max-height:92dvh;
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  overflow:hidden;
+  border-radius:22px;
+}
+
+.next-crop-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex:0 0 auto;
+}
+
+.next-crop-header h2{
+  margin:0;
+  font-size:17px;
+}
+
+.next-crop-badge{
+  font-size:11.5px;
+  font-weight:800;
+  color:var(--primary-dark);
+  background:#eef2ff;
+  padding:3px 9px;
+  border-radius:8px;
+}
+
+.next-crop-actions{
+  display:flex;
+  gap:8px;
+  flex:0 0 auto;
+}
+
+.next-crop-actions .button{
+  flex:1 1 0;
+  min-height:42px;
+}
+
+/* Finestra Galleria Foto Interna (v. 1.24) */
+.gallery-dialog{
+  width:min(100%, 540px);
+  height:min(92dvh, 680px);
+  max-height:92dvh;
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  overflow:hidden;
+  border-radius:22px;
+  text-align:left;
+}
+
+.gallery-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex:0 0 auto;
+}
+
+.gallery-header h2{
+  margin:0;
+  font-size:18px;
+}
+
+.gallery-quota{
+  font-size:11px;
+  font-weight:800;
+  color:var(--muted);
+  font-variant-numeric:tabular-nums;
+}
+
+.gallery-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex:0 0 auto;
+}
+
+.gallery-limit-alert{
+  padding:8px 10px;
+  border-radius:10px;
+  background:#fef2f2;
+  border:1px solid #fecaca;
+  color:#b91c1c;
+  font-size:12px;
+  font-weight:700;
+  line-height:1.35;
+  flex:0 0 auto;
+  display:none;
+}
+
+.gallery-limit-alert.show{
+  display:block;
+}
+
+.gallery-scroll-body{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding-right:2px;
+}
+
+.gallery-date-group{
+  margin-bottom:14px;
+}
+
+.gallery-date-label{
+  font-size:11.5px;
+  font-weight:800;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:.4px;
   margin:0 0 6px;
 }
 
-.resume-fs-dialog p{
+.gallery-grid-4{
+  display:grid;
+  grid-template-columns:repeat(4, minmax(0, 1fr));
+  gap:6px;
+}
+
+.gallery-thumb-card{
+  position:relative;
+  aspect-ratio:1 / 1;
+  border-radius:10px;
+  overflow:hidden;
+  background:#e2e8f0;
+  border:2px solid transparent;
+  cursor:pointer;
+  transition:transform .12s ease, border-color .12s ease;
+}
+
+.gallery-thumb-card:hover{
+  border-color:var(--primary);
+}
+
+.gallery-thumb-card:active{
+  transform:scale(0.96);
+}
+
+.gallery-thumb-card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  pointer-events:none;
+}
+
+.gallery-del-btn{
+  position:absolute;
+  top:4px;
+  right:4px;
+  width:22px;
+  height:22px;
+  padding:0;
+  border:none;
+  border-radius:50%;
+  background:rgba(15, 23, 42, 0.78);
+  color:#ffffff;
+  font-size:12px;
+  font-weight:900;
+  line-height:1;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  z-index:2;
+}
+
+.gallery-del-btn:hover{
+  background:#dc2626;
+}
+
+.gallery-empty{
+  padding:32px 16px;
+  text-align:center;
+  color:var(--muted);
   font-size:13px;
-  margin:0 0 16px;
 }
 </style>
 </head>
@@ -3050,7 +3748,7 @@ body.is-fullscreen #previewOverlay .preview-image{
       <div>
         <div class="title-row">
           <h1>Puzzle Magic</h1>
-          <span class="version">v. 1.23</span>
+          <span class="version">v. 1.24</span>
         </div>
         <p class="subtitle">Ricomponi la foto, un livello alla volta!</p>
       </div>
@@ -3099,8 +3797,20 @@ body.is-fullscreen #previewOverlay .preview-image{
         <span class="lvl-grid" id="lvlGridLabel6">5×7</span>
       </button>
     </div>
-    <div class="home-level-record is-empty" id="homeLevelRecord" aria-live="polite">
-      🏆 Record: nessun punteggio salvato
+    <div class="home-record-row">
+      <div class="home-level-record is-empty" id="homeLevelRecord" aria-live="polite">
+        🏆 Record: nessun punteggio salvato
+      </div>
+      <button class="records-icon-btn" id="openRecordsBtn" type="button" aria-label="Apri classifica record" title="Classifica Record">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+          <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+          <path d="M4 22h16"/>
+          <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+          <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+          <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+        </svg>
+      </button>
     </div>
   </section>
 
@@ -3108,10 +3818,10 @@ body.is-fullscreen #previewOverlay .preview-image{
   <section class="home-panel home-photo-panel" id="photoModelPanel">
     <div class="home-photo-header">
       <h2 class="home-panel-title">MODELLO FOTO</h2>
-      <button class="upload-btn-3d" id="uploadPhotoBtn" type="button" title="Carica una nuova foto">
+      <button class="upload-btn-3d" id="uploadPhotoBtn" type="button" title="Apri galleria foto">
         📷 Carica foto
       </button>
-      <input id="photoInput" type="file" accept="image/*" style="display:none">
+      <input id="photoInput" type="file" accept="image/*" multiple style="display:none">
     </div>
 
     <div class="crop-preview-box" id="cropPreviewBox" title="Trascina la foto o esegui lo zoom">
@@ -3124,9 +3834,16 @@ body.is-fullscreen #previewOverlay .preview-image{
     <div class="crop-footer-bar">
       <span class="crop-guide-caption">Trascina la foto o esegui lo zoom.</span>
       <div class="crop-zoom-controls" aria-label="Controlli zoom foto">
-        <button type="button" class="crop-zoom-btn" id="cropZoomOutBtn" title="Riduci zoom" aria-label="Riduci zoom">−</button>
-        <button type="button" class="crop-zoom-reset" id="cropZoomResetBtn" title="Reimposta zoom" aria-label="Reimposta zoom">1×</button>
-        <button type="button" class="crop-zoom-btn" id="cropZoomInBtn" title="Aumenta zoom" aria-label="Aumenta zoom">+</button>
+        <input
+          type="range"
+          class="crop-zoom-slider"
+          id="cropZoomSlider"
+          min="1"
+          max="4"
+          step="0.05"
+          value="1"
+          aria-label="Zoom foto da 1x a 4x">
+        <button type="button" class="crop-zoom-reset" id="cropZoomResetBtn" title="Reimposta zoom 1×" aria-label="Reimposta zoom">1×</button>
       </div>
     </div>
   </section>
@@ -3339,22 +4056,139 @@ body.is-fullscreen #previewOverlay .preview-image{
   </div>
 </div>
 
-<!-- Dialog rapido di avvio schermo intero dopo cambio foto (v. 1.23) -->
+<!-- Modale Nome Giocatore con Tastiera Virtuale (v. 1.24) -->
 <div
   class="overlay"
-  id="resumeFullscreenOverlay"
+  id="playerNameOverlay"
   role="dialog"
   aria-modal="true"
-  aria-labelledby="resumeFullscreenTitle">
-  <div class="dialog resume-fs-dialog">
-    <div class="dialog-emoji" aria-hidden="true" style="font-size:38px;margin-bottom:6px">🧩</div>
-    <h2 id="resumeFullscreenTitle">Nuova foto pronta!</h2>
-    <p id="resumeFullscreenDesc">Tocca per avviare il livello a schermo intero.</p>
-    <div class="dialog-actions">
-      <button class="button primary" id="resumeFullscreenBtn" type="button" style="width:100%">
-        Avvia livello
-      </button>
+  aria-labelledby="playerNameTitle">
+  <div class="dialog name-dialog">
+    <h2 id="playerNameTitle">Inserisci il tuo nome</h2>
+    <p class="name-dialog-sub">I tuoi punteggi verranno salvati automaticamente.</p>
+    <input
+      type="text"
+      class="name-display-box"
+      id="playerNameDisplay"
+      readonly
+      maxlength="12"
+      placeholder="NOME"
+      aria-label="Nome giocatore">
+    <div class="name-tip-error" id="playerNameTip">Immettere un numero di caratteri da 1 a 12</div>
+    <div class="vk-grid" id="virtualKeyboardLetters" aria-label="Tastiera lettere"></div>
+    <div class="vk-bottom-row">
+      <button type="button" class="vk-key vk-key-action vk-key-backspace" id="vkBackspaceBtn" aria-label="Cancella carattere">⌫ Canc</button>
+      <button type="button" class="vk-key vk-key-action" id="vkSpaceBtn" aria-label="Spazio">Spazio</button>
+      <button type="button" class="vk-key vk-key-action vk-key-ok" id="vkOkBtn" disabled>OK</button>
     </div>
+  </div>
+</div>
+
+<!-- Finestra Classifica Record Fissa Verticale (v. 1.24) -->
+<div
+  class="overlay"
+  id="recordsOverlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="recordsTitle">
+  <div class="dialog records-dialog">
+    <div class="records-header">
+      <div class="records-title-wrap">
+        <div class="records-crest" aria-hidden="true">🏆</div>
+        <div>
+          <h2 id="recordsTitle">Sala dei Record</h2>
+          <p class="records-subtitle">Classifiche locali · A parità di punti vince il più recente</p>
+        </div>
+      </div>
+      <button type="button" class="records-close-x" id="recordsCloseXBtn" aria-label="Chiudi classifica">✕</button>
+    </div>
+
+    <section class="records-section records-section-level" aria-label="Classifica livello selezionato">
+      <div class="records-sec-head">
+        <span class="records-sec-title" id="recordsLevelHeading">Podio Livello 1</span>
+        <div class="records-lvl-tabs" id="recordsLevelTabs"></div>
+      </div>
+      <div class="podium-stage" id="recordsPodiumStage"></div>
+    </section>
+
+    <section class="records-section records-section-session" aria-label="Classifica partita completa">
+      <div class="records-sec-head">
+        <span class="records-sec-title">Top 3 Partita Completa</span>
+      </div>
+      <div class="session-rank-list" id="recordsSessionList"></div>
+    </section>
+
+    <button type="button" class="button primary" id="recordsCloseBtn" style="width:100%;flex:0 0 auto;min-height:40px;">Chiudi</button>
+  </div>
+</div>
+
+<!-- Modale Ritaglio / Zoom per Cambia Foto di Fine Livello (v. 1.24) -->
+<div
+  class="overlay"
+  id="nextLevelCropOverlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="nextCropTitle">
+  <div class="dialog next-crop-dialog">
+    <div class="next-crop-header">
+      <h2 id="nextCropTitle">Prepara la foto</h2>
+      <span class="next-crop-badge" id="nextCropBadge">Livello 2 · 4×3</span>
+    </div>
+
+    <div class="crop-preview-box" id="nlCropPreviewBox" title="Trascina la foto o esegui lo zoom">
+      <img id="nlCropSourceImg" class="crop-source-img" alt="Nuova foto livello" draggable="false">
+      <div class="crop-selection-frame" id="nlCropSelectionFrame" aria-hidden="true">
+        <div class="crop-grid-overlay" id="nlCropGridOverlay"></div>
+      </div>
+    </div>
+
+    <div class="crop-footer-bar">
+      <span class="crop-guide-caption">Trascina o zooma nel riquadro.</span>
+      <div class="crop-zoom-controls" aria-label="Zoom nuova foto">
+        <input
+          type="range"
+          class="crop-zoom-slider"
+          id="nlCropZoomSlider"
+          min="1"
+          max="4"
+          step="0.05"
+          value="1"
+          aria-label="Zoom nuova foto da 1x a 4x">
+        <button type="button" class="crop-zoom-reset" id="nlCropZoomResetBtn" title="Reimposta zoom 1×">1×</button>
+      </div>
+    </div>
+
+    <div class="next-crop-actions">
+      <button type="button" class="button secondary" id="nlCropCancelBtn">Indietro</button>
+      <button type="button" class="button primary" id="nlCropConfirmBtn">Inizia livello →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Finestra Galleria Foto Interna (v. 1.24) -->
+<div
+  class="overlay"
+  id="galleryOverlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="galleryTitle">
+  <div class="dialog gallery-dialog">
+    <div class="gallery-header">
+      <div>
+        <h2 id="galleryTitle">Galleria Foto</h2>
+        <div class="gallery-quota" id="galleryQuotaLabel">0.0 MB / 15 MB</div>
+      </div>
+      <button type="button" class="records-close-x" id="galleryCloseBtn" aria-label="Chiudi galleria">✕</button>
+    </div>
+
+    <div class="gallery-toolbar">
+      <button type="button" class="upload-btn-3d" id="galleryAddPhotoBtn">➕ Aggiungi foto</button>
+      <button type="button" class="button secondary" id="galleryCancelBtn" style="min-height:34px;padding:6px 12px;font-size:13px;">Chiudi</button>
+    </div>
+
+    <div class="gallery-limit-alert" id="galleryLimitAlert" role="alert"></div>
+
+    <div class="gallery-scroll-body" id="galleryScrollBody"></div>
   </div>
 </div>
 
@@ -3452,17 +4286,6 @@ body.is-fullscreen #previewOverlay .preview-image{
 
       <div class="win-record-box" id="winRecordBox">
         <div class="win-record-line" id="winRecordLine"></div>
-        <div class="win-record-form" id="winRecordForm" style="display:none">
-          <input
-            type="text"
-            class="win-record-input"
-            id="recordNameInput"
-            maxlength="12"
-            placeholder="Nome record (max 12)"
-            autocomplete="nickname"
-            aria-label="Nome per il record">
-          <button type="button" class="button primary win-record-save" id="saveRecordNameBtn">Salva</button>
-        </div>
       </div>
 
       <div class="dialog-actions">
@@ -3926,7 +4749,7 @@ try {
 
   const $ = id => document.getElementById(id);
 
-  /* Elementi della Schermata Principale (v. 1.18) */
+  /* Elementi della Schermata Principale (v. 1.24) */
   const homeView = $("homeView");
   const levelsGrid = $("levelsGrid");
   const homeLevelSummary = $("homeLevelSummary");
@@ -3935,10 +4758,49 @@ try {
   const cropSourceImg = $("cropSourceImg");
   const cropSelectionFrame = $("cropSelectionFrame");
   const cropGridOverlay = $("cropGridOverlay");
-  const cropZoomOutBtn = $("cropZoomOutBtn");
+  const cropZoomSlider = $("cropZoomSlider");
   const cropZoomResetBtn = $("cropZoomResetBtn");
-  const cropZoomInBtn = $("cropZoomInBtn");
   const homePlayBtn = $("homePlayBtn");
+  const openRecordsBtn = $("openRecordsBtn");
+
+  /* Modale Nome Giocatore con Tastiera Virtuale (v. 1.24) */
+  const playerNameOverlay = $("playerNameOverlay");
+  const playerNameDisplay = $("playerNameDisplay");
+  const playerNameTip = $("playerNameTip");
+  const virtualKeyboardLetters = $("virtualKeyboardLetters");
+  const vkBackspaceBtn = $("vkBackspaceBtn");
+  const vkSpaceBtn = $("vkSpaceBtn");
+  const vkOkBtn = $("vkOkBtn");
+
+  /* Modale Record (v. 1.24) */
+  const recordsOverlay = $("recordsOverlay");
+  const recordsCloseXBtn = $("recordsCloseXBtn");
+  const recordsCloseBtn = $("recordsCloseBtn");
+  const recordsLevelHeading = $("recordsLevelHeading");
+  const recordsLevelTabs = $("recordsLevelTabs");
+  const recordsPodiumStage = $("recordsPodiumStage");
+  const recordsSessionList = $("recordsSessionList");
+
+  /* Modale Ritaglio / Zoom Nuovo Livello (v. 1.24) */
+  const nextLevelCropOverlay = $("nextLevelCropOverlay");
+  const nextCropBadge = $("nextCropBadge");
+  const nlCropPreviewBox = $("nlCropPreviewBox");
+  const nlCropSourceImg = $("nlCropSourceImg");
+  const nlCropSelectionFrame = $("nlCropSelectionFrame");
+  const nlCropGridOverlay = $("nlCropGridOverlay");
+  const nlCropZoomSlider = $("nlCropZoomSlider");
+  const nlCropZoomResetBtn = $("nlCropZoomResetBtn");
+  const nlCropCancelBtn = $("nlCropCancelBtn");
+  const nlCropConfirmBtn = $("nlCropConfirmBtn");
+
+  /* Finestra Galleria Foto Interna (v. 1.24) */
+  const galleryOverlay = $("galleryOverlay");
+  const galleryQuotaLabel = $("galleryQuotaLabel");
+  const galleryCloseBtn = $("galleryCloseBtn");
+  const galleryAddPhotoBtn = $("galleryAddPhotoBtn");
+  const galleryCancelBtn = $("galleryCancelBtn");
+  const galleryLimitAlert = $("galleryLimitAlert");
+  const galleryScrollBody = $("galleryScrollBody");
 
   /* Elementi di Gioco a Schermo Intero */
   const board = $("board");
@@ -4000,13 +4862,6 @@ try {
   const homeLevelRecord = $("homeLevelRecord");
   const winRecordBox = $("winRecordBox");
   const winRecordLine = $("winRecordLine");
-  const winRecordForm = $("winRecordForm");
-  const recordNameInput = $("recordNameInput");
-  const saveRecordNameBtn = $("saveRecordNameBtn");
-  const resumeFullscreenOverlay = $("resumeFullscreenOverlay");
-  const resumeFullscreenTitle = $("resumeFullscreenTitle");
-  const resumeFullscreenDesc = $("resumeFullscreenDesc");
-  const resumeFullscreenBtn = $("resumeFullscreenBtn");
 
   const heroStage = $("heroStage");
   const heroPhoto = $("heroPhoto");
@@ -4042,7 +4897,7 @@ try {
   let inGameSession = false;
 
   /*
-   * Gestione selezione livello, ritaglio e zoom foto (v. 1.23)
+   * Gestione selezione livello, ritaglio e zoom foto (v. 1.24)
    */
   let selectedLevel = 0; // 0..6
   let isPortraitPhoto = false;
@@ -4060,11 +4915,51 @@ try {
   let imgScaledDims = { width: 100, height: 100, scale: 1 };
 
   /*
-   * Sistema Punteggio e Record Locali per livello (v. 1.23)
+   * Stato ritaglio foto per livello successivo da "Cambia foto" (v. 1.24)
+   */
+  let nlCropTargetLevel = 0;
+  let nlCropPhotoUrl = "";
+  let nlIsPortraitPhoto = false;
+  let nlCropZoom = 1;
+  let nlCropPanX = 0;
+  let nlCropPanY = 0;
+  let nlCropPanRatioX = 0;
+  let nlCropPanRatioY = 0;
+  let nlRestoreWinOnCancel = false;
+
+  /*
+   * Stato Galleria Foto Interna (v. 1.24)
+   */
+  const DEFAULT_HOME_PHOTO = "./assets/gallery/amalfi_coast.jpg";
+  const STARTER_GALLERY_ITEMS = [
+    { id: "starter_amalfi", url: "./assets/gallery/amalfi_coast.jpg", daysAgo: 0 },
+    { id: "starter_alpine", url: "./assets/gallery/alpine_lake.jpg", daysAgo: 0 },
+    { id: "starter_nebula", url: "./assets/gallery/cosmic_nebula.jpg", daysAgo: 1 },
+    { id: "starter_botanical", url: "./assets/gallery/botanical_bloom.jpg", daysAgo: 2 }
+  ];
+  const GALLERY_DB_NAME = "puzzleMagic_gallery_db";
+  const GALLERY_DB_VERSION = 1;
+  const GALLERY_STORE_NAME = "photos";
+  const GALLERY_SEEDED_KEY = "puzzleMagic_gallerySeeded_v1";
+  const GALLERY_MAX_BYTES = 15 * 1024 * 1024;
+  let galleryMode = "home"; // "home" | "nextLevel"
+  let galleryTargetLevel = 0;
+  let galleryRestoreWinOnCancel = false;
+  let galleryBusy = false;
+
+  /*
+   * Sistema Punteggio, Classifiche Top 3 e Sessione (v. 1.24)
    */
   const RECORDS_STORAGE_KEY = "puzzleMagic_records_v1";
+  const LEADERBOARDS_STORAGE_KEY = "puzzleMagic_leaderboards_v1";
   const PLAYER_NAME_STORAGE_KEY = "puzzleMagic_playerName_v1";
   const MAX_RECORD_NAME_LEN = 12;
+  const ITALIAN_LETTERS = [
+    "A", "B", "C", "D", "E", "F", "G",
+    "H", "I", "L", "M", "N", "O", "P",
+    "Q", "R", "S", "T", "U", "V", "Z"
+  ];
+
   let lastWinScore = null;
   let lastWinIsNewRecord = false;
   let levelRecords = {};
@@ -4072,7 +4967,44 @@ try {
     const parsedRec = JSON.parse(localStorage.getItem(RECORDS_STORAGE_KEY) || "{}");
     if(parsedRec && typeof parsedRec === "object") levelRecords = parsedRec;
   } catch(_) { levelRecords = {}; }
+
+  let levelLeaderboards = {};
+  let sessionLeaderboard = [];
+  try {
+    const parsedLb = JSON.parse(localStorage.getItem(LEADERBOARDS_STORAGE_KEY) || "{}");
+    if(parsedLb && typeof parsedLb === "object"){
+      if(parsedLb.levels && typeof parsedLb.levels === "object") levelLeaderboards = parsedLb.levels;
+      if(Array.isArray(parsedLb.sessions)) sessionLeaderboard = parsedLb.sessions;
+    }
+  } catch(_) {
+    levelLeaderboards = {};
+    sessionLeaderboard = [];
+  }
+
+  // Migrazione automatica dei vecchi record singoli in Top 3 per ciascun livello
+  Object.keys(levelRecords).forEach(lvlKey => {
+    const legacy = levelRecords[lvlKey];
+    if(legacy && typeof legacy === "object" && typeof legacy.score === "number"){
+      if(!Array.isArray(levelLeaderboards[lvlKey]) || levelLeaderboards[lvlKey].length === 0){
+        levelLeaderboards[lvlKey] = [{
+          score: legacy.score,
+          name: String(legacy.name || "Giocatore").slice(0, MAX_RECORD_NAME_LEN),
+          date: legacy.date || "",
+          timestamp: legacy.timestamp || 0,
+          moves: legacy.moves || 0,
+          time: legacy.time || 0
+        }];
+      }
+    }
+  });
+
   let savedPlayerName = (localStorage.getItem(PLAYER_NAME_STORAGE_KEY) || "").slice(0, MAX_RECORD_NAME_LEN);
+  let currentPlayerName = savedPlayerName;
+  let playerNameBuffer = "";
+  let currentSessionScore = 0;
+  let currentSessionLevelsCleared = 0;
+  let sessionFinalized = false;
+  let recordsViewLevel = 0;
 
   /*
    * Nuove funzionalità v1.09
@@ -4321,16 +5253,16 @@ try {
   }
 
   function updateCropZoomUI(){
+    const clamped = Math.max(1, Math.min(4, cropZoom || 1));
     if(cropZoomResetBtn){
-      const label = cropZoom <= 1.02 ? "1×" : `${cropZoom.toFixed(1)}×`;
+      const label = clamped <= 1.02 ? "1×" : `${clamped.toFixed(1)}×`;
       cropZoomResetBtn.textContent = label;
-      cropZoomResetBtn.disabled = cropZoom <= 1.02;
+      cropZoomResetBtn.disabled = clamped <= 1.02;
     }
-    if(cropZoomOutBtn){
-      cropZoomOutBtn.disabled = cropZoom <= 1.02;
-    }
-    if(cropZoomInBtn){
-      cropZoomInBtn.disabled = cropZoom >= 3.98;
+    if(cropZoomSlider){
+      cropZoomSlider.value = String(clamped);
+      const pct = ((clamped - 1) / 3) * 100;
+      cropZoomSlider.style.setProperty("--zoom-pct", `${pct.toFixed(1)}%`);
     }
   }
 
@@ -4363,7 +5295,22 @@ try {
     return Math.max(50, Math.round(raw));
   }
 
+  function sortLeaderboardEntries(list){
+    return list
+      .slice()
+      .sort((a, b) => (b.score - a.score) || ((b.timestamp || 0) - (a.timestamp || 0)))
+      .slice(0, 3);
+  }
+
+  function getLevelTop3(lvlIdx){
+    const arr = levelLeaderboards && levelLeaderboards[String(lvlIdx)];
+    if(!Array.isArray(arr)) return [];
+    return sortLeaderboardEntries(arr.filter(item => item && typeof item.score === "number"));
+  }
+
   function getLevelRecord(lvlIdx){
+    const top3 = getLevelTop3(lvlIdx);
+    if(top3.length > 0) return top3[0];
     const rec = levelRecords && levelRecords[String(lvlIdx)];
     if(!rec || typeof rec !== "object" || typeof rec.score !== "number") return null;
     return rec;
@@ -4371,8 +5318,47 @@ try {
 
   function persistRecords(){
     try {
+      // Sincronizza il primo posto in levelRecords per retrocompatibilità
+      Object.keys(levelLeaderboards).forEach(k => {
+        const sorted = sortLeaderboardEntries(levelLeaderboards[k] || []);
+        levelLeaderboards[k] = sorted;
+        if(sorted[0]) levelRecords[k] = sorted[0];
+      });
+      sessionLeaderboard = sortLeaderboardEntries(sessionLeaderboard || []);
       localStorage.setItem(RECORDS_STORAGE_KEY, JSON.stringify(levelRecords));
+      localStorage.setItem(LEADERBOARDS_STORAGE_KEY, JSON.stringify({
+        levels: levelLeaderboards,
+        sessions: sessionLeaderboard
+      }));
     } catch(_) {}
+  }
+
+  function recordLevelScore(lvlIdx, entry){
+    const key = String(lvlIdx);
+    const currentList = getLevelTop3(lvlIdx);
+    const prevTop = currentList[0] || null;
+    // A parità di punteggio vince il più recente (timestamp maggiore)
+    const isNewTop = !prevTop || entry.score >= prevTop.score;
+    currentList.push(entry);
+    levelLeaderboards[key] = sortLeaderboardEntries(currentList);
+    persistRecords();
+    updateHomeLevelRecordUI();
+    return isNewTop;
+  }
+
+  function finalizeSessionScore(){
+    if(sessionFinalized || currentSessionScore <= 0 || currentSessionLevelsCleared <= 0) return;
+    sessionFinalized = true;
+    const cleanName = (currentPlayerName || savedPlayerName || "Giocatore").trim().slice(0, MAX_RECORD_NAME_LEN) || "Giocatore";
+    sessionLeaderboard.push({
+      score: currentSessionScore,
+      name: cleanName,
+      date: formatShortDate(),
+      timestamp: Date.now(),
+      levelsCleared: currentSessionLevelsCleared
+    });
+    sessionLeaderboard = sortLeaderboardEntries(sessionLeaderboard);
+    persistRecords();
   }
 
   function formatSingleLineRecord(rec, prefix = "🏆 Record:"){
@@ -4410,6 +5396,119 @@ try {
     dateSpan.className = "rec-date";
     dateSpan.textContent = cleanDate;
     homeLevelRecord.append(iconSpan, scoreSpan, sep1, nameSpan, sep2, dateSpan);
+  }
+
+  /*
+   * Finestra Record Fissa Verticale (v. 1.24)
+   */
+  function renderRecordsModal(lvlIdx = recordsViewLevel){
+    recordsViewLevel = Math.max(0, Math.min(LEVELS.length - 1, lvlIdx));
+    if(recordsLevelHeading){
+      recordsLevelHeading.textContent = `Podio Livello ${recordsViewLevel + 1}`;
+    }
+
+    if(recordsLevelTabs){
+      recordsLevelTabs.innerHTML = "";
+      for(let i = 0; i < LEVELS.length; i++){
+        const tab = document.createElement("button");
+        tab.type = "button";
+        tab.className = "records-lvl-tab" + (i === recordsViewLevel ? " is-active" : "");
+        tab.textContent = String(i + 1);
+        tab.setAttribute("aria-label", `Livello ${i + 1}`);
+        tab.addEventListener("click", () => renderRecordsModal(i));
+        recordsLevelTabs.appendChild(tab);
+      }
+    }
+
+    if(recordsPodiumStage){
+      const top3 = getLevelTop3(recordsViewLevel);
+      const slots = [
+        { rankIdx: 1, medal: "🥈", label: "2°", cls: "rank-2" },
+        { rankIdx: 0, medal: "🥇", label: "1°", cls: "rank-1" },
+        { rankIdx: 2, medal: "🥉", label: "3°", cls: "rank-3" }
+      ];
+      recordsPodiumStage.innerHTML = "";
+      slots.forEach(slot => {
+        const entry = top3[slot.rankIdx] || null;
+        const col = document.createElement("div");
+        col.className = `podium-col ${slot.cls}` + (entry ? "" : " is-empty");
+
+        const playerDiv = document.createElement("div");
+        playerDiv.className = "podium-player";
+        const medalDiv = document.createElement("div");
+        medalDiv.className = "podium-medal";
+        medalDiv.textContent = slot.medal;
+        const nameDiv = document.createElement("div");
+        nameDiv.className = "podium-name";
+        nameDiv.textContent = entry ? (entry.name || "Giocatore") : "—";
+        const dateDiv = document.createElement("div");
+        dateDiv.className = "podium-date";
+        dateDiv.textContent = entry ? (entry.date || "") : "Libero";
+        playerDiv.append(medalDiv, nameDiv, dateDiv);
+
+        const blockDiv = document.createElement("div");
+        blockDiv.className = "podium-block";
+        const scoreDiv = document.createElement("div");
+        scoreDiv.className = "podium-score";
+        scoreDiv.textContent = entry ? `${entry.score} pt` : "---";
+        const rankLbl = document.createElement("div");
+        rankLbl.className = "podium-rank-lbl";
+        rankLbl.textContent = slot.label;
+        blockDiv.append(scoreDiv, rankLbl);
+
+        col.append(playerDiv, blockDiv);
+        recordsPodiumStage.appendChild(col);
+      });
+    }
+
+    if(recordsSessionList){
+      const topSessions = sortLeaderboardEntries(sessionLeaderboard || []);
+      const badges = ["👑", "🥈", "🥉"];
+      const rowClasses = ["rank-1", "rank-2", "rank-3"];
+      recordsSessionList.innerHTML = "";
+      for(let i = 0; i < 3; i++){
+        const entry = topSessions[i] || null;
+        const row = document.createElement("div");
+        row.className = `session-rank-row ${rowClasses[i]}`;
+
+        const badgeSpan = document.createElement("span");
+        badgeSpan.className = "session-rank-badge";
+        badgeSpan.textContent = badges[i];
+
+        const infoDiv = document.createElement("div");
+        infoDiv.className = "session-rank-info";
+        const nameDiv = document.createElement("div");
+        nameDiv.className = "session-rank-name";
+        nameDiv.textContent = entry ? (entry.name || "Giocatore") : "Nessuna partita completata";
+        const metaDiv = document.createElement("div");
+        metaDiv.className = "session-rank-meta";
+        if(entry){
+          const lvls = entry.levelsCleared || 1;
+          metaDiv.textContent = `${lvls} ${lvls === 1 ? "livello" : "livelli"} · ${entry.date || ""}`;
+        } else {
+          metaDiv.textContent = "Completa i livelli o premi ESCI";
+        }
+        infoDiv.append(nameDiv, metaDiv);
+
+        const scoreDiv = document.createElement("div");
+        scoreDiv.className = "session-rank-score";
+        scoreDiv.textContent = entry ? `${entry.score} pt` : "—";
+
+        row.append(badgeSpan, infoDiv, scoreDiv);
+        recordsSessionList.appendChild(row);
+      }
+    }
+  }
+
+  function openRecordsModal(lvlIdx = selectedLevel){
+    renderRecordsModal(lvlIdx);
+    activeOverlay = "records";
+    if(recordsOverlay) recordsOverlay.classList.add("show");
+  }
+
+  function closeRecordsModal(){
+    if(recordsOverlay) recordsOverlay.classList.remove("show");
+    if(activeOverlay === "records") activeOverlay = "";
   }
 
   function updateLevelButtonsUI(){
@@ -4544,145 +5643,27 @@ try {
     if(hint) hint.textContent = message;
   }
 
-  function forcePortraitOrientation(keepLocked = false){
-    if(!screen.orientation) return;
-    try{
-      if(screen.orientation.lock){
-        const p = screen.orientation.lock("portrait");
-        if(p && p.then){
-          p.catch(() => {}).finally(() => {
-            if(!keepLocked && screen.orientation && screen.orientation.unlock){
-              try{ screen.orientation.unlock(); } catch(_){}
-            }
-          });
-        }
-      } else if(!keepLocked && screen.orientation.unlock){
-        screen.orientation.unlock();
-      }
-    } catch(_){}
-  }
-
-  function isAppStandalone(){
-    return Boolean(
-      (window.matchMedia && (window.matchMedia("(display-mode: fullscreen)").matches || window.matchMedia("(display-mode: standalone)").matches)) ||
-      window.navigator.standalone === true
-    );
-  }
-
-  function hasNativeFullscreen(){
-    return Boolean(document.fullscreenElement || document.webkitFullscreenElement);
-  }
-
-  function getTargetIsHorizontal(lvlIdx = levelIndex){
-    const { cols, rows } = getGridDimensions(lvlIdx);
-    return cols > rows || (cols === rows && !isPortraitPhoto);
-  }
-
   function applyFullscreenLayoutClass(isHorizontal){
     if(!gamePanel) return;
     gamePanel.classList.toggle("fs-layout-landscape", isHorizontal);
     gamePanel.classList.toggle("fs-layout-portrait", !isHorizontal);
   }
 
-  function lockOrientationForLevel(isHorizontal){
-    if(!screen.orientation || !screen.orientation.lock) return;
-    const targetOrient = isHorizontal ? "landscape" : "portrait";
-    try {
-      const p = screen.orientation.lock(targetOrient);
-      if(p && p.catch){
-        p.catch(() => {});
-      }
-    } catch(_) {}
-  }
-
-  function toggleFullscreen(enable, options = {}){
+  /*
+   * Schermo intero simulato senza popup nativi del browser (v. 1.24)
+   */
+  function toggleFullscreen(enable){
     isFullscreen = typeof enable === "boolean" ? enable : !isFullscreen;
-    const { onNativeDenied } = options;
-
-    const isHorizontal = getTargetIsHorizontal(levelIndex);
 
     gamePanel.classList.toggle("is-fullscreen", isFullscreen);
     document.body.classList.toggle("is-fullscreen", isFullscreen);
 
-    const isStandaloneApp = isAppStandalone();
-
     if (isFullscreen) {
-      applyFullscreenLayoutClass(isHorizontal);
-
-      // Chiamata all'API Fullscreen del browser (saltata se già lanciata come app standalone/fullscreen)
-      if (!isStandaloneApp) {
-        const docEl = document.documentElement;
-        const req = docEl.requestFullscreen || docEl.webkitRequestFullscreen || docEl.mozRequestFullScreen || docEl.msRequestFullscreen;
-        if (req && !hasNativeFullscreen()) {
-          try {
-            let promise;
-            try {
-              promise = req.call(docEl, { navigationUI: "hide" });
-            } catch (_) {
-              promise = req.call(docEl);
-            }
-            if (promise && promise.then) {
-              promise
-                .then(() => {
-                  lockOrientationForLevel(getTargetIsHorizontal(levelIndex));
-                })
-                .catch(() => {
-                  if (typeof onNativeDenied === "function") {
-                    onNativeDenied();
-                  }
-                });
-            }
-          } catch (_) {
-            if (typeof onNativeDenied === "function") {
-              onNativeDenied();
-            }
-          }
-        } else {
-          lockOrientationForLevel(isHorizontal);
-        }
-      } else {
-        lockOrientationForLevel(isHorizontal);
-      }
-
+      applyFullscreenLayoutClass(window.innerWidth > window.innerHeight);
       window.scrollTo(0, 0);
       resetPreviewZoom();
     } else {
       gamePanel.classList.remove("fs-layout-landscape", "fs-layout-portrait");
-
-      const exitDocFullscreen = () => {
-        const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
-        if (exit && hasNativeFullscreen()) {
-          try {
-            const promise = exit.call(document);
-            if (promise && promise.catch) promise.catch(() => {});
-          } catch (_) {}
-        }
-      };
-
-      // Forza il ritorno in verticale prima di uscire dallo schermo intero nativo
-      if (screen.orientation && screen.orientation.lock && hasNativeFullscreen()) {
-        let exited = false;
-        const finishExit = () => {
-          if (exited) return;
-          exited = true;
-          exitDocFullscreen();
-          try { if (screen.orientation.unlock) screen.orientation.unlock(); } catch(_) {}
-        };
-        try {
-          const p = screen.orientation.lock("portrait");
-          if (p && p.then) {
-            p.then(() => setTimeout(finishExit, 60)).catch(finishExit);
-            setTimeout(finishExit, 260);
-          } else {
-            finishExit();
-          }
-        } catch (_) {
-          finishExit();
-        }
-      } else {
-        exitDocFullscreen();
-        forcePortraitOrientation(false);
-      }
     }
 
     if(fullscreenToggleBtn){
@@ -4693,6 +5674,18 @@ try {
   }
 
   function getVisibleOverlay(){
+    if(playerNameOverlay && playerNameOverlay.classList.contains("show"))
+      return "playerName";
+
+    if(galleryOverlay && galleryOverlay.classList.contains("show"))
+      return "gallery";
+
+    if(nextLevelCropOverlay && nextLevelCropOverlay.classList.contains("show"))
+      return "nextCrop";
+
+    if(recordsOverlay && recordsOverlay.classList.contains("show"))
+      return "records";
+
     if(exitConfirmOverlay && exitConfirmOverlay.classList.contains("show"))
       return "exitConfirm";
 
@@ -4718,7 +5711,7 @@ try {
   function saveGame(){
     try{
       const data = {
-        version: 3,
+        version: 4,
         photoData,
         rawPhotoUrl,
         levelIndex,
@@ -4729,6 +5722,10 @@ try {
         cropPanY,
         cropPanRatioX,
         cropPanRatioY,
+        currentPlayerName,
+        currentSessionScore,
+        currentSessionLevelsCleared,
+        sessionFinalized,
         inGameSession,
         pieces,
         moves,
@@ -4822,6 +5819,18 @@ try {
       if(typeof data.cropPanY === "number") cropPanY = data.cropPanY;
       if(typeof data.cropPanRatioX === "number") cropPanRatioX = data.cropPanRatioX;
       if(typeof data.cropPanRatioY === "number") cropPanRatioY = data.cropPanRatioY;
+      if(typeof data.currentPlayerName === "string" && data.currentPlayerName.trim()){
+        currentPlayerName = data.currentPlayerName.trim().slice(0, MAX_RECORD_NAME_LEN);
+      }
+      if(Number.isFinite(data.currentSessionScore)){
+        currentSessionScore = Math.max(0, Math.round(data.currentSessionScore));
+      }
+      if(Number.isInteger(data.currentSessionLevelsCleared)){
+        currentSessionLevelsCleared = Math.max(0, data.currentSessionLevelsCleared);
+      }
+      if(typeof data.sessionFinalized === "boolean"){
+        sessionFinalized = data.sessionFinalized;
+      }
 
       updateLevelButtonsUI();
 
@@ -5170,110 +6179,531 @@ try {
     return canvas.toDataURL("image/jpeg", 0.9);
   }
 
-  function showResumeFullscreenPrompt(){
-    if(!resumeFullscreenOverlay) return;
-    if(resumeFullscreenTitle){
-      resumeFullscreenTitle.textContent = `Livello ${levelIndex + 1} pronto!`;
+  /*
+   * Gestione Ritaglio/Zoom Nuovo Livello (Cambia foto) + Galleria IndexedDB (v. 1.24)
+   */
+  function generateCroppedPhotoFromImg(imgEl, targetLvlIdx, zoomVal, ratioXVal, ratioYVal){
+    if(!imgEl || !imgEl.naturalWidth) return photoData;
+    const natW = imgEl.naturalWidth;
+    const natH = imgEl.naturalHeight;
+    const lvl = typeof targetLvlIdx === "number" ? targetLvlIdx : selectedLevel;
+    const { cols, rows } = getGridDimensionsForImg(lvl, natH > natW);
+    const targetRatio = cols / rows;
+
+    let baseSw, baseSh;
+    if(natW / natH > targetRatio){
+      baseSh = natH;
+      baseSw = natH * targetRatio;
+    } else {
+      baseSw = natW;
+      baseSh = natW / targetRatio;
     }
-    if(resumeFullscreenDesc){
-      const { cols, rows } = getGridDimensions(levelIndex);
-      const isHoriz = getTargetIsHorizontal(levelIndex);
-      resumeFullscreenDesc.textContent = `Griglia ${cols}×${rows} (${isHoriz ? "orizzontale" : "verticale"}). Tocca per iniziare a schermo intero.`;
-    }
-    activeOverlay = "resumeFullscreen";
-    resumeFullscreenOverlay.classList.add("show");
+
+    const zoom = Math.max(1, Math.min(4, zoomVal || 1));
+    const sw = Math.min(natW, Math.max(1, baseSw / zoom));
+    const sh = Math.min(natH, Math.max(1, baseSh / zoom));
+
+    const maxSrcPanX = Math.max(0, (natW - sw) / 2);
+    const maxSrcPanY = Math.max(0, (natH - sh) / 2);
+    const rx = Math.max(-1, Math.min(1, ratioXVal || 0));
+    const ry = Math.max(-1, Math.min(1, ratioYVal || 0));
+
+    const sx = Math.max(0, Math.min(natW - sw, (natW - sw) / 2 - rx * maxSrcPanX));
+    const sy = Math.max(0, Math.min(natH - sh, (natH - sh) / 2 - ry * maxSrcPanY));
+
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(cols * 240);
+    canvas.height = Math.round(rows * 240);
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(imgEl, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+
+    return canvas.toDataURL("image/jpeg", 0.88);
   }
 
-  function loadPhoto(file){
-    if(!file || !file.type.startsWith("image/")){
-      setHint("Seleziona un file immagine valido.");
+  function getGridDimensionsForImg(lvlIdx, portraitFlag){
+    switch(lvlIdx){
+      case 0: return { cols: 3, rows: 3 };
+      case 1: return portraitFlag ? { cols: 3, rows: 4 } : { cols: 4, rows: 3 };
+      case 2: return { cols: 4, rows: 4 };
+      case 3: return portraitFlag ? { cols: 4, rows: 5 } : { cols: 5, rows: 4 };
+      case 4: return { cols: 5, rows: 5 };
+      case 5: return portraitFlag ? { cols: 5, rows: 6 } : { cols: 6, rows: 5 };
+      case 6: return portraitFlag ? { cols: 5, rows: 7 } : { cols: 7, rows: 5 };
+      default: return { cols: 3, rows: 3 };
+    }
+  }
+
+  function updateNlCropGridOverlay(){
+    if(!nlCropGridOverlay) return;
+    const { cols, rows } = getGridDimensionsForImg(nlCropTargetLevel, nlIsPortraitPhoto);
+    nlCropGridOverlay.innerHTML = "";
+    const frag = document.createDocumentFragment();
+    for(let c = 1; c < cols; c++){
+      const vLine = document.createElement("div");
+      vLine.className = "crop-grid-line-v";
+      vLine.style.left = `${(c / cols) * 100}%`;
+      frag.appendChild(vLine);
+    }
+    for(let r = 1; r < rows; r++){
+      const hLine = document.createElement("div");
+      hLine.className = "crop-grid-line-h";
+      hLine.style.top = `${(r / rows) * 100}%`;
+      frag.appendChild(hLine);
+    }
+    nlCropGridOverlay.appendChild(frag);
+    if(nextCropBadge){
+      nextCropBadge.textContent = `Livello ${nlCropTargetLevel + 1} · ${cols}×${rows}`;
+    }
+  }
+
+  function updateNlCropZoomUI(){
+    const clamped = Math.max(1, Math.min(4, nlCropZoom || 1));
+    if(nlCropZoomResetBtn){
+      nlCropZoomResetBtn.textContent = clamped <= 1.02 ? "1×" : `${clamped.toFixed(1)}×`;
+      nlCropZoomResetBtn.disabled = clamped <= 1.02;
+    }
+    if(nlCropZoomSlider){
+      nlCropZoomSlider.value = String(clamped);
+      const pct = ((clamped - 1) / 3) * 100;
+      nlCropZoomSlider.style.setProperty("--zoom-pct", `${pct.toFixed(1)}%`);
+    }
+  }
+
+  function updateNlCropFrameAndImage(syncRatioFromPixels = false){
+    if(!nlCropPreviewBox || !nlCropSourceImg || !nlCropSelectionFrame) return;
+    const boxW = nlCropPreviewBox.clientWidth;
+    const boxH = nlCropPreviewBox.clientHeight;
+    if(!boxW || !boxH || boxW < 20 || boxH < 20) return;
+
+    const natW = nlCropSourceImg.naturalWidth || 600;
+    const natH = nlCropSourceImg.naturalHeight || 600;
+    const { cols, rows } = getGridDimensionsForImg(nlCropTargetLevel, nlIsPortraitPhoto);
+    const targetRatio = cols / rows;
+
+    const maxFrameW = Math.max(40, boxW - 24);
+    const maxFrameH = Math.max(40, boxH - 24);
+    let frameW = maxFrameW;
+    let frameH = frameW / targetRatio;
+    if(frameH > maxFrameH){
+      frameH = maxFrameH;
+      frameW = frameH * targetRatio;
+    }
+
+    const frameLeft = (boxW - frameW) / 2;
+    const frameTop = (boxH - frameH) / 2;
+    nlCropSelectionFrame.style.width = `${frameW}px`;
+    nlCropSelectionFrame.style.height = `${frameH}px`;
+    nlCropSelectionFrame.style.left = `${frameLeft}px`;
+    nlCropSelectionFrame.style.top = `${frameTop}px`;
+
+    const baseScale = Math.max(frameW / natW, frameH / natH);
+    const scale = baseScale * Math.max(1, Math.min(4, nlCropZoom || 1));
+    const imgW = natW * scale;
+    const imgH = natH * scale;
+    nlCropSourceImg.style.width = `${imgW}px`;
+    nlCropSourceImg.style.height = `${imgH}px`;
+
+    const maxPanX = Math.max(0, (imgW - frameW) / 2);
+    const maxPanY = Math.max(0, (imgH - frameH) / 2);
+
+    if(syncRatioFromPixels){
+      nlCropPanX = Math.max(-maxPanX, Math.min(maxPanX, nlCropPanX));
+      nlCropPanY = Math.max(-maxPanY, Math.min(maxPanY, nlCropPanY));
+      nlCropPanRatioX = maxPanX > 0 ? nlCropPanX / maxPanX : 0;
+      nlCropPanRatioY = maxPanY > 0 ? nlCropPanY / maxPanY : 0;
+    } else {
+      nlCropPanRatioX = Math.max(-1, Math.min(1, nlCropPanRatioX || 0));
+      nlCropPanRatioY = Math.max(-1, Math.min(1, nlCropPanRatioY || 0));
+      nlCropPanX = nlCropPanRatioX * maxPanX;
+      nlCropPanY = nlCropPanRatioY * maxPanY;
+    }
+
+    nlCropSourceImg.style.left = `${frameLeft + (frameW - imgW) / 2 + nlCropPanX}px`;
+    nlCropSourceImg.style.top = `${frameTop + (frameH - imgH) / 2 + nlCropPanY}px`;
+  }
+
+  function setNlCropZoom(nextZoom){
+    const prevZoom = nlCropZoom;
+    const clampedZoom = Math.max(1, Math.min(4, nextZoom));
+    if(Math.abs(clampedZoom - prevZoom) < 0.001) return;
+    nlCropZoom = clampedZoom;
+    if(prevZoom > 0){
+      nlCropPanX = nlCropPanX * (clampedZoom / prevZoom);
+      nlCropPanY = nlCropPanY * (clampedZoom / prevZoom);
+    }
+    updateNlCropFrameAndImage(true);
+    updateNlCropZoomUI();
+  }
+
+  function openNextLevelCropModal(photoUrl, targetLevel, restoreWin = true){
+    nlCropTargetLevel = Math.max(0, Math.min(LEVELS.length - 1, targetLevel));
+    nlCropPhotoUrl = photoUrl;
+    nlRestoreWinOnCancel = restoreWin;
+    nlCropZoom = 1;
+    nlCropPanX = 0;
+    nlCropPanY = 0;
+    nlCropPanRatioX = 0;
+    nlCropPanRatioY = 0;
+
+    if(nextLevelCropOverlay) nextLevelCropOverlay.classList.add("show");
+    activeOverlay = "nextCrop";
+    updateNlCropZoomUI();
+
+    if(nlCropSourceImg){
+      nlCropSourceImg.onload = () => {
+        nlIsPortraitPhoto = nlCropSourceImg.naturalHeight > nlCropSourceImg.naturalWidth;
+        updateNlCropGridOverlay();
+        requestAnimationFrame(() => updateNlCropFrameAndImage());
+      };
+      nlCropSourceImg.src = photoUrl;
+      if(nlCropSourceImg.complete && nlCropSourceImg.naturalWidth > 0){
+        nlIsPortraitPhoto = nlCropSourceImg.naturalHeight > nlCropSourceImg.naturalWidth;
+        updateNlCropGridOverlay();
+        requestAnimationFrame(() => updateNlCropFrameAndImage());
+      }
+    }
+  }
+
+  function closeNextLevelCropModal(restoreWin = false){
+    if(nextLevelCropOverlay) nextLevelCropOverlay.classList.remove("show");
+    if(restoreWin && nlRestoreWinOnCancel){
+      if(winOverlay) winOverlay.classList.add("show");
+      activeOverlay = "win";
+    } else {
+      activeOverlay = "";
+    }
+  }
+
+  function applyHomePhotoFromDataUrl(dataUrl){
+    if(!dataUrl) return;
+    rawPhotoUrl = dataUrl;
+    if(cropSourceImg){
+      cropSourceImg.onload = () => {
+        isPortraitPhoto = cropSourceImg.naturalHeight > cropSourceImg.naturalWidth;
+        cropZoom = 1;
+        cropPanX = 0;
+        cropPanY = 0;
+        cropPanRatioX = 0;
+        cropPanRatioY = 0;
+        updateLevelButtonsUI();
+        updateCropFrameAndImage();
+        saveGame();
+      };
+      cropSourceImg.src = dataUrl;
+    }
+  }
+
+  function openGalleryDB(){
+    return new Promise((resolve, reject) => {
+      if(!window.indexedDB){
+        reject(new Error("IndexedDB non supportato"));
+        return;
+      }
+      const req = indexedDB.open(GALLERY_DB_NAME, GALLERY_DB_VERSION);
+      req.onupgradeneeded = event => {
+        const db = event.target.result;
+        if(!db.objectStoreNames.contains(GALLERY_STORE_NAME)){
+          const store = db.createObjectStore(GALLERY_STORE_NAME, { keyPath: "id" });
+          store.createIndex("addedAt", "addedAt", { unique: false });
+        }
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error || new Error("Errore IndexedDB"));
+    });
+  }
+
+  async function getAllGalleryPhotos(){
+    const db = await openGalleryDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(GALLERY_STORE_NAME, "readonly");
+      const store = tx.objectStore(GALLERY_STORE_NAME);
+      const req = store.getAll();
+      req.onsuccess = () => {
+        const items = Array.isArray(req.result) ? req.result : [];
+        items.sort((a, b) => (b.addedAt || 0) - (a.addedAt || 0));
+        resolve(items);
+      };
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function putGalleryPhoto(item){
+    const db = await openGalleryDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(GALLERY_STORE_NAME, "readwrite");
+      const store = tx.objectStore(GALLERY_STORE_NAME);
+      const req = store.put(item);
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function deleteGalleryPhotoById(id){
+    const db = await openGalleryDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(GALLERY_STORE_NAME, "readwrite");
+      const store = tx.objectStore(GALLERY_STORE_NAME);
+      const req = store.delete(id);
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  function estimateDataUrlBytes(dataUrl){
+    if(!dataUrl || typeof dataUrl !== "string") return 0;
+    const commaIdx = dataUrl.indexOf(",");
+    const base64 = commaIdx >= 0 ? dataUrl.slice(commaIdx + 1) : dataUrl;
+    return Math.round((base64.length * 3) / 4);
+  }
+
+  function encodeImageToOptimizedDataUrl(imgEl, maxDim = 1600, quality = 0.85){
+    const w = imgEl.naturalWidth || 1;
+    const h = imgEl.naturalHeight || 1;
+    const ratio = Math.max(w, h) > maxDim ? (maxDim / Math.max(w, h)) : 1;
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(w * ratio));
+    canvas.height = Math.max(1, Math.round(h * ratio));
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(imgEl, 0, 0, canvas.width, canvas.height);
+    return canvas.toDataURL("image/jpeg", quality);
+  }
+
+  function loadImageFromUrl(srcUrl){
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error("Immagine non caricabile"));
+      img.src = srcUrl;
+    });
+  }
+
+  function getDateKeyFromTs(ts){
+    const d = new Date(ts || Date.now());
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  }
+
+  function formatGalleryDateHeading(dateKey){
+    const todayKey = getDateKeyFromTs(Date.now());
+    const yesterdayKey = getDateKeyFromTs(Date.now() - 86400000);
+    if(dateKey === todayKey) return "Oggi";
+    if(dateKey === yesterdayKey) return "Ieri";
+    const parts = String(dateKey).split("-");
+    if(parts.length === 3){
+      const months = [
+        "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
+        "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"
+      ];
+      const mIdx = Math.max(0, Math.min(11, parseInt(parts[1], 10) - 1));
+      return `${parseInt(parts[2], 10)} ${months[mIdx]} ${parts[0]}`;
+    }
+    return dateKey;
+  }
+
+  async function ensureStarterGallerySeeded(){
+    try {
+      const already = localStorage.getItem(GALLERY_SEEDED_KEY) === "1";
+      const existing = await getAllGalleryPhotos();
+      if(already || existing.length > 0){
+        if(!already) localStorage.setItem(GALLERY_SEEDED_KEY, "1");
+        return;
+      }
+      const now = Date.now();
+      for(let i = 0; i < STARTER_GALLERY_ITEMS.length; i++){
+        const starter = STARTER_GALLERY_ITEMS[i];
+        try {
+          const imgEl = await loadImageFromUrl(resolveHeroUrl(starter.url));
+          const dataUrl = encodeImageToOptimizedDataUrl(imgEl, 1400, 0.84);
+          const addedAt = now - (starter.daysAgo * 86400000) - (i * 60000);
+          await putGalleryPhoto({
+            id: starter.id,
+            dataUrl,
+            byteSize: estimateDataUrlBytes(dataUrl),
+            addedAt,
+            dateKey: getDateKeyFromTs(addedAt)
+          });
+        } catch(_) {}
+      }
+      localStorage.setItem(GALLERY_SEEDED_KEY, "1");
+    } catch(_) {}
+  }
+
+  function showGalleryAlert(message){
+    if(!galleryLimitAlert) return;
+    if(!message){
+      galleryLimitAlert.textContent = "";
+      galleryLimitAlert.classList.remove("show");
+      return;
+    }
+    galleryLimitAlert.textContent = message;
+    galleryLimitAlert.classList.add("show");
+  }
+
+  async function renderGalleryView(){
+    if(!galleryScrollBody) return;
+    await ensureStarterGallerySeeded();
+    const items = await getAllGalleryPhotos();
+    const totalBytes = items.reduce((acc, it) => acc + (it.byteSize || estimateDataUrlBytes(it.dataUrl)), 0);
+    if(galleryQuotaLabel){
+      const mbUsed = (totalBytes / (1024 * 1024)).toFixed(1);
+      galleryQuotaLabel.textContent = `${mbUsed} MB / 15 MB · ${items.length} foto`;
+    }
+
+    galleryScrollBody.innerHTML = "";
+    if(items.length === 0){
+      const empty = document.createElement("div");
+      empty.className = "gallery-empty";
+      empty.textContent = "Nessuna foto in galleria. Premi \"Aggiungi foto\" per caricare immagini dal tuo dispositivo.";
+      galleryScrollBody.appendChild(empty);
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = event => {
-      const dataUrl = event.target.result;
-      const tempImg = new Image();
-      tempImg.onload = () => {
-        const optimizedUrl = downscaleImageDataUrl(tempImg, 1920) || dataUrl;
-        rawPhotoUrl = optimizedUrl;
-        if(cropSourceImg){
-          cropSourceImg.onload = () => {
-            isPortraitPhoto = cropSourceImg.naturalHeight > cropSourceImg.naturalWidth;
-            cropZoom = 1;
-            cropPanX = 0;
-            cropPanY = 0;
-            cropPanRatioX = 0;
-            cropPanRatioY = 0;
-            updateLevelButtonsUI();
-            updateCropFrameAndImage();
-            const cropped = generateCroppedPhoto(selectedLevel);
-            if(cropped){
-              photoData = cropped;
-              const thumbEl = $("previewThumb");
-              if(thumbEl) thumbEl.src = photoData;
-              const fsThumb = $("fsStripThumbImg");
-              if(fsThumb) fsThumb.src = photoData;
-              const previewImg = $("previewImage");
-              if(previewImg) previewImg.src = photoData;
-            }
+    // Raggruppa per data di aggiunta (dalla più recente alla meno recente)
+    const groupsMap = new Map();
+    items.forEach(item => {
+      const key = item.dateKey || getDateKeyFromTs(item.addedAt);
+      if(!groupsMap.has(key)) groupsMap.set(key, []);
+      groupsMap.get(key).push(item);
+    });
 
-            if(inGameSession){
-              levelIndex = selectedLevel;
-              moves = 0;
-              mixed = false;
-              locked = false;
-              gameCompleted = false;
-              selectedTile = null;
-              activeOverlay = "";
-              resetTimer();
-              createSolvedPieces();
-              shufflePieces(true);
-              resetPreviewZoom();
-              renderBoard();
-              updateUI();
+    const sortedKeys = Array.from(groupsMap.keys()).sort((a, b) => b.localeCompare(a));
+    sortedKeys.forEach(dateKey => {
+      const groupWrap = document.createElement("div");
+      groupWrap.className = "gallery-date-group";
 
-              // Sblocca eventuale blocco portrait impostato prima dell'apertura del selettore file
-              try {
-                if(screen.orientation && screen.orientation.unlock){
-                  screen.orientation.unlock();
-                }
-              } catch(_) {}
+      const labelEl = document.createElement("div");
+      labelEl.className = "gallery-date-label";
+      labelEl.textContent = formatGalleryDateHeading(dateKey);
+      groupWrap.appendChild(labelEl);
 
-              if(isFullscreen){
-                const targetHoriz = getTargetIsHorizontal(levelIndex);
-                if(isAppStandalone() || hasNativeFullscreen()){
-                  toggleFullscreen(true);
-                } else {
-                  toggleFullscreen(true, {
-                    onNativeDenied: () => {
-                      // Il browser ha chiuso lo schermo intero durante la scelta foto e richiede un tap diretto
-                      const actualHoriz = window.innerWidth > window.innerHeight;
-                      applyFullscreenLayoutClass(actualHoriz);
-                      if(targetHoriz !== actualHoriz || !hasNativeFullscreen()){
-                        showResumeFullscreenPrompt();
-                      }
-                    }
-                  });
-                }
-              }
-            }
+      const gridEl = document.createElement("div");
+      gridEl.className = "gallery-grid-4";
 
-            setHint("Foto caricata con successo.");
-            saveGame();
-          };
-          cropSourceImg.src = optimizedUrl;
-        }
-      };
-      tempImg.onerror = () => {
-        setHint("Impossibile elaborare l'immagine selezionata.");
-      };
-      tempImg.src = dataUrl;
-    };
-    reader.onerror = () => {
-      setHint("Non è stato possibile aprire il file selezionato.");
-    };
-    reader.readAsDataURL(file);
+      groupsMap.get(dateKey).forEach(item => {
+        const card = document.createElement("div");
+        card.className = "gallery-thumb-card";
+        card.setAttribute("role", "button");
+        card.setAttribute("tabindex", "0");
+        card.setAttribute("aria-label", "Seleziona foto dalla galleria");
+
+        const img = document.createElement("img");
+        img.src = item.dataUrl;
+        img.alt = "Anteprima galleria";
+        img.loading = "lazy";
+        card.appendChild(img);
+
+        const delBtn = document.createElement("button");
+        delBtn.type = "button";
+        delBtn.className = "gallery-del-btn";
+        delBtn.textContent = "✕";
+        delBtn.title = "Elimina foto dalla galleria";
+        delBtn.setAttribute("aria-label", "Elimina foto");
+        delBtn.addEventListener("click", async event => {
+          event.stopPropagation();
+          showGalleryAlert("");
+          await deleteGalleryPhotoById(item.id);
+          await renderGalleryView();
+        });
+        card.appendChild(delBtn);
+
+        const handlePick = () => {
+          closeGalleryModal(false);
+          if(galleryMode === "nextLevel"){
+            openNextLevelCropModal(item.dataUrl, galleryTargetLevel, galleryRestoreWinOnCancel);
+          } else {
+            applyHomePhotoFromDataUrl(item.dataUrl);
+          }
+        };
+        card.addEventListener("click", handlePick);
+        card.addEventListener("keydown", event => {
+          if(event.key === "Enter" || event.key === " "){
+            event.preventDefault();
+            handlePick();
+          }
+        });
+
+        gridEl.appendChild(card);
+      });
+
+      groupWrap.appendChild(gridEl);
+      galleryScrollBody.appendChild(groupWrap);
+    });
+  }
+
+  async function openGalleryModal(mode = "home", targetLvl = 0, restoreWin = false){
+    galleryMode = mode;
+    galleryTargetLevel = targetLvl;
+    galleryRestoreWinOnCancel = restoreWin;
+    showGalleryAlert("");
+    if(mode === "nextLevel" && winOverlay){
+      winOverlay.classList.remove("show");
+    }
+    if(galleryOverlay) galleryOverlay.classList.add("show");
+    activeOverlay = "gallery";
+    await renderGalleryView();
+  }
+
+  function closeGalleryModal(restoreWin = true){
+    if(galleryOverlay) galleryOverlay.classList.remove("show");
+    if(restoreWin && galleryMode === "nextLevel" && galleryRestoreWinOnCancel){
+      if(winOverlay) winOverlay.classList.add("show");
+      activeOverlay = "win";
+    } else if(activeOverlay === "gallery"){
+      activeOverlay = "";
+    }
+  }
+
+  function readFileAsDataUrl(file){
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = e => resolve(e.target.result);
+      reader.onerror = () => reject(new Error("Errore lettura file"));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function addFilesToGallery(fileList){
+    if(!fileList || fileList.length === 0 || galleryBusy) return;
+    galleryBusy = true;
+    showGalleryAlert("");
+    try {
+      const existing = await getAllGalleryPhotos();
+      let currentBytes = existing.reduce((acc, it) => acc + (it.byteSize || estimateDataUrlBytes(it.dataUrl)), 0);
+      let limitHit = false;
+
+      for(let i = 0; i < fileList.length; i++){
+        const file = fileList[i];
+        if(!file || !file.type || !file.type.startsWith("image/")) continue;
+        try {
+          const rawUrl = await readFileAsDataUrl(file);
+          const imgEl = await loadImageFromUrl(rawUrl);
+          const optimizedUrl = encodeImageToOptimizedDataUrl(imgEl, 1600, 0.85);
+          const byteSize = estimateDataUrlBytes(optimizedUrl);
+          if(currentBytes + byteSize > GALLERY_MAX_BYTES){
+            limitHit = true;
+            break;
+          }
+          const addedAt = Date.now() + i;
+          await putGalleryPhoto({
+            id: `photo_${addedAt}_${Math.random().toString(36).slice(2, 7)}`,
+            dataUrl: optimizedUrl,
+            byteSize,
+            addedAt,
+            dateKey: getDateKeyFromTs(addedAt)
+          });
+          currentBytes += byteSize;
+        } catch(_) {}
+      }
+
+      await renderGalleryView();
+      if(limitHit){
+        showGalleryAlert("Limite massimo di 15 MB raggiunto! Elimina alcune foto esistenti per liberare spazio.");
+      }
+    } finally {
+      galleryBusy = false;
+    }
   }
 
 
@@ -5826,14 +7256,16 @@ try {
         heroArt.style.alignItems = "center";
         heroArt.style.justifyContent = "center";
         heroArt.style.flexDirection = "column";
+        heroArt.style.padding = "8px 12px";
+        heroArt.style.width = "100%";
         heroArt.innerHTML = `
-          <div style="font-size: 5rem; line-height: 1; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3)); animation: floatHero 3s ease-in-out infinite;">
+          <div style="font-size: clamp(2.6rem, 7dvh, 4rem); line-height: 1; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.3)); animation: floatHero 3s ease-in-out infinite;">
             ${trainingBadges[index]}
           </div>
-          <div style="margin-top: 12px; font-weight: 900; font-size: 1.15rem; color: #f8fafc; letter-spacing: 0.05em; text-transform: uppercase;">
+          <div style="margin-top: clamp(4px, 1dvh, 10px); font-weight: 900; font-size: clamp(0.9rem, 2.5vw, 1.08rem); color: #f8fafc; letter-spacing: 0.04em; text-transform: uppercase; line-height: 1.2;">
             ${index === 2 ? "Passaggio di Grado!" : "Obiettivo Raggiunto!"}
           </div>
-          <div style="margin-top: 6px; font-size: 0.82rem; color: #94a3b8; text-align: center; max-width: 220px;">
+          <div style="margin-top: 4px; font-size: clamp(0.72rem, 2vw, 0.82rem); line-height: 1.3; color: #cbd5e1; text-align: center; max-width: 92%;">
             ${index === 2 ? "Dal prossimo livello sblocchi i veri Supereroi!" : "Completa il livello 3 per sbloccare i Supereroi!"}
           </div>
         `;
@@ -5928,20 +7360,12 @@ try {
     if(lastWinIsNewRecord && rec){
       winRecordLine.className = "win-record-line is-new";
       winRecordLine.textContent = formatSingleLineRecord(rec, "🏆 Nuovo Record!");
-      if(winRecordForm){
-        winRecordForm.style.display = "flex";
-      }
-      if(recordNameInput){
-        recordNameInput.value = savedPlayerName || (rec.name === "Giocatore" ? "" : rec.name);
-      }
     } else if(rec){
       winRecordLine.className = "win-record-line";
       winRecordLine.textContent = formatSingleLineRecord(rec, `🏆 Record Lv.${levelIndex + 1}:`);
-      if(winRecordForm) winRecordForm.style.display = "none";
     } else {
       winRecordLine.className = "win-record-line";
       winRecordLine.textContent = `🏆 Record Lv.${levelIndex + 1}: ${scoreToShow} pt`;
-      if(winRecordForm) winRecordForm.style.display = "none";
     }
   }
 
@@ -6056,20 +7480,21 @@ try {
 
     const earnedScore = calculateScore(levelIndex, moves, timerSeconds);
     lastWinScore = earnedScore;
-    const prevRecord = getLevelRecord(levelIndex);
-    if(!prevRecord || earnedScore > prevRecord.score){
-      lastWinIsNewRecord = true;
-      levelRecords[String(levelIndex)] = {
-        score: earnedScore,
-        name: savedPlayerName || "Giocatore",
-        date: formatShortDate(),
-        moves,
-        time: timerSeconds
-      };
-      persistRecords();
-      updateHomeLevelRecordUI();
-    } else {
-      lastWinIsNewRecord = false;
+    currentSessionScore += earnedScore;
+    currentSessionLevelsCleared += 1;
+
+    const activeName = (currentPlayerName || savedPlayerName || "Giocatore").trim().slice(0, MAX_RECORD_NAME_LEN) || "Giocatore";
+    lastWinIsNewRecord = recordLevelScore(levelIndex, {
+      score: earnedScore,
+      name: activeName,
+      date: formatShortDate(),
+      timestamp: Date.now(),
+      moves,
+      time: timerSeconds
+    });
+
+    if(levelIndex >= LEVELS.length - 1){
+      finalizeSessionScore();
     }
 
     renderBoard();
@@ -6708,6 +8133,7 @@ try {
     if(exitConfirmOverlay) exitConfirmOverlay.classList.remove("show");
     activeOverlay = "";
     stopTimer();
+    finalizeSessionScore();
     inGameSession = false;
     toggleFullscreen(false);
     showHomeView();
@@ -6841,60 +8267,18 @@ try {
 
 
 
-  let awaitingWinPhoto = false;
-
-  function restoreWinAfterCancel(){
-    awaitingWinPhoto = false;
-    if(winOverlay) winOverlay.classList.add("show");
-    activeOverlay = "win";
-    if(isFullscreen){
-      toggleFullscreen(true);
-    }
-  }
-
   /*
-   * Gestione caricamento foto e annullamento dalla schermata di vittoria (v. 1.23)
+   * Aggiunta foto nella Galleria Interna (v. 1.24)
    */
-  photoInput.addEventListener(
-    "change",
-    event=>{
-
-      const file=
-        event.target.files &&
-        event.target.files[0];
-
-
-      if(file){
-        awaitingWinPhoto=false;
-        winOverlay.classList.remove("show");
-        loadPhoto(file);
-      }else if(awaitingWinPhoto){
-        restoreWinAfterCancel();
+  if(photoInput){
+    photoInput.addEventListener("change", event => {
+      const files = event.target.files;
+      if(files && files.length > 0){
+        addFilesToGallery(files);
       }
-    }
-  );
-
-  photoInput.addEventListener(
-    "cancel",
-    ()=>{
-      if(awaitingWinPhoto){
-        restoreWinAfterCancel();
-      }
-    }
-  );
-
-  window.addEventListener(
-    "focus",
-    ()=>{
-      if(awaitingWinPhoto){
-        setTimeout(()=>{
-          if(awaitingWinPhoto && (!photoInput.files || photoInput.files.length===0)){
-            restoreWinAfterCancel();
-          }
-        },350);
-      }
-    }
-  );
+      photoInput.value = "";
+    });
+  }
 
 
   if(mixBtn){
@@ -7310,7 +8694,6 @@ try {
     nextLevelBtnEl.addEventListener(
       "click",
       ()=>{
-        applyRecordPlayerName();
         if(levelIndex < LEVELS.length - 1){
           nextLevel();
         }else{
@@ -7323,62 +8706,13 @@ try {
   }
 
   /*
-   * SALVATAGGIO NOME RECORD E RIAVVIO SCHERMO INTERO (v. 1.23)
-   */
-  function applyRecordPlayerName(){
-    if(!recordNameInput || !lastWinIsNewRecord) return;
-    const rawName = recordNameInput.value.trim().slice(0, MAX_RECORD_NAME_LEN);
-    const finalName = rawName || "Giocatore";
-    savedPlayerName = rawName;
-    try { localStorage.setItem(PLAYER_NAME_STORAGE_KEY, rawName); } catch(_) {}
-    const rec = getLevelRecord(levelIndex);
-    if(rec){
-      rec.name = finalName;
-      persistRecords();
-      updateHomeLevelRecordUI();
-      if(winRecordLine){
-        winRecordLine.className = "win-record-line is-new";
-        winRecordLine.textContent = formatSingleLineRecord(rec, "🏆 Nuovo Record!");
-      }
-    }
-  }
-
-  if(saveRecordNameBtn){
-    saveRecordNameBtn.addEventListener("click", () => {
-      applyRecordPlayerName();
-      if(recordNameInput) recordNameInput.blur();
-    });
-  }
-
-  if(recordNameInput){
-    recordNameInput.addEventListener("keydown", event => {
-      if(event.key === "Enter"){
-        event.preventDefault();
-        applyRecordPlayerName();
-        recordNameInput.blur();
-      }
-    });
-  }
-
-  if(resumeFullscreenBtn){
-    resumeFullscreenBtn.addEventListener("click", () => {
-      if(resumeFullscreenOverlay) resumeFullscreenOverlay.classList.remove("show");
-      activeOverlay = "";
-      toggleFullscreen(true);
-      renderBoard();
-      saveGame();
-    });
-  }
-
-  /*
-   * CAMBIA FOTO DALLA SCHERMATA DI VITTORIA (v. 1.23)
+   * CAMBIA FOTO DALLA SCHERMATA DI VITTORIA (v. 1.24)
    */
   const newGameBtnEl = $("newGameBtn");
   if(newGameBtnEl){
     newGameBtnEl.addEventListener(
       "click",
       ()=>{
-        applyRecordPlayerName();
         if(levelIndex >= LEVELS.length - 1){
           if(winOverlay) winOverlay.classList.remove("show");
           activeOverlay="";
@@ -7389,23 +8723,8 @@ try {
           return;
         }
 
-        // Se si è in visualizzazione orizzontale, riporta temporaneamente la visualizzazione in verticale per il selettore foto
-        if(isFullscreen && gamePanel && gamePanel.classList.contains("fs-layout-landscape")){
-          gamePanel.classList.remove("fs-layout-landscape");
-          gamePanel.classList.add("fs-layout-portrait");
-          forcePortraitOrientation(false);
-        }
-
-        const targetLevel = levelIndex < LEVELS.length - 1 ? levelIndex + 1 : 0;
-        selectedStartLevel = targetLevel;
-        selectedLevel = targetLevel;
-        photoLoadMode = "continueNext";
-        awaitingWinPhoto = true;
-
-        if(photoInput){
-          photoInput.value = "";
-          photoInput.click();
-        }
+        const targetLevel = levelIndex + 1;
+        openGalleryModal("nextLevel", targetLevel, true);
       }
     );
   }
@@ -7422,7 +8741,300 @@ try {
   }
 
   /*
-   * EVENTI SCHERMATA PRINCIPALE (HOME VIEW v. 1.18)
+   * TASTIERA VIRTUALE NOME GIOCATORE ALL'AVVIO PARTITA (v. 1.24)
+   */
+  function updatePlayerNameModalUI(){
+    if(playerNameDisplay){
+      playerNameDisplay.value = playerNameBuffer;
+    }
+    const hasLetter = playerNameBuffer.trim().length > 0;
+    if(playerNameTip){
+      playerNameTip.classList.toggle("is-hidden", hasLetter);
+    }
+    if(vkOkBtn){
+      vkOkBtn.disabled = !hasLetter;
+    }
+  }
+
+  function buildVirtualKeyboard(){
+    if(!virtualKeyboardLetters) return;
+    virtualKeyboardLetters.innerHTML = "";
+    ITALIAN_LETTERS.forEach(letter => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "vk-key";
+      btn.textContent = letter;
+      btn.setAttribute("aria-label", `Lettera ${letter}`);
+      btn.addEventListener("click", () => {
+        if(playerNameBuffer.length < MAX_RECORD_NAME_LEN){
+          playerNameBuffer += letter;
+          updatePlayerNameModalUI();
+        }
+      });
+      virtualKeyboardLetters.appendChild(btn);
+    });
+  }
+
+  function openPlayerNameModal(){
+    buildVirtualKeyboard();
+    playerNameBuffer = "";
+    updatePlayerNameModalUI();
+    activeOverlay = "playerName";
+    if(playerNameOverlay) playerNameOverlay.classList.add("show");
+  }
+
+  function confirmPlayerNameAndStart(){
+    const trimmed = playerNameBuffer.trim().slice(0, MAX_RECORD_NAME_LEN);
+    if(!trimmed) return;
+    currentPlayerName = trimmed;
+    savedPlayerName = trimmed;
+    try { localStorage.setItem(PLAYER_NAME_STORAGE_KEY, trimmed); } catch(_) {}
+
+    currentSessionScore = 0;
+    currentSessionLevelsCleared = 0;
+    sessionFinalized = false;
+
+    if(playerNameOverlay) playerNameOverlay.classList.remove("show");
+    activeOverlay = "";
+    startGameFromHome();
+  }
+
+  if(vkBackspaceBtn){
+    vkBackspaceBtn.addEventListener("click", () => {
+      if(playerNameBuffer.length > 0){
+        playerNameBuffer = playerNameBuffer.slice(0, -1);
+        updatePlayerNameModalUI();
+      }
+    });
+  }
+
+  if(vkSpaceBtn){
+    vkSpaceBtn.addEventListener("click", () => {
+      if(playerNameBuffer.length > 0 && playerNameBuffer.length < MAX_RECORD_NAME_LEN){
+        playerNameBuffer += " ";
+        updatePlayerNameModalUI();
+      }
+    });
+  }
+
+  if(vkOkBtn){
+    vkOkBtn.addEventListener("click", confirmPlayerNameAndStart);
+  }
+
+  if(playerNameOverlay){
+    playerNameOverlay.addEventListener("click", event => {
+      if(event.target === playerNameOverlay){
+        /* intenzionale: non si può uscire senza inserire il nome */
+      }
+    });
+  }
+
+  /*
+   * EVENTI FINESTRA CLASSIFICA RECORD (v. 1.24)
+   */
+  if(openRecordsBtn){
+    openRecordsBtn.addEventListener("click", () => openRecordsModal(selectedLevel));
+  }
+  if(recordsCloseXBtn){
+    recordsCloseXBtn.addEventListener("click", closeRecordsModal);
+  }
+  if(recordsCloseBtn){
+    recordsCloseBtn.addEventListener("click", closeRecordsModal);
+  }
+  if(recordsOverlay){
+    recordsOverlay.addEventListener("click", event => {
+      if(event.target === recordsOverlay){
+        closeRecordsModal();
+      }
+    });
+  }
+
+  /*
+   * EVENTI GALLERIA FOTO INTERNA (v. 1.24)
+   */
+  if(galleryAddPhotoBtn){
+    galleryAddPhotoBtn.addEventListener("click", () => {
+      if(photoInput){
+        photoInput.value = "";
+        photoInput.click();
+      }
+    });
+  }
+  if(galleryCloseBtn){
+    galleryCloseBtn.addEventListener("click", () => closeGalleryModal(true));
+  }
+  if(galleryCancelBtn){
+    galleryCancelBtn.addEventListener("click", () => closeGalleryModal(true));
+  }
+  if(galleryOverlay){
+    galleryOverlay.addEventListener("click", event => {
+      if(event.target === galleryOverlay){
+        closeGalleryModal(true);
+      }
+    });
+  }
+
+  /*
+   * EVENTI RITAGLIO / ZOOM NUOVO LIVELLO DOPO CAMBIA FOTO (v. 1.24)
+   */
+  if(nlCropPreviewBox){
+    const nlPointers = new Map();
+    let nlPinchDist = 0;
+    let nlPinchZoom = 1;
+    let nlPinchMidX = 0;
+    let nlPinchMidY = 0;
+    let nlPinchPanX = 0;
+    let nlPinchPanY = 0;
+    let isNlPanning = false;
+    let startNlX = 0;
+    let startNlY = 0;
+    let initNlPanX = 0;
+    let initNlPanY = 0;
+
+    nlCropPreviewBox.addEventListener("pointerdown", event => {
+      if(!nlCropSourceImg || !nlCropSourceImg.complete || nlCropSourceImg.naturalWidth === 0) return;
+      nlPointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      try { nlCropPreviewBox.setPointerCapture(event.pointerId); } catch(_){}
+      if(nlPointers.size === 1){
+        isNlPanning = true;
+        startNlX = event.clientX;
+        startNlY = event.clientY;
+        initNlPanX = nlCropPanX;
+        initNlPanY = nlCropPanY;
+        nlCropPreviewBox.classList.add("is-dragging");
+      } else if(nlPointers.size === 2){
+        isNlPanning = false;
+        const pts = Array.from(nlPointers.values());
+        nlPinchDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+        nlPinchZoom = nlCropZoom;
+        nlPinchMidX = (pts[0].x + pts[1].x) / 2;
+        nlPinchMidY = (pts[0].y + pts[1].y) / 2;
+        nlPinchPanX = nlCropPanX;
+        nlPinchPanY = nlCropPanY;
+      }
+    });
+
+    nlCropPreviewBox.addEventListener("pointermove", event => {
+      if(!nlPointers.has(event.pointerId)) return;
+      nlPointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      if(nlPointers.size === 2 && nlPinchDist > 0){
+        const pts = Array.from(nlPointers.values());
+        const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+        const midX = (pts[0].x + pts[1].x) / 2;
+        const midY = (pts[0].y + pts[1].y) / 2;
+        const nextZoom = Math.max(1, Math.min(4, nlPinchZoom * (dist / nlPinchDist)));
+        const factor = nlPinchZoom > 0 ? nextZoom / nlPinchZoom : 1;
+        nlCropZoom = nextZoom;
+        nlCropPanX = nlPinchPanX * factor + (midX - nlPinchMidX);
+        nlCropPanY = nlPinchPanY * factor + (midY - nlPinchMidY);
+        updateNlCropFrameAndImage(true);
+        updateNlCropZoomUI();
+      } else if(nlPointers.size === 1 && isNlPanning){
+        nlCropPanX = initNlPanX + (event.clientX - startNlX);
+        nlCropPanY = initNlPanY + (event.clientY - startNlY);
+        updateNlCropFrameAndImage(true);
+      }
+    });
+
+    const finishNlPan = event => {
+      nlPointers.delete(event.pointerId);
+      try { nlCropPreviewBox.releasePointerCapture(event.pointerId); } catch(_){}
+      if(nlPointers.size === 1){
+        const rem = Array.from(nlPointers.values())[0];
+        isNlPanning = true;
+        startNlX = rem.x;
+        startNlY = rem.y;
+        initNlPanX = nlCropPanX;
+        initNlPanY = nlCropPanY;
+      } else if(nlPointers.size === 0){
+        isNlPanning = false;
+        nlPinchDist = 0;
+        nlCropPreviewBox.classList.remove("is-dragging");
+        updateNlCropFrameAndImage(true);
+      }
+    };
+
+    nlCropPreviewBox.addEventListener("pointerup", finishNlPan);
+    nlCropPreviewBox.addEventListener("pointercancel", finishNlPan);
+    nlCropPreviewBox.addEventListener("wheel", event => {
+      if(!nlCropSourceImg || !nlCropSourceImg.complete || nlCropSourceImg.naturalWidth === 0) return;
+      event.preventDefault();
+      setNlCropZoom(nlCropZoom + (event.deltaY < 0 ? 0.2 : -0.2));
+    }, { passive: false });
+    nlCropPreviewBox.addEventListener("dblclick", event => {
+      if(!nlCropSourceImg || !nlCropSourceImg.complete || nlCropSourceImg.naturalWidth === 0) return;
+      event.preventDefault();
+      setNlCropZoom(nlCropZoom > 1.05 ? 1 : 2);
+    });
+  }
+
+  if(nlCropZoomSlider){
+    nlCropZoomSlider.addEventListener("input", () => {
+      setNlCropZoom(parseFloat(nlCropZoomSlider.value));
+    });
+  }
+  if(nlCropZoomResetBtn){
+    nlCropZoomResetBtn.addEventListener("click", () => setNlCropZoom(1));
+  }
+  if(nlCropCancelBtn){
+    nlCropCancelBtn.addEventListener("click", () => closeNextLevelCropModal(true));
+  }
+  if(nlCropConfirmBtn){
+    nlCropConfirmBtn.addEventListener("click", () => {
+      const cropped = generateCroppedPhotoFromImg(
+        nlCropSourceImg,
+        nlCropTargetLevel,
+        nlCropZoom,
+        nlCropPanRatioX,
+        nlCropPanRatioY
+      );
+      if(cropped){
+        photoData = cropped;
+      }
+      rawPhotoUrl = nlCropPhotoUrl;
+      isPortraitPhoto = nlIsPortraitPhoto;
+      cropZoom = nlCropZoom;
+      cropPanRatioX = nlCropPanRatioX;
+      cropPanRatioY = nlCropPanRatioY;
+      if(cropSourceImg && rawPhotoUrl){
+        cropSourceImg.onload = null;
+        cropSourceImg.src = rawPhotoUrl;
+      }
+
+      closeNextLevelCropModal(false);
+      lastWinScore = null;
+      lastWinIsNewRecord = false;
+
+      levelIndex = nlCropTargetLevel;
+      selectedLevel = levelIndex;
+      updateLevelButtonsUI();
+
+      moves = 0;
+      mixed = false;
+      locked = false;
+      gameCompleted = false;
+      selectedTile = null;
+      resetTimer();
+
+      const imgEl = $("previewImage");
+      if(imgEl && photoData) imgEl.src = photoData;
+      const thumbEl = $("previewThumb");
+      if(thumbEl && photoData) thumbEl.src = photoData;
+      const fsThumb = $("fsStripThumbImg");
+      if(fsThumb && photoData) fsThumb.src = photoData;
+
+      createSolvedPieces();
+      shufflePieces(true);
+      resetPreviewZoom();
+      renderBoard();
+      if(isFullscreen) toggleFullscreen(true);
+      setHint(`Livello ${levelIndex + 1}: nuova foto pronta. Buona fortuna!`);
+      saveGame();
+    });
+  }
+
+  /*
+   * EVENTI SCHERMATA PRINCIPALE (HOME VIEW v. 1.24)
    */
   // 1. Selezione dei 7 livelli in formato 3D
   if(levelsGrid){
@@ -7439,11 +9051,10 @@ try {
     });
   }
 
-  // 2. Pulsante "Carica foto"
+  // 2. Pulsante "Carica foto": apre la Galleria Interna (v. 1.24)
   if(uploadPhotoBtn){
     uploadPhotoBtn.addEventListener("click", () => {
-      photoInput.value = "";
-      photoInput.click();
+      openGalleryModal("home", selectedLevel, false);
     });
   }
 
@@ -7543,17 +9154,19 @@ try {
     });
   }
 
-  if(cropZoomOutBtn){
-    cropZoomOutBtn.addEventListener("click", () => setCropZoom(cropZoom - 0.25, true));
-  }
-  if(cropZoomInBtn){
-    cropZoomInBtn.addEventListener("click", () => setCropZoom(cropZoom + 0.25, true));
+  if(cropZoomSlider){
+    cropZoomSlider.addEventListener("input", () => {
+      setCropZoom(parseFloat(cropZoomSlider.value), false);
+    });
+    cropZoomSlider.addEventListener("change", () => {
+      setCropZoom(parseFloat(cropZoomSlider.value), true);
+    });
   }
   if(cropZoomResetBtn){
     cropZoomResetBtn.addEventListener("click", () => setCropZoom(1, true));
   }
 
-  // 4. Pulsante "GIOCA" in formato 3D: avvia lo schermo intero adattivo
+  // 4. Pulsante "GIOCA" in formato 3D: chiede prima il nome giocatore e poi avvia
   function startGameFromHome(){
     const proceed = () => {
       updateCropFrameAndImage();
@@ -7599,7 +9212,7 @@ try {
     };
 
     if(!cropSourceImg.src || cropSourceImg.src.endsWith("#") || !cropSourceImg.complete || cropSourceImg.naturalWidth === 0){
-      const defaultImg = rawPhotoUrl || getHeroDataUrl(0, "") || resolveHeroUrl(HEROES[0].image);
+      const defaultImg = rawPhotoUrl || resolveHeroUrl(DEFAULT_HOME_PHOTO);
       cropSourceImg.onload = () => {
         isPortraitPhoto = cropSourceImg.naturalHeight > cropSourceImg.naturalWidth;
         updateLevelButtonsUI();
@@ -7613,16 +9226,68 @@ try {
   }
 
   if(homePlayBtn){
-    homePlayBtn.addEventListener("click", startGameFromHome);
+    homePlayBtn.addEventListener("click", openPlayerNameModal);
   }
 
   /*
-   * TASTO ESC (gestione schermo intero e modali)
+   * TASTO ESC e TASTIERA FISICA PER NOME GIOCATORE
    */
   document.addEventListener(
     "keydown",
     event=>{
+      if(activeOverlay === "playerName"){
+        if(event.key === "Escape"){
+          event.preventDefault();
+          return;
+        }
+        if(event.key === "Backspace"){
+          event.preventDefault();
+          if(playerNameBuffer.length > 0){
+            playerNameBuffer = playerNameBuffer.slice(0, -1);
+            updatePlayerNameModalUI();
+          }
+          return;
+        }
+        if(event.key === "Enter"){
+          event.preventDefault();
+          if(playerNameBuffer.trim().length > 0) confirmPlayerNameAndStart();
+          return;
+        }
+        if(event.key === " "){
+          event.preventDefault();
+          if(playerNameBuffer.length > 0 && playerNameBuffer.length < MAX_RECORD_NAME_LEN){
+            playerNameBuffer += " ";
+            updatePlayerNameModalUI();
+          }
+          return;
+        }
+        if(/^[a-zA-Z]$/.test(event.key) && !event.ctrlKey && !event.metaKey && !event.altKey){
+          event.preventDefault();
+          if(playerNameBuffer.length < MAX_RECORD_NAME_LEN){
+            playerNameBuffer += event.key.toUpperCase();
+            updatePlayerNameModalUI();
+          }
+          return;
+        }
+        return;
+      }
+
       if(event.key !== "Escape") return;
+
+      if(activeOverlay === "records"){
+        closeRecordsModal();
+        return;
+      }
+
+      if(activeOverlay === "gallery"){
+        closeGalleryModal(true);
+        return;
+      }
+
+      if(activeOverlay === "nextCrop"){
+        closeNextLevelCropModal(true);
+        return;
+      }
 
       if(activeOverlay === "exitConfirm"){
         cancelExitGame();
@@ -7665,29 +9330,23 @@ try {
 
   window.addEventListener("resize", () => {
     updateCropFrameAndImage();
+    if(activeOverlay === "nextCrop"){
+      updateNlCropFrameAndImage();
+    }
     if(inGameSession){
-      if(isFullscreen && !isAppStandalone() && !hasNativeFullscreen()){
+      if(isFullscreen){
         applyFullscreenLayoutClass(window.innerWidth > window.innerHeight);
       }
       renderBoard();
     }
   });
 
-  const handleNativeFullscreenChange = () => {
-    if(inGameSession && isFullscreen && !isAppStandalone() && !hasNativeFullscreen() && !awaitingWinPhoto){
-      // Mantiene la coerenza di layout con l'orientamento reale del viewport se l'utente esce dallo schermo intero
-      applyFullscreenLayoutClass(window.innerWidth > window.innerHeight);
-      renderBoard();
-    }
-  };
-  document.addEventListener("fullscreenchange", handleNativeFullscreenChange);
-  document.addEventListener("webkitfullscreenchange", handleNativeFullscreenChange);
-
   /*
-   * AVVIO DELL'APPLICAZIONE (v. 1.18)
+   * AVVIO DELL'APPLICAZIONE (v. 1.24)
    */
   updateSoundUI();
   updateTimerDisplay();
+  ensureStarterGallerySeeded();
 
   const restored = restoreGame();
 
@@ -7698,7 +9357,7 @@ try {
     if(gamePanel) gamePanel.classList.add("hidden-initial");
     document.body.classList.remove("in-game");
 
-    const defaultImg = rawPhotoUrl || getHeroDataUrl(0, "") || resolveHeroUrl(HEROES[0].image);
+    const defaultImg = rawPhotoUrl || resolveHeroUrl(DEFAULT_HOME_PHOTO);
     cropSourceImg.onload = () => {
       isPortraitPhoto = cropSourceImg.naturalHeight > cropSourceImg.naturalWidth;
       updateLevelButtonsUI();
@@ -7710,7 +9369,7 @@ try {
     setHint("Scegli il livello, posiziona la foto nel riquadro e premi GIOCA!");
   }else{
     if(!cropSourceImg.src || cropSourceImg.src.endsWith("#")){
-      const defaultImg = rawPhotoUrl || getHeroDataUrl(0, "") || resolveHeroUrl(HEROES[0].image);
+      const defaultImg = rawPhotoUrl || resolveHeroUrl(DEFAULT_HOME_PHOTO);
       cropSourceImg.onload = () => {
         isPortraitPhoto = cropSourceImg.naturalHeight > cropSourceImg.naturalWidth;
         updateLevelButtonsUI();
