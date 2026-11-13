@@ -7,7 +7,11 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Puzzle Magic v. 1.20</title>
+<title>Puzzle Magic v. 1.22</title>
+<link rel="preload" as="image" href="./Livello4.webp">
+<link rel="preload" as="image" href="./Livello5.webp">
+<link rel="preload" as="image" href="./Livello6.webp">
+<link rel="preload" as="image" href="./Livello7.webp">
 
 <style>
 :root{
@@ -276,7 +280,7 @@ h1 {
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
-  max-height: 52dvh;
+  max-height: 55dvh;
   margin-top: clamp(4px, 1vh, 8px);
   margin-bottom: clamp(4px, 1vh, 8px);
 }
@@ -360,25 +364,106 @@ h1 {
   z-index: 5;
   transition: width .18s ease, height .18s ease;
   box-sizing: border-box;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding-bottom: 6px;
+  overflow: hidden;
 }
 
-.crop-guide-hint {
-  background: rgba(11, 17, 32, 0.78);
-  backdrop-filter: blur(4px);
-  color: #f1f5f9;
-  font-size: 10px;
-  font-weight: 800;
-  padding: 3px 8px;
-  border-radius: 12px;
-  letter-spacing: .2px;
-  white-space: nowrap;
+.crop-grid-overlay {
+  position: absolute;
+  inset: 0;
   pointer-events: none;
-  opacity: .92;
-  box-shadow: 0 1px 4px rgba(0,0,0,.3);
+  z-index: 2;
+}
+
+.crop-grid-line-v {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.42);
+  box-shadow: 0 0 2px rgba(15, 23, 42, 0.45);
+}
+
+.crop-grid-line-h {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.42);
+  box-shadow: 0 0 2px rgba(15, 23, 42, 0.45);
+}
+
+.crop-footer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex: 0 0 auto;
+  margin-top: 6px;
+  padding: 0 2px;
+}
+
+.crop-guide-caption {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--muted);
+  line-height: 1.25;
+}
+
+.crop-zoom-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+
+.crop-zoom-btn,
+.crop-zoom-reset {
+  display: inline-grid;
+  place-items: center;
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background .12s ease, border-color .12s ease, transform .08s ease;
+}
+
+.crop-zoom-btn {
+  width: 28px;
+  padding: 0;
+  font-size: 15px;
+}
+
+.crop-zoom-reset {
+  min-width: 40px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.crop-zoom-btn:hover:not(:disabled),
+.crop-zoom-reset:hover:not(:disabled) {
+  background: #eef2ff;
+  border-color: var(--primary);
+  color: var(--primary-dark);
+}
+
+.crop-zoom-btn:active:not(:disabled),
+.crop-zoom-reset:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.crop-zoom-btn:disabled,
+.crop-zoom-reset:disabled {
+  opacity: 0.42;
+  cursor: default;
 }
 
 /* 4) Pulsante 3D "GIOCA" */
@@ -1214,7 +1299,7 @@ footer{
   display:block;
   width:100%;
   height:100%;
-  object-fit:cover;
+  object-fit:contain;
   pointer-events:none;
   user-select:none;
   -webkit-user-drag:none
@@ -2191,13 +2276,15 @@ body.is-fullscreen #previewOverlay .preview-image{
 
 .game-panel.is-fullscreen.fs-layout-portrait .board{
   width:min(94vw, calc(47dvh * var(--board-aspect-num, 1)))!important;
-  max-height:47dvh!important;
+  height:min(47dvh, calc(94vw / var(--board-aspect-num, 1)))!important;
+  max-width:none!important;
+  max-height:none!important;
   aspect-ratio:var(--board-aspect, 1/1)!important;
   box-shadow:0 8px 24px rgba(0,0,0,.1)!important
 }
 
 .game-panel.is-fullscreen.fs-layout-portrait .game-side-col{
-  flex:1 1 auto!important;
+  flex:1 1 0%!important;
   min-height:0!important;
   display:flex!important;
   flex-direction:column!important;
@@ -2213,7 +2300,7 @@ body.is-fullscreen #previewOverlay .preview-image{
   border:none!important;
   padding:0!important;
   width:100%!important;
-  flex:1 1 auto!important;
+  flex:1 1 0%!important;
   min-height:0!important;
   display:flex!important;
   flex-direction:column!important;
@@ -2227,9 +2314,11 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .game-panel.is-fullscreen.fs-layout-portrait .preview-tile-container{
-  flex:1 1 auto!important;
+  flex:1 1 0%!important;
   min-height:0!important;
+  min-width:0!important;
   width:100%!important;
+  container-type:size!important;
   display:flex!important;
   align-items:center!important;
   justify-content:center!important;
@@ -2238,10 +2327,11 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .game-panel.is-fullscreen.fs-layout-portrait .preview-tile{
-  height:100%!important;
-  max-height:100%!important;
-  width:auto!important;
-  max-width:92vw!important;
+  width:min(94cqw, calc(98cqh * var(--board-aspect-num, 1)))!important;
+  height:min(98cqh, calc(94cqw / var(--board-aspect-num, 1)))!important;
+  max-width:none!important;
+  max-height:none!important;
+  min-height:0!important;
   aspect-ratio:var(--board-aspect, 1/1)!important;
   border-radius:12px!important;
   box-shadow:0 4px 14px rgba(0,0,0,.12)!important;
@@ -2280,7 +2370,7 @@ body.is-fullscreen #previewOverlay .preview-image{
   justify-content:space-between!important;
   height:100%!important;
   width:auto!important;
-  flex:1 1 auto!important;
+  flex:1 1 0%!important;
   min-width:0!important;
   gap:14px!important;
   margin:0!important
@@ -2293,15 +2383,15 @@ body.is-fullscreen #previewOverlay .preview-image{
   display:flex!important;
   align-items:center!important;
   justify-content:center!important;
-  max-width:calc(100vw - 210px)!important
+  max-width:calc(100vw - 220px)!important
 }
 
 .game-panel.is-fullscreen.fs-layout-landscape .board-wrap{
-  height:min(calc(100vh - 12px), calc(100dvh - 12px))!important;
-  width:auto!important;
+  width:min(calc(100vw - 220px), calc((100dvh - 12px) * var(--board-aspect-num, 1)))!important;
+  height:min(calc(100dvh - 12px), calc((100vw - 220px) / var(--board-aspect-num, 1)))!important;
   aspect-ratio:var(--board-aspect, 1/1)!important;
-  max-width:calc(100vw - 220px)!important;
-  max-height:calc(100vh - 12px)!important;
+  max-width:none!important;
+  max-height:none!important;
   display:flex!important;
   align-items:center!important;
   justify-content:center!important;
@@ -2317,7 +2407,7 @@ body.is-fullscreen #previewOverlay .preview-image{
 
 .game-panel.is-fullscreen.fs-layout-landscape .game-side-col{
   display:flex!important;
-  flex:1 1 auto!important;
+  flex:1 1 0%!important;
   height:100%!important;
   min-width:0!important;
   align-items:center!important;
@@ -2328,10 +2418,11 @@ body.is-fullscreen #previewOverlay .preview-image{
 
 .game-panel.is-fullscreen.fs-layout-landscape .side-preview-card{
   display:flex!important;
-  flex:1 1 auto!important;
+  flex:1 1 0%!important;
   height:100%!important;
   width:100%!important;
   min-width:0!important;
+  min-height:0!important;
   align-items:center!important;
   justify-content:center!important;
   background:transparent!important;
@@ -2346,20 +2437,24 @@ body.is-fullscreen #previewOverlay .preview-image{
 
 .game-panel.is-fullscreen.fs-layout-landscape .preview-tile-container{
   display:flex!important;
-  flex:1 1 auto!important;
+  flex:1 1 0%!important;
   height:100%!important;
   width:100%!important;
   min-width:0!important;
+  min-height:0!important;
+  container-type:size!important;
   align-items:center!important;
   justify-content:center!important;
-  padding:4px!important
+  padding:4px!important;
+  overflow:hidden!important
 }
 
 .game-panel.is-fullscreen.fs-layout-landscape .preview-tile{
-  height:auto!important;
-  max-height:min(calc(100vh - 16px), calc(100dvh - 16px))!important;
-  width:auto!important;
-  max-width:100%!important;
+  width:min(98cqw, calc(98cqh * var(--board-aspect-num, 1)))!important;
+  height:min(98cqh, calc(98cqw / var(--board-aspect-num, 1)))!important;
+  max-width:none!important;
+  max-height:none!important;
+  min-height:0!important;
   aspect-ratio:var(--board-aspect, 1/1)!important;
   border-radius:14px!important;
   box-shadow:0 4px 18px rgba(0,0,0,.15)!important;
@@ -2426,12 +2521,12 @@ body.is-fullscreen #previewOverlay .preview-image{
   }
   .game-panel.is-fullscreen:not(.fs-layout-landscape) .board{
     width:min(94vw, calc(47dvh * var(--board-aspect-num, 1)));
-    max-height:47dvh;
+    height:min(47dvh, calc(94vw / var(--board-aspect-num, 1)));
     aspect-ratio:var(--board-aspect, 1/1);
     box-shadow:0 8px 24px rgba(0,0,0,.08)
   }
   .game-panel.is-fullscreen:not(.fs-layout-landscape) .game-side-col{
-    flex:1 1 auto;
+    flex:1 1 0%;
     min-height:0;
     display:flex;
     flex-direction:column;
@@ -2444,7 +2539,7 @@ body.is-fullscreen #previewOverlay .preview-image{
     border:none;
     padding:0;
     width:100%;
-    flex:1 1 auto;
+    flex:1 1 0%;
     min-height:0;
     display:flex;
     flex-direction:column;
@@ -2455,19 +2550,22 @@ body.is-fullscreen #previewOverlay .preview-image{
     display:none
   }
   .game-panel.is-fullscreen:not(.fs-layout-landscape) .preview-tile-container{
-    flex:1 1 auto;
+    flex:1 1 0%;
     min-height:0;
+    min-width:0;
     width:100%;
+    container-type:size;
     display:flex;
     align-items:center;
     justify-content:center;
     overflow:hidden
   }
   .game-panel.is-fullscreen:not(.fs-layout-landscape) .preview-tile{
-    height:100%;
-    max-height:100%;
-    width:auto;
-    max-width:92vw;
+    width:min(94cqw, calc(98cqh * var(--board-aspect-num, 1)));
+    height:min(98cqh, calc(94cqw / var(--board-aspect-num, 1)));
+    max-width:none;
+    max-height:none;
+    min-height:0;
     aspect-ratio:var(--board-aspect, 1/1);
     border-radius:12px;
     box-shadow:0 4px 16px rgba(0,0,0,.08);
@@ -2497,7 +2595,7 @@ body.is-fullscreen #previewOverlay .preview-image{
     justify-content:space-between!important;
     height:100%!important;
     width:auto!important;
-    flex:1 1 auto!important;
+    flex:1 1 0%!important;
     min-width:0!important;
     gap:14px!important;
     margin:0!important
@@ -2509,14 +2607,14 @@ body.is-fullscreen #previewOverlay .preview-image{
     display:flex!important;
     align-items:center!important;
     justify-content:center!important;
-    max-width:calc(100vw - 210px)!important
+    max-width:calc(100vw - 220px)!important
   }
   .game-panel.is-fullscreen:not(.fs-layout-portrait) .board-wrap{
-    height:min(calc(100vh - 12px), calc(100dvh - 12px))!important;
-    width:auto!important;
+    width:min(calc(100vw - 220px), calc((100dvh - 12px) * var(--board-aspect-num, 1)))!important;
+    height:min(calc(100dvh - 12px), calc((100vw - 220px) / var(--board-aspect-num, 1)))!important;
     aspect-ratio:var(--board-aspect, 1/1)!important;
-    max-width:calc(100vw - 220px)!important;
-    max-height:calc(100vh - 12px)!important;
+    max-width:none!important;
+    max-height:none!important;
     display:flex!important;
     align-items:center!important;
     justify-content:center!important;
@@ -2530,7 +2628,7 @@ body.is-fullscreen #previewOverlay .preview-image{
   }
   .game-panel.is-fullscreen:not(.fs-layout-portrait) .game-side-col{
     display:flex!important;
-    flex:1 1 auto!important;
+    flex:1 1 0%!important;
     height:100%!important;
     min-width:0!important;
     align-items:center!important;
@@ -2540,10 +2638,11 @@ body.is-fullscreen #previewOverlay .preview-image{
   }
   .game-panel.is-fullscreen:not(.fs-layout-portrait) .side-preview-card{
     display:flex!important;
-    flex:1 1 auto!important;
+    flex:1 1 0%!important;
     height:100%!important;
     width:100%!important;
     min-width:0!important;
+    min-height:0!important;
     align-items:center!important;
     justify-content:center!important;
     background:transparent!important;
@@ -2556,19 +2655,23 @@ body.is-fullscreen #previewOverlay .preview-image{
   }
   .game-panel.is-fullscreen:not(.fs-layout-portrait) .preview-tile-container{
     display:flex!important;
-    flex:1 1 auto!important;
+    flex:1 1 0%!important;
     height:100%!important;
     width:100%!important;
     min-width:0!important;
+    min-height:0!important;
+    container-type:size!important;
     align-items:center!important;
     justify-content:center!important;
-    padding:4px!important
+    padding:4px!important;
+    overflow:hidden!important
   }
   .game-panel.is-fullscreen:not(.fs-layout-portrait) .preview-tile{
-    height:auto!important;
-    max-height:min(calc(100vh - 16px), calc(100dvh - 16px))!important;
-    width:auto!important;
-    max-width:100%!important;
+    width:min(98cqw, calc(98cqh * var(--board-aspect-num, 1)))!important;
+    height:min(98cqh, calc(98cqw / var(--board-aspect-num, 1)))!important;
+    max-width:none!important;
+    max-height:none!important;
+    min-height:0!important;
     aspect-ratio:var(--board-aspect, 1/1)!important;
     border-radius:14px!important;
     box-shadow:0 4px 18px rgba(0,0,0,.15)!important;
@@ -2587,8 +2690,8 @@ body.is-fullscreen #previewOverlay .preview-image{
     flex-direction:column!important;
     align-items:center!important;
     justify-content:space-between!important;
-    width:68px!important;
-    flex:0 0 68px!important;
+    width:76px!important;
+    flex:0 0 76px!important;
     height:min(calc(100vh - 12px), calc(100dvh - 12px))!important;
     padding:8px 4px!important;
     background:rgba(255,255,255,.95)!important;
@@ -2743,7 +2846,7 @@ body.is-fullscreen #previewOverlay .preview-image{
       <div>
         <div class="title-row">
           <h1>Puzzle Magic</h1>
-          <span class="version">v. 1.20</span>
+          <span class="version">v. 1.22</span>
         </div>
         <p class="subtitle">Ricomponi la foto, un livello alla volta!</p>
       </div>
@@ -2794,7 +2897,7 @@ body.is-fullscreen #previewOverlay .preview-image{
     </div>
   </section>
 
-  <!-- 3) Riquadro "MODELLO FOTO" con pulsante "Carica foto" e anteprima foto con riquadro di selezione e pan -->
+  <!-- 3) Riquadro "MODELLO FOTO" con pulsante "Carica foto" e anteprima foto con riquadro di selezione, griglia, pan e zoom -->
   <section class="home-panel home-photo-panel" id="photoModelPanel">
     <div class="home-photo-header">
       <h2 class="home-panel-title">MODELLO FOTO</h2>
@@ -2804,10 +2907,19 @@ body.is-fullscreen #previewOverlay .preview-image{
       <input id="photoInput" type="file" accept="image/*" style="display:none">
     </div>
 
-    <div class="crop-preview-box" id="cropPreviewBox" title="Trascina la foto per centrare l'inquadratura">
+    <div class="crop-preview-box" id="cropPreviewBox" title="Trascina la foto o esegui lo zoom">
       <img id="cropSourceImg" class="crop-source-img" alt="Foto modello" draggable="false">
       <div class="crop-selection-frame" id="cropSelectionFrame" aria-hidden="true">
-        <span class="crop-guide-hint">Trascina la foto per centrare</span>
+        <div class="crop-grid-overlay" id="cropGridOverlay"></div>
+      </div>
+    </div>
+
+    <div class="crop-footer-bar">
+      <span class="crop-guide-caption">Trascina la foto o esegui lo zoom.</span>
+      <div class="crop-zoom-controls" aria-label="Controlli zoom foto">
+        <button type="button" class="crop-zoom-btn" id="cropZoomOutBtn" title="Riduci zoom" aria-label="Riduci zoom">−</button>
+        <button type="button" class="crop-zoom-reset" id="cropZoomResetBtn" title="Reimposta zoom" aria-label="Reimposta zoom">1×</button>
+        <button type="button" class="crop-zoom-btn" id="cropZoomInBtn" title="Aumenta zoom" aria-label="Aumenta zoom">+</button>
       </div>
     </div>
   </section>
@@ -3495,17 +3607,40 @@ window.HERO_DATA_URLS = ["./Livello4.webp", "./Livello5.webp", "./Livello6.webp"
     }
   ];
 
-  /* Precaricamento e decodifica persistente per smartphone */
+  /* Precaricamento in RAM (blob URL + decodifica) per eliminare qualsiasi lag su smartphone */
 window._preloadedHeroImgs = [];
+const heroBlobCache = new Map();
 try {
-  HEROES.forEach(h => {
-    const preImg = new Image();
-    preImg.decoding = "async";
-    preImg.src = resolveHeroUrl(h.image);
-    if (preImg.decode) {
-      preImg.decode().catch(() => {});
+  HEROES.forEach((h, idx) => {
+    const resolvedUrl = resolveHeroUrl(h.image);
+    if (!resolvedUrl) return;
+    if (resolvedUrl.startsWith("data:") || resolvedUrl.startsWith("blob:")) {
+      const preImg = new Image();
+      preImg.decoding = "async";
+      preImg.src = resolvedUrl;
+      if (preImg.decode) preImg.decode().catch(() => {});
+      window._preloadedHeroImgs.push(preImg);
+      return;
     }
-    window._preloadedHeroImgs.push(preImg);
+    fetch(resolvedUrl, { cache: "force-cache" })
+      .then(res => res.ok ? res.blob() : null)
+      .then(blob => {
+        if (!blob) throw new Error("blob missing");
+        const objUrl = URL.createObjectURL(blob);
+        heroBlobCache.set(idx, objUrl);
+        const preImg = new Image();
+        preImg.decoding = "async";
+        preImg.src = objUrl;
+        if (preImg.decode) preImg.decode().catch(() => {});
+        window._preloadedHeroImgs.push(preImg);
+      })
+      .catch(() => {
+        const preImg = new Image();
+        preImg.decoding = "async";
+        preImg.src = resolvedUrl;
+        if (preImg.decode) preImg.decode().catch(() => {});
+        window._preloadedHeroImgs.push(preImg);
+      });
   });
 } catch (_) {}
 
@@ -3519,6 +3654,10 @@ try {
   const cropPreviewBox = $("cropPreviewBox");
   const cropSourceImg = $("cropSourceImg");
   const cropSelectionFrame = $("cropSelectionFrame");
+  const cropGridOverlay = $("cropGridOverlay");
+  const cropZoomOutBtn = $("cropZoomOutBtn");
+  const cropZoomResetBtn = $("cropZoomResetBtn");
+  const cropZoomInBtn = $("cropZoomInBtn");
   const homePlayBtn = $("homePlayBtn");
 
   /* Elementi di Gioco a Schermo Intero */
@@ -3613,12 +3752,15 @@ try {
   let inGameSession = false;
 
   /*
-   * Gestione selezione livello e ritaglio foto (v. 1.18)
+   * Gestione selezione livello, ritaglio e zoom foto (v. 1.22)
    */
   let selectedLevel = 0; // 0..6
   let isPortraitPhoto = false;
+  let cropZoom = 1;
   let cropPanX = 0;
   let cropPanY = 0;
+  let cropPanRatioX = 0;
+  let cropPanRatioY = 0;
   let isPanningCrop = false;
   let startCropPointerX = 0;
   let startCropPointerY = 0;
@@ -3853,6 +3995,54 @@ try {
     return cols / rows;
   }
 
+  function updateCropGridOverlay(){
+    if(!cropGridOverlay) return;
+    const { cols, rows } = getGridDimensions(selectedLevel);
+    cropGridOverlay.innerHTML = "";
+    const frag = document.createDocumentFragment();
+    for(let c = 1; c < cols; c++){
+      const vLine = document.createElement("div");
+      vLine.className = "crop-grid-line-v";
+      vLine.style.left = `${(c / cols) * 100}%`;
+      frag.appendChild(vLine);
+    }
+    for(let r = 1; r < rows; r++){
+      const hLine = document.createElement("div");
+      hLine.className = "crop-grid-line-h";
+      hLine.style.top = `${(r / rows) * 100}%`;
+      frag.appendChild(hLine);
+    }
+    cropGridOverlay.appendChild(frag);
+  }
+
+  function updateCropZoomUI(){
+    if(cropZoomResetBtn){
+      const label = cropZoom <= 1.02 ? "1×" : `${cropZoom.toFixed(1)}×`;
+      cropZoomResetBtn.textContent = label;
+      cropZoomResetBtn.disabled = cropZoom <= 1.02;
+    }
+    if(cropZoomOutBtn){
+      cropZoomOutBtn.disabled = cropZoom <= 1.02;
+    }
+    if(cropZoomInBtn){
+      cropZoomInBtn.disabled = cropZoom >= 3.98;
+    }
+  }
+
+  function setCropZoom(nextZoom, anchorSave = false){
+    const prevZoom = cropZoom;
+    const clampedZoom = Math.max(1, Math.min(4, nextZoom));
+    if(Math.abs(clampedZoom - prevZoom) < 0.001) return;
+    cropZoom = clampedZoom;
+    if(prevZoom > 0){
+      cropPanX = cropPanX * (clampedZoom / prevZoom);
+      cropPanY = cropPanY * (clampedZoom / prevZoom);
+    }
+    updateCropFrameAndImage(true);
+    updateCropZoomUI();
+    if(anchorSave) saveGame();
+  }
+
   function updateLevelButtonsUI(){
     const btn1 = $("lvlGridLabel1");
     const btn3 = $("lvlGridLabel3");
@@ -3874,9 +4064,11 @@ try {
     if(homeLevelSummary){
       homeLevelSummary.textContent = `Livello ${selectedLevel + 1} (${cols}×${rows})`;
     }
+    updateCropGridOverlay();
+    updateCropZoomUI();
   }
 
-  function updateCropFrameAndImage(){
+  function updateCropFrameAndImage(syncRatioFromPixels = false){
     if(!cropPreviewBox || !cropSourceImg || !cropSelectionFrame) return;
     const boxW = cropPreviewBox.clientWidth;
     const boxH = cropPreviewBox.clientHeight;
@@ -3907,8 +4099,9 @@ try {
 
     frameDims = { left: frameLeft, top: frameTop, width: frameW, height: frameH };
 
-    // Scala l'immagine in modo che copra interamente il riquadro di selezione
-    const scale = Math.max(frameW / natW, frameH / natH);
+    // Scala l'immagine in modo che copra interamente il riquadro di selezione, moltiplicata per cropZoom
+    const baseScale = Math.max(frameW / natW, frameH / natH);
+    const scale = baseScale * Math.max(1, Math.min(4, cropZoom || 1));
     const imgW = natW * scale;
     const imgH = natH * scale;
     imgScaledDims = { width: imgW, height: imgH, scale };
@@ -3919,8 +4112,18 @@ try {
     // Clamping dello spostamento (pan) per non lasciare mai vuoti dentro al riquadro
     const maxPanX = Math.max(0, (imgW - frameW) / 2);
     const maxPanY = Math.max(0, (imgH - frameH) / 2);
-    cropPanX = Math.max(-maxPanX, Math.min(maxPanX, cropPanX));
-    cropPanY = Math.max(-maxPanY, Math.min(maxPanY, cropPanY));
+
+    if(syncRatioFromPixels){
+      cropPanX = Math.max(-maxPanX, Math.min(maxPanX, cropPanX));
+      cropPanY = Math.max(-maxPanY, Math.min(maxPanY, cropPanY));
+      cropPanRatioX = maxPanX > 0 ? cropPanX / maxPanX : 0;
+      cropPanRatioY = maxPanY > 0 ? cropPanY / maxPanY : 0;
+    } else {
+      cropPanRatioX = Math.max(-1, Math.min(1, cropPanRatioX || 0));
+      cropPanRatioY = Math.max(-1, Math.min(1, cropPanRatioY || 0));
+      cropPanX = cropPanRatioX * maxPanX;
+      cropPanY = cropPanRatioY * maxPanY;
+    }
 
     const imgLeft = frameLeft + (frameW - imgW) / 2 + cropPanX;
     const imgTop = frameTop + (frameH - imgH) / 2 + cropPanY;
@@ -3929,36 +4132,34 @@ try {
     cropSourceImg.style.top = `${imgTop}px`;
   }
 
-  function generateCroppedPhoto(){
+  function generateCroppedPhoto(targetLvlIdx){
     if(!cropSourceImg || !cropSourceImg.naturalWidth) return photoData;
     const natW = cropSourceImg.naturalWidth;
     const natH = cropSourceImg.naturalHeight;
-    const { cols, rows } = getGridDimensions(selectedLevel);
+    const lvl = typeof targetLvlIdx === "number" ? targetLvlIdx : selectedLevel;
+    const { cols, rows } = getGridDimensions(lvl);
     const targetRatio = cols / rows;
 
-    let sx = 0, sy = 0, sw = natW, sh = natH;
-
-    if(frameDims && frameDims.width > 0 && imgScaledDims && imgScaledDims.scale > 0){
-      const scale = imgScaledDims.scale;
-      const frameRelX = (imgScaledDims.width - frameDims.width) / 2 - cropPanX;
-      const frameRelY = (imgScaledDims.height - frameDims.height) / 2 - cropPanY;
-      sx = Math.max(0, Math.min(natW, frameRelX / scale));
-      sy = Math.max(0, Math.min(natH, frameRelY / scale));
-      sw = Math.min(natW - sx, Math.max(1, frameDims.width / scale));
-      sh = Math.min(natH - sy, Math.max(1, frameDims.height / scale));
+    let baseSw, baseSh;
+    if(natW / natH > targetRatio){
+      baseSh = natH;
+      baseSw = natH * targetRatio;
     } else {
-      if(natW / natH > targetRatio){
-        sw = natH * targetRatio;
-        sh = natH;
-        sx = (natW - sw) / 2;
-        sy = 0;
-      } else {
-        sw = natW;
-        sh = natW / targetRatio;
-        sx = 0;
-        sy = (natH - sh) / 2;
-      }
+      baseSw = natW;
+      baseSh = natW / targetRatio;
     }
+
+    const zoom = Math.max(1, Math.min(4, cropZoom || 1));
+    const sw = Math.min(natW, Math.max(1, baseSw / zoom));
+    const sh = Math.min(natH, Math.max(1, baseSh / zoom));
+
+    const maxSrcPanX = Math.max(0, (natW - sw) / 2);
+    const maxSrcPanY = Math.max(0, (natH - sh) / 2);
+    const ratioX = Math.max(-1, Math.min(1, cropPanRatioX || 0));
+    const ratioY = Math.max(-1, Math.min(1, cropPanRatioY || 0));
+
+    const sx = Math.max(0, Math.min(natW - sw, (natW - sw) / 2 - ratioX * maxSrcPanX));
+    const sy = Math.max(0, Math.min(natH - sh, (natH - sh) / 2 - ratioY * maxSrcPanY));
 
     const canvas = document.createElement("canvas");
     canvas.width = Math.round(cols * 240);
@@ -3973,28 +4174,53 @@ try {
     if(hint) hint.textContent = message;
   }
 
+  function forcePortraitOrientation(keepLocked = false){
+    if(!screen.orientation) return;
+    try{
+      if(screen.orientation.lock){
+        const p = screen.orientation.lock("portrait");
+        if(p && p.then){
+          p.catch(() => {}).finally(() => {
+            if(!keepLocked && screen.orientation && screen.orientation.unlock){
+              try{ screen.orientation.unlock(); } catch(_){}
+            }
+          });
+        }
+      } else if(!keepLocked && screen.orientation.unlock){
+        screen.orientation.unlock();
+      }
+    } catch(_){}
+  }
+
   function toggleFullscreen(enable){
     isFullscreen = typeof enable === "boolean" ? enable : !isFullscreen;
 
     const { cols, rows } = getGridDimensions(levelIndex);
     // Nei casi dei livelli 1, 3 e 5 e crop verticale -> Schermo intero verticale; crop orizzontale -> Schermo intero orizzontale
-    const isHorizontal = cols > rows || (cols === rows && (window.innerWidth > window.innerHeight || !isPortraitPhoto));
+    const isHorizontal = cols > rows || (cols === rows && !isPortraitPhoto);
 
     gamePanel.classList.toggle("is-fullscreen", isFullscreen);
     document.body.classList.toggle("is-fullscreen", isFullscreen);
+
+    const isStandaloneApp = Boolean(
+      (window.matchMedia && (window.matchMedia("(display-mode: fullscreen)").matches || window.matchMedia("(display-mode: standalone)").matches)) ||
+      window.navigator.standalone === true
+    );
 
     if (isFullscreen) {
       gamePanel.classList.toggle("fs-layout-landscape", isHorizontal);
       gamePanel.classList.toggle("fs-layout-portrait", !isHorizontal);
 
-      // Chiamata all'API Fullscreen del browser per nascondere la barra degli indirizzi
-      const docEl = document.documentElement;
-      const req = docEl.requestFullscreen || docEl.webkitRequestFullscreen || docEl.mozRequestFullScreen || docEl.msRequestFullscreen;
-      if (req && !document.fullscreenElement && !document.webkitFullscreenElement) {
-        try {
-          const promise = req.call(docEl);
-          if (promise && promise.catch) promise.catch(() => {});
-        } catch (_) {}
+      // Chiamata all'API Fullscreen del browser (saltata se già lanciata come app standalone/fullscreen)
+      if (!isStandaloneApp) {
+        const docEl = document.documentElement;
+        const req = docEl.requestFullscreen || docEl.webkitRequestFullscreen || docEl.mozRequestFullScreen || docEl.msRequestFullscreen;
+        if (req && !document.fullscreenElement && !document.webkitFullscreenElement) {
+          try {
+            const promise = req.call(docEl);
+            if (promise && promise.catch) promise.catch(() => {});
+          } catch (_) {}
+        }
       }
 
       // Blocco orientamento se supportato dal dispositivo
@@ -4008,16 +4234,39 @@ try {
     } else {
       gamePanel.classList.remove("fs-layout-landscape", "fs-layout-portrait");
 
-      const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
-      if (exit && (document.fullscreenElement || document.webkitFullscreenElement)) {
-        try {
-          const promise = exit.call(document);
-          if (promise && promise.catch) promise.catch(() => {});
-        } catch (_) {}
-      }
+      const exitDocFullscreen = () => {
+        const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+        if (exit && (document.fullscreenElement || document.webkitFullscreenElement)) {
+          try {
+            const promise = exit.call(document);
+            if (promise && promise.catch) promise.catch(() => {});
+          } catch (_) {}
+        }
+      };
 
-      if (screen.orientation && screen.orientation.unlock) {
-        try { screen.orientation.unlock(); } catch(_) {}
+      // Forza il ritorno in verticale prima di uscire dallo schermo intero nativo
+      if (screen.orientation && screen.orientation.lock && (document.fullscreenElement || document.webkitFullscreenElement)) {
+        let exited = false;
+        const finishExit = () => {
+          if (exited) return;
+          exited = true;
+          exitDocFullscreen();
+          try { if (screen.orientation.unlock) screen.orientation.unlock(); } catch(_) {}
+        };
+        try {
+          const p = screen.orientation.lock("portrait");
+          if (p && p.then) {
+            p.then(() => setTimeout(finishExit, 60)).catch(finishExit);
+            setTimeout(finishExit, 260);
+          } else {
+            finishExit();
+          }
+        } catch (_) {
+          finishExit();
+        }
+      } else {
+        exitDocFullscreen();
+        forcePortraitOrientation(false);
       }
     }
 
@@ -4060,8 +4309,11 @@ try {
         levelIndex,
         selectedLevel,
         isPortraitPhoto,
+        cropZoom,
         cropPanX,
         cropPanY,
+        cropPanRatioX,
+        cropPanRatioY,
         inGameSession,
         pieces,
         moves,
@@ -4148,8 +4400,13 @@ try {
       if(typeof data.isPortraitPhoto === "boolean"){
         isPortraitPhoto = data.isPortraitPhoto;
       }
+      if(typeof data.cropZoom === "number" && data.cropZoom >= 1 && data.cropZoom <= 4){
+        cropZoom = data.cropZoom;
+      }
       if(typeof data.cropPanX === "number") cropPanX = data.cropPanX;
       if(typeof data.cropPanY === "number") cropPanY = data.cropPanY;
+      if(typeof data.cropPanRatioX === "number") cropPanRatioX = data.cropPanRatioX;
+      if(typeof data.cropPanRatioY === "number") cropPanRatioY = data.cropPanRatioY;
 
       updateLevelButtonsUI();
 
@@ -4184,8 +4441,15 @@ try {
       const savedOverlay = data.overlay || "";
 
       if(inGameSession && photoData){
-        homeView.classList.add("is-hidden");
-        gamePanel.style.display = "";
+        if(homeView){
+          homeView.classList.add("is-hidden");
+          homeView.style.display = "none";
+        }
+        if(gamePanel){
+          gamePanel.style.display = "";
+          gamePanel.classList.remove("hidden-initial");
+        }
+        document.body.classList.add("in-game");
         toggleFullscreen(true);
         renderBoard();
 
@@ -4489,11 +4753,15 @@ try {
       if(cropSourceImg){
         cropSourceImg.onload = () => {
           isPortraitPhoto = cropSourceImg.naturalHeight > cropSourceImg.naturalWidth;
+          cropZoom = 1;
           cropPanX = 0;
           cropPanY = 0;
+          cropPanRatioX = 0;
+          cropPanRatioY = 0;
           updateLevelButtonsUI();
           updateCropFrameAndImage();
-          const cropped = generateCroppedPhoto();
+          const targetLvl = inGameSession ? selectedLevel : selectedLevel;
+          const cropped = generateCroppedPhoto(targetLvl);
           if(cropped){
             photoData = cropped;
             const thumbEl = $("previewThumb");
@@ -5128,11 +5396,12 @@ try {
 
     if(heroPhoto){
       delete heroPhoto.dataset.retry;
-      heroPhoto.decoding = "sync";
+      heroPhoto.decoding = "async";
       heroPhoto.style.display = "block";
-      const resolved = (hero.image && (hero.image.startsWith("data:") || hero.image.startsWith("blob:")))
+      const cachedBlobUrl = heroBlobCache.get(heroIdx);
+      const resolved = cachedBlobUrl || ((hero.image && (hero.image.startsWith("data:") || hero.image.startsWith("blob:")))
         ? hero.image
-        : (getHeroDataUrl(heroIdx, "") || resolveHeroUrl(hero.image));
+        : (getHeroDataUrl(heroIdx, "") || resolveHeroUrl(hero.image)));
 
       heroPhoto.onerror = ()=>{
         if(!heroPhoto.dataset.retry){
@@ -5140,31 +5409,32 @@ try {
           const mem = getHeroDataUrl(heroIdx, "");
           if(mem) {
             heroPhoto.src = mem;
-          return;
+            return;
+          }
+          heroPhoto.src = hero.image;
+        }else if(heroPhoto.dataset.retry === "1"){
+          heroPhoto.dataset.retry = "2";
+          heroPhoto.src = "/" + hero.image.replace(/^\.?\//, "");
+        }else if(heroPhoto.dataset.retry === "2"){
+          heroPhoto.dataset.retry = "3";
+          heroPhoto.src = "./public/" + hero.image.replace(/^\.?\//, "");
         }
-        heroPhoto.src = hero.image;
-      }else if(heroPhoto.dataset.retry === "1"){
-        heroPhoto.dataset.retry = "2";
-        heroPhoto.src = "/" + hero.image.replace(/^\.?\//, "");
-      }else if(heroPhoto.dataset.retry === "2"){
-        heroPhoto.dataset.retry = "3";
-        heroPhoto.src = "./public/" + hero.image.replace(/^\.?\//, "");
-    }
-  };
+      };
 
-  heroPhoto.removeAttribute("src");
-  heroPhoto.src = resolved;
-  if(heroPhoto.decode){
-    heroPhoto.decode().catch(() => {});
-  }
-  heroPhoto.alt = hero.name;
-  heroPhoto.style.objectFit = "cover";
-  if(index === 3){
-    heroPhoto.style.objectPosition = "center center";
-  }else{
-    heroPhoto.style.objectPosition = hero.objectPosition || "center top";
-  }
-}
+      if(heroPhoto.getAttribute("src") !== resolved){
+        heroPhoto.src = resolved;
+      }
+      if(heroPhoto.decode){
+        heroPhoto.decode().catch(() => {});
+      }
+      heroPhoto.alt = hero.name;
+      heroPhoto.style.objectFit = "cover";
+      if(index === 3){
+        heroPhoto.style.objectPosition = "center center";
+      }else{
+        heroPhoto.style.objectPosition = hero.objectPosition || "center top";
+      }
+    }
   }
 
 
@@ -5196,7 +5466,7 @@ try {
         "Nuova partita";
 
     }else if(levelIndex === 2){
-      // Messaggio specifico approvato per il livello 3
+      // Messaggio specifico per il livello 3 senza spoiler sul prossimo supereroe
       $("winTitle").textContent =
         "Addestramento Superato! 🥇";
 
@@ -5204,7 +5474,7 @@ try {
         "Complimenti, hai superato l'addestramento base! Scopri chi ti sta aspettando alla fine del prossimo livello!";
 
       $("nextLevelBtn").textContent =
-        "Incontra Spider-Man →";
+        "Prossimo livello →";
 
       $("nextLevelBtn").disabled =
         false;
@@ -5230,15 +5500,14 @@ try {
         "📷 Cambia foto";
 
     }else{
-      // Livelli 4, 5, 6
+      // Livelli 4, 5, 6 (senza riferimenti al supereroe del livello successivo)
       const currentHero = HEROES[levelIndex - 3] || HEROES[0];
-      const nextHero = HEROES[levelIndex - 2];
       $("winTitle").textContent =
         `Livello ${levelIndex + 1} completato! 🦸`;
 
       $("winMessage").textContent =
         `Hai ricomposto la foto in ${moves} mosse e ${formatTime(timerSeconds)}!\n` +
-        `Hai sbloccato ${currentHero.name}. Scopri chi ti aspetta al prossimo livello: ${nextHero ? nextHero.name : "la sfida finale"}!`;
+        `Hai sbloccato ${currentHero.name}. Continua al prossimo livello per una nuova sorpresa!`;
 
       $("nextLevelBtn").textContent =
         "Prossimo livello →";
@@ -5284,6 +5553,22 @@ try {
   }
 
 
+  function showHomeView(){
+    if(homeView){
+      homeView.classList.remove("is-hidden");
+      homeView.style.display = "";
+    }
+    if(gamePanel){
+      gamePanel.style.display = "none";
+      gamePanel.classList.add("hidden-initial");
+    }
+    document.body.classList.remove("in-game");
+    requestAnimationFrame(() => {
+      updateLevelButtonsUI();
+      updateCropFrameAndImage();
+    });
+  }
+
   function nextLevel(){
 
     if(levelIndex >= LEVELS.length - 1){
@@ -5291,9 +5576,7 @@ try {
       activeOverlay = "";
       if(isFullscreen) toggleFullscreen(false);
       inGameSession = false;
-      if(homeView) homeView.style.display = "";
-      if(gamePanel) gamePanel.classList.add("hidden-initial");
-      document.body.classList.remove("in-game");
+      showHomeView();
       saveGame();
 
       setHint(
@@ -5318,7 +5601,17 @@ try {
 
     resetTimer();
 
-    generateCroppedPhoto();
+    const cropped = generateCroppedPhoto(levelIndex);
+    if(cropped){
+      photoData = cropped;
+    }
+    const imgEl = $("previewImage");
+    if(imgEl && photoData) imgEl.src = photoData;
+    const thumbEl = $("previewThumb");
+    if(thumbEl && photoData) thumbEl.src = photoData;
+    const fsThumb = $("fsStripThumbImg");
+    if(fsThumb && photoData) fsThumb.src = photoData;
+
     createSolvedPieces();
     shufflePieces(true);
     resetPreviewZoom();
@@ -5882,9 +6175,7 @@ try {
     stopTimer();
     inGameSession = false;
     toggleFullscreen(false);
-    if(homeView) homeView.style.display = "";
-    if(gamePanel) gamePanel.classList.add("hidden-initial");
-    document.body.classList.remove("in-game");
+    showHomeView();
     saveGame();
   }
 
@@ -6505,11 +6796,16 @@ try {
           activeOverlay="";
           if(isFullscreen) toggleFullscreen(false);
           inGameSession = false;
-          if(homeView) homeView.style.display = "";
-          if(gamePanel) gamePanel.classList.add("hidden-initial");
-          document.body.classList.remove("in-game");
+          showHomeView();
           saveGame();
           return;
+        }
+
+        // Se si è in visualizzazione orizzontale, riporta immediatamente la visualizzazione in verticale
+        if(isFullscreen && gamePanel && gamePanel.classList.contains("fs-layout-landscape")){
+          gamePanel.classList.remove("fs-layout-landscape");
+          gamePanel.classList.add("fs-layout-portrait");
+          forcePortraitOrientation(true);
         }
 
         const targetLevel = levelIndex < LEVELS.length - 1 ? levelIndex + 1 : 0;
@@ -6563,45 +6859,117 @@ try {
     });
   }
 
-  // 3. Trascinamento / spostamento della foto all'interno del riquadro di selezione
+  // 3. Trascinamento e zoom della foto all'interno del riquadro di selezione
   if(cropPreviewBox){
+    const cropPointers = new Map();
+    let cropPinchDist = 0;
+    let cropPinchZoom = 1;
+    let cropPinchMidX = 0;
+    let cropPinchMidY = 0;
+    let cropPinchPanX = 0;
+    let cropPinchPanY = 0;
+
     cropPreviewBox.addEventListener("pointerdown", event => {
       if(!cropSourceImg || !cropSourceImg.complete || cropSourceImg.naturalWidth === 0) return;
-      isPanningCrop = true;
-      startCropPointerX = event.clientX;
-      startCropPointerY = event.clientY;
-      initialCropPanX = cropPanX;
-      initialCropPanY = cropPanY;
-      cropPreviewBox.classList.add("is-panning");
+      cropPointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
       try { cropPreviewBox.setPointerCapture(event.pointerId); } catch(_){}
+
+      if(cropPointers.size === 1){
+        isPanningCrop = true;
+        startCropPointerX = event.clientX;
+        startCropPointerY = event.clientY;
+        initialCropPanX = cropPanX;
+        initialCropPanY = cropPanY;
+        cropPreviewBox.classList.add("is-dragging");
+      } else if(cropPointers.size === 2){
+        isPanningCrop = false;
+        const pts = Array.from(cropPointers.values());
+        cropPinchDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+        cropPinchZoom = cropZoom;
+        cropPinchMidX = (pts[0].x + pts[1].x) / 2;
+        cropPinchMidY = (pts[0].y + pts[1].y) / 2;
+        cropPinchPanX = cropPanX;
+        cropPinchPanY = cropPanY;
+      }
     });
 
     cropPreviewBox.addEventListener("pointermove", event => {
-      if(!isPanningCrop) return;
-      cropPanX = initialCropPanX + (event.clientX - startCropPointerX);
-      cropPanY = initialCropPanY + (event.clientY - startCropPointerY);
-      updateCropFrameAndImage();
+      if(!cropPointers.has(event.pointerId)) return;
+      cropPointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+      if(cropPointers.size === 2 && cropPinchDist > 0){
+        const pts = Array.from(cropPointers.values());
+        const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+        const midX = (pts[0].x + pts[1].x) / 2;
+        const midY = (pts[0].y + pts[1].y) / 2;
+        const nextZoom = Math.max(1, Math.min(4, cropPinchZoom * (dist / cropPinchDist)));
+        const scaleFactor = cropPinchZoom > 0 ? nextZoom / cropPinchZoom : 1;
+        cropZoom = nextZoom;
+        cropPanX = cropPinchPanX * scaleFactor + (midX - cropPinchMidX);
+        cropPanY = cropPinchPanY * scaleFactor + (midY - cropPinchMidY);
+        updateCropFrameAndImage(true);
+        updateCropZoomUI();
+      } else if(cropPointers.size === 1 && isPanningCrop){
+        cropPanX = initialCropPanX + (event.clientX - startCropPointerX);
+        cropPanY = initialCropPanY + (event.clientY - startCropPointerY);
+        updateCropFrameAndImage(true);
+      }
     });
 
     const finishCropPan = event => {
-      if(isPanningCrop){
-        isPanningCrop = false;
-        cropPreviewBox.classList.remove("is-panning");
-        try { cropPreviewBox.releasePointerCapture(event.pointerId); } catch(_){}
-        updateCropFrameAndImage();
-        saveGame();
+      cropPointers.delete(event.pointerId);
+      try { cropPreviewBox.releasePointerCapture(event.pointerId); } catch(_){}
+
+      if(cropPointers.size === 1){
+        const remaining = Array.from(cropPointers.values())[0];
+        isPanningCrop = true;
+        startCropPointerX = remaining.x;
+        startCropPointerY = remaining.y;
+        initialCropPanX = cropPanX;
+        initialCropPanY = cropPanY;
+      } else if(cropPointers.size === 0){
+        if(isPanningCrop || cropPinchDist > 0){
+          isPanningCrop = false;
+          cropPinchDist = 0;
+          cropPreviewBox.classList.remove("is-dragging");
+          updateCropFrameAndImage(true);
+          saveGame();
+        }
       }
     };
 
     cropPreviewBox.addEventListener("pointerup", finishCropPan);
     cropPreviewBox.addEventListener("pointercancel", finishCropPan);
+
+    cropPreviewBox.addEventListener("wheel", event => {
+      if(!cropSourceImg || !cropSourceImg.complete || cropSourceImg.naturalWidth === 0) return;
+      event.preventDefault();
+      const delta = event.deltaY < 0 ? 0.2 : -0.2;
+      setCropZoom(cropZoom + delta, true);
+    }, { passive: false });
+
+    cropPreviewBox.addEventListener("dblclick", event => {
+      if(!cropSourceImg || !cropSourceImg.complete || cropSourceImg.naturalWidth === 0) return;
+      event.preventDefault();
+      setCropZoom(cropZoom > 1.05 ? 1 : 2, true);
+    });
+  }
+
+  if(cropZoomOutBtn){
+    cropZoomOutBtn.addEventListener("click", () => setCropZoom(cropZoom - 0.25, true));
+  }
+  if(cropZoomInBtn){
+    cropZoomInBtn.addEventListener("click", () => setCropZoom(cropZoom + 0.25, true));
+  }
+  if(cropZoomResetBtn){
+    cropZoomResetBtn.addEventListener("click", () => setCropZoom(1, true));
   }
 
   // 4. Pulsante "GIOCA" in formato 3D: avvia lo schermo intero adattivo
   function startGameFromHome(){
     const proceed = () => {
       updateCropFrameAndImage();
-      const cropped = generateCroppedPhoto();
+      const cropped = generateCroppedPhoto(selectedLevel);
       if(cropped){
         photoData = cropped;
       }
@@ -6621,8 +6989,14 @@ try {
       const fsThumb = $("fsStripThumbImg");
       if(fsThumb && photoData) fsThumb.src = photoData;
 
-      if(homeView) homeView.style.display = "none";
-      if(gamePanel) gamePanel.classList.remove("hidden-initial");
+      if(homeView){
+        homeView.classList.add("is-hidden");
+        homeView.style.display = "none";
+      }
+      if(gamePanel){
+        gamePanel.style.display = "";
+        gamePanel.classList.remove("hidden-initial");
+      }
       document.body.classList.add("in-game");
 
       resetTimer();
