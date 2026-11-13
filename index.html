@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Puzzle Magic v. 1.27</title>
+<title>Puzzle Magic v. 1.28</title>
 <meta name="description" content="Ricomponi la tua foto, un livello alla volta. Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
 <meta property="og:title" content="Puzzle Magic">
 <meta property="og:description" content="Ricomponi la tua foto, un livello alla volta. Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
@@ -3144,16 +3144,24 @@ body.is-fullscreen #previewOverlay .preview-image{
   background:linear-gradient(180deg, #dc2626 0%, #b91c1c 100%);
 }
 
-/* Modale Nome Giocatore con Tastiera Virtuale a 26 lettere (v. 1.27) */
+/* Modale Nome Giocatore con Tastiera Virtuale a 26 lettere (v. 1.28) */
 .name-dialog{
+  position:relative;
   width:min(100%, 420px);
   padding:18px 14px 16px;
   border-radius:22px;
 }
 
+.name-dialog-close{
+  position:absolute;
+  top:12px;
+  right:12px;
+}
+
 .name-dialog h2{
   font-size:19px;
   margin:0 0 4px;
+  padding:0 34px;
 }
 
 .name-dialog-sub{
@@ -3634,11 +3642,11 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .records-section-level{
-  flex:1.18 1 0;
+  flex:1.26 1 0;
 }
 
 .records-section-session{
-  flex:1 1 0;
+  flex:0.96 1 0;
 }
 
 .records-sec-head{
@@ -3735,6 +3743,18 @@ body.is-fullscreen #previewOverlay .preview-image{
   text-overflow:ellipsis;
 }
 
+.podium-meta{
+  font-size:10px;
+  font-weight:700;
+  color:var(--muted);
+  max-width:100%;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  line-height:1.15;
+  margin-top:1px;
+}
+
 .podium-block{
   width:100%;
   flex:0 0 auto;
@@ -3751,8 +3771,8 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .podium-col.rank-1 .podium-block{
-  height:68%;
-  min-height:70px;
+  height:62%;
+  min-height:64px;
   background:linear-gradient(180deg, #fef08a 0%, #facc15 100%);
   border-color:#eab308;
   color:#713f12;
@@ -3760,16 +3780,16 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .podium-col.rank-2 .podium-block{
-  height:56%;
-  min-height:58px;
+  height:52%;
+  min-height:54px;
   background:linear-gradient(180deg, #f1f5f9 0%, #cbd5e1 100%);
   border-color:#94a3b8;
   color:#1e293b;
 }
 
 .podium-col.rank-3 .podium-block{
-  height:46%;
-  min-height:50px;
+  height:42%;
+  min-height:46px;
   background:linear-gradient(180deg, #ffedd5 0%, #fdba74 100%);
   border-color:#ea580c;
   color:#7c2d12;
@@ -4140,7 +4160,7 @@ body.is-fullscreen #previewOverlay .preview-image{
       <div>
         <div class="title-row">
           <h1>Puzzle Magic</h1>
-          <span class="version">v. 1.27</span>
+          <span class="version">v. 1.28</span>
         </div>
         <p class="subtitle">Ricomponi la foto, un livello alla volta!</p>
       </div>
@@ -4455,6 +4475,7 @@ body.is-fullscreen #previewOverlay .preview-image{
   aria-modal="true"
   aria-labelledby="playerNameTitle">
   <div class="dialog name-dialog">
+    <button type="button" class="records-close-x name-dialog-close" id="playerNameCloseBtn" aria-label="Annulla e torna alla schermata principale">✕</button>
     <h2 id="playerNameTitle">Inserisci il tuo nome</h2>
     <p class="name-dialog-sub">I tuoi punteggi verranno salvati automaticamente.</p>
     <div
@@ -4492,7 +4513,7 @@ body.is-fullscreen #previewOverlay .preview-image{
         <div class="records-info-popover-arrow" aria-hidden="true"></div>
         <div id="recordsInfoText">
           <div class="records-info-title">MODALITA' DI ATTRIBUZIONE PUNTEGGIO:</div>
-          <div class="records-info-green">120 Punti per ogni tassello del Puzzle;</div>
+          <div class="records-info-green">120 Punti per ogni tassello di Puzzle completati;</div>
           <div class="records-info-red records-info-red-heading">Penalità:</div>
           <div class="records-info-red">-12 Punti per ogni mossa eseguita;</div>
           <div class="records-info-red">- 3 Punti per ogni secondo trascorso.</div>
@@ -4500,19 +4521,19 @@ body.is-fullscreen #previewOverlay .preview-image{
       </div>
     </div>
 
+    <section class="records-section records-section-session" aria-label="Classifica partita completa">
+      <div class="records-sec-head">
+        <span class="records-sec-title">Classifica Partita Completa</span>
+      </div>
+      <div class="podium-stage" id="recordsPodiumStage"></div>
+    </section>
+
     <section class="records-section records-section-level" aria-label="Classifica livello selezionato">
       <div class="records-sec-head">
         <span class="records-sec-title" id="recordsLevelHeading">Classifica Livello 1</span>
       </div>
       <div class="levels-3d-grid" id="recordsLevelTabs" role="radiogroup" aria-label="Scegli livello classifica"></div>
-      <div class="podium-stage" id="recordsPodiumStage"></div>
-    </section>
-
-    <section class="records-section records-section-session" aria-label="Classifica partita completa">
-      <div class="records-sec-head">
-        <span class="records-sec-title">Classifica Partita Completa</span>
-      </div>
-      <div class="session-rank-list" id="recordsSessionList"></div>
+      <div class="session-rank-list" id="recordsLevelList"></div>
     </section>
 
     <button type="button" class="button primary" id="recordsCloseBtn" style="width:100%;flex:0 0 auto;min-height:40px;">Chiudi</button>
@@ -4560,7 +4581,7 @@ body.is-fullscreen #previewOverlay .preview-image{
         <button type="button" class="button warning" id="resetLevelBtn">Inizializza la classifica del livello 1</button>
         <button type="button" class="button warning" id="resetAllLevelsBtn">Inizializza la classifica di tutti i livelli</button>
         <button type="button" class="button warning" id="resetSessionBtn">Inizializza la classifica partita completa</button>
-        <button type="button" class="button danger" id="resetAllBtn">Inizializza tutto</button>
+        <button type="button" class="button danger" id="resetAllBtn">Inizializza tutte le classifiche</button>
         <button type="button" class="button secondary" id="resetCancelBtn">Annulla</button>
       </div>
     </div>
@@ -5243,8 +5264,9 @@ try {
   const homePlayBtn = $("homePlayBtn");
   const openRecordsBtn = $("openRecordsBtn");
 
-  /* Modale Nome Giocatore con Tastiera Virtuale (v. 1.24) */
+  /* Modale Nome Giocatore con Tastiera Virtuale (v. 1.28) */
   const playerNameOverlay = $("playerNameOverlay");
+  const playerNameCloseBtn = $("playerNameCloseBtn");
   const playerNameDisplay = $("playerNameDisplay");
   const playerNameTip = $("playerNameTip");
   const virtualKeyboardLetters = $("virtualKeyboardLetters");
@@ -5252,7 +5274,7 @@ try {
   const vkSpaceBtn = $("vkSpaceBtn");
   const vkOkBtn = $("vkOkBtn");
 
-  /* Modale Record & Reset Classifiche (v. 1.26) */
+  /* Modale Record & Reset Classifiche (v. 1.28) */
   const recordsOverlay = $("recordsOverlay");
   const recordsCrest = $("recordsCrest");
   const recordsInfoBtn = $("recordsInfoBtn");
@@ -5261,7 +5283,7 @@ try {
   const recordsLevelHeading = $("recordsLevelHeading");
   const recordsLevelTabs = $("recordsLevelTabs");
   const recordsPodiumStage = $("recordsPodiumStage");
-  const recordsSessionList = $("recordsSessionList");
+  const recordsLevelList = $("recordsLevelList");
   const recordsPinOverlay = $("recordsPinOverlay");
   const recordsPinBoxes = $("recordsPinBoxes");
   const recordsPinError = $("recordsPinError");
@@ -5999,7 +6021,7 @@ try {
     }
 
     if(recordsPodiumStage){
-      const top3 = getLevelTop3(recordsViewLevel);
+      const topSessions = sortLeaderboardEntries(sessionLeaderboard || []);
       const slots = [
         { rankIdx: 1, medal: "🥈", cls: "rank-2" },
         { rankIdx: 0, medal: "🥇", cls: "rank-1" },
@@ -6007,7 +6029,7 @@ try {
       ];
       recordsPodiumStage.innerHTML = "";
       slots.forEach(slot => {
-        const entry = top3[slot.rankIdx] || null;
+        const entry = topSessions[slot.rankIdx] || null;
         const col = document.createElement("div");
         col.className = `podium-col ${slot.cls}` + (entry ? "" : " is-empty");
 
@@ -6017,6 +6039,13 @@ try {
         nameDiv.className = "podium-name";
         nameDiv.textContent = entry ? (entry.name || "Giocatore") : "—";
         playerDiv.appendChild(nameDiv);
+        if(entry){
+          const metaDiv = document.createElement("div");
+          metaDiv.className = "podium-meta";
+          const lvls = entry.levelsCleared || 1;
+          metaDiv.textContent = `${lvls} liv.${entry.date ? ` · ${entry.date}` : ""}`;
+          playerDiv.appendChild(metaDiv);
+        }
 
         const blockDiv = document.createElement("div");
         blockDiv.className = "podium-block";
@@ -6033,13 +6062,13 @@ try {
       });
     }
 
-    if(recordsSessionList){
-      const topSessions = sortLeaderboardEntries(sessionLeaderboard || []);
-      const badges = ["👑", "🥈", "🥉"];
+    if(recordsLevelList){
+      const top3 = getLevelTop3(recordsViewLevel);
+      const badges = ["🥇", "🥈", "🥉"];
       const rowClasses = ["rank-1", "rank-2", "rank-3"];
-      recordsSessionList.innerHTML = "";
+      recordsLevelList.innerHTML = "";
       for(let i = 0; i < 3; i++){
-        const entry = topSessions[i] || null;
+        const entry = top3[i] || null;
         const row = document.createElement("div");
         row.className = `session-rank-row ${rowClasses[i]}`;
 
@@ -6051,14 +6080,17 @@ try {
         infoDiv.className = "session-rank-info";
         const nameDiv = document.createElement("div");
         nameDiv.className = "session-rank-name";
-        nameDiv.textContent = entry ? (entry.name || "Giocatore") : "Nessuna partita completata";
+        nameDiv.textContent = entry ? (entry.name || "Giocatore") : "Nessun record salvato";
         const metaDiv = document.createElement("div");
         metaDiv.className = "session-rank-meta";
         if(entry){
-          const lvls = entry.levelsCleared || 1;
-          metaDiv.textContent = `${lvls} ${lvls === 1 ? "livello" : "livelli"} · ${entry.date || ""}`;
+          const parts = [];
+          if(typeof entry.moves === "number" && entry.moves > 0) parts.push(`${entry.moves} mosse`);
+          if(typeof entry.time === "number" && entry.time > 0) parts.push(formatTime(entry.time));
+          if(entry.date) parts.push(entry.date);
+          metaDiv.textContent = parts.length > 0 ? parts.join(" · ") : "Record livello";
         } else {
-          metaDiv.textContent = "Completa i livelli o premi ESCI";
+          metaDiv.textContent = "Completa il livello per entrare in classifica";
         }
         infoDiv.append(nameDiv, metaDiv);
 
@@ -6067,7 +6099,7 @@ try {
         scoreDiv.textContent = entry ? `${entry.score} pt` : "—";
 
         row.append(badgeSpan, infoDiv, scoreDiv);
-        recordsSessionList.appendChild(row);
+        recordsLevelList.appendChild(row);
       }
     }
   }
@@ -9817,6 +9849,14 @@ try {
     if(playerNameOverlay) playerNameOverlay.classList.add("show");
   }
 
+  function closePlayerNameModal(){
+    playerNameBuffer = "";
+    playerNameCursorPos = 0;
+    playerNameCaretVisible = false;
+    if(playerNameOverlay) playerNameOverlay.classList.remove("show");
+    if(activeOverlay === "playerName") activeOverlay = "";
+  }
+
   function confirmPlayerNameAndStart(){
     const trimmed = playerNameBuffer.trim().slice(0, MAX_RECORD_NAME_LEN);
     if(!trimmed) return;
@@ -9832,6 +9872,10 @@ try {
     if(playerNameOverlay) playerNameOverlay.classList.remove("show");
     activeOverlay = "";
     startGameFromHome();
+  }
+
+  if(playerNameCloseBtn){
+    playerNameCloseBtn.addEventListener("click", closePlayerNameModal);
   }
 
   if(playerNameDisplay){
@@ -9881,7 +9925,7 @@ try {
   if(playerNameOverlay){
     playerNameOverlay.addEventListener("click", event => {
       if(event.target === playerNameOverlay){
-        /* intenzionale: non si può uscire senza inserire il nome */
+        /* intenzionale: per annullare usare il pulsante X in alto a destra (evita chiusure accidentali durante la digitazione) */
       }
     });
   }
@@ -10489,6 +10533,7 @@ try {
       if(activeOverlay === "playerName"){
         if(event.key === "Escape"){
           event.preventDefault();
+          closePlayerNameModal();
           return;
         }
         if(event.key === "Backspace"){
