@@ -3298,6 +3298,154 @@ body.is-fullscreen #previewOverlay .preview-image{
   place-items:center;
   flex-shrink:0;
   box-shadow:0 2px 6px rgba(217,119,6,0.18);
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-touch-callout:none;
+  touch-action:manipulation;
+}
+
+/* Modale PIN e finestra Reset classifiche (v. 1.26) */
+.pin-dialog{
+  width:min(100%, 360px);
+  padding:20px 16px 18px;
+  border-radius:22px;
+}
+
+.pin-dialog h2{
+  margin:0 0 6px;
+  font-size:19px;
+}
+
+.pin-dialog p{
+  margin:0 0 14px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+.pin-boxes-row{
+  display:grid;
+  grid-template-columns:repeat(6, minmax(0, 1fr));
+  gap:8px;
+  margin-bottom:8px;
+}
+
+.pin-boxes-row.is-shake{
+  animation:pinShake .32s ease-in-out;
+}
+
+@keyframes pinShake{
+  0%, 100%{ transform:translateX(0); }
+  25%{ transform:translateX(-6px); }
+  50%{ transform:translateX(6px); }
+  75%{ transform:translateX(-4px); }
+}
+
+.pin-digit-input{
+  width:100%;
+  height:48px;
+  padding:0;
+  border:2px solid #cbd5e1;
+  border-radius:12px;
+  background:#f8fafc;
+  color:var(--text);
+  font-size:20px;
+  font-weight:900;
+  font-variant-numeric:tabular-nums;
+  text-align:center;
+  outline:none;
+  transition:border-color .14s ease, background .14s ease, box-shadow .14s ease;
+}
+
+.pin-digit-input:focus{
+  border-color:var(--primary);
+  background:#ffffff;
+  box-shadow:0 0 0 3px rgba(91, 110, 225, 0.18);
+}
+
+.pin-error-msg{
+  min-height:18px;
+  margin:0 0 12px;
+  font-size:12px;
+  font-weight:800;
+  color:#dc2626;
+}
+
+.reset-records-dialog{
+  width:min(100%, 390px);
+  padding:20px 16px 18px;
+  border-radius:22px;
+}
+
+.reset-records-dialog h2{
+  margin:0 0 6px;
+  font-size:20px;
+}
+
+.reset-records-sub{
+  margin:0 0 14px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+.reset-level-picker{
+  display:grid;
+  grid-template-columns:repeat(7, minmax(0, 1fr));
+  gap:5px;
+  margin-bottom:10px;
+}
+
+.reset-lvl-pill{
+  height:32px;
+  padding:0;
+  border:1px solid #cbd5e1;
+  border-bottom:2.5px solid #94a3b8;
+  border-radius:9px;
+  background:#f8fafc;
+  color:var(--text);
+  font-size:13px;
+  font-weight:900;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  touch-action:manipulation;
+}
+
+.reset-lvl-pill.is-selected{
+  background:var(--primary);
+  border-color:var(--primary-dark);
+  border-bottom-color:#312e81;
+  color:#ffffff;
+}
+
+.reset-records-options{
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+}
+
+.reset-records-options .button{
+  width:100%;
+  min-height:44px;
+  font-size:14px;
+}
+
+.reset-records-options .button.danger{
+  background:linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+  color:#ffffff;
+}
+
+.reset-records-options .button.danger:hover{
+  background:linear-gradient(180deg, #dc2626 0%, #b91c1c 100%);
+}
+
+.reset-records-options .button.warning{
+  background:#fff7ed;
+  border-color:#fdba74;
+  color:#9a3412;
+}
+
+.reset-records-options .button.warning:hover{
+  background:#ffedd5;
 }
 
 .records-header h2{
@@ -4279,7 +4427,7 @@ body.is-fullscreen #previewOverlay .preview-image{
   <div class="dialog records-dialog">
     <div class="records-header">
       <div class="records-title-wrap">
-        <div class="records-crest" aria-hidden="true">🏆</div>
+        <div class="records-crest" id="recordsCrest" aria-hidden="true">🏆</div>
         <h2 id="recordsTitle">Sala dei Record</h2>
         <button type="button" class="records-info-btn" id="recordsInfoBtn" aria-label="Modalità di calcolo punteggio" aria-expanded="false" title="Info punteggio">i</button>
       </div>
@@ -4311,6 +4459,60 @@ body.is-fullscreen #previewOverlay .preview-image{
     </section>
 
     <button type="button" class="button primary" id="recordsCloseBtn" style="width:100%;flex:0 0 auto;min-height:40px;">Chiudi</button>
+  </div>
+</div>
+
+<!-- Modale PIN a 6 cifre per sblocco Reset classifiche (v. 1.26) -->
+<div
+  class="overlay"
+  id="recordsPinOverlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="recordsPinTitle">
+  <div class="dialog pin-dialog">
+    <h2 id="recordsPinTitle">Codice di sicurezza</h2>
+    <p>Inserisci il PIN a 6 cifre per accedere alle opzioni di reset.</p>
+    <div class="pin-boxes-row" id="recordsPinBoxes">
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit-input" autocomplete="off" aria-label="Cifra PIN 1">
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit-input" autocomplete="off" aria-label="Cifra PIN 2">
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit-input" autocomplete="off" aria-label="Cifra PIN 3">
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit-input" autocomplete="off" aria-label="Cifra PIN 4">
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit-input" autocomplete="off" aria-label="Cifra PIN 5">
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit-input" autocomplete="off" aria-label="Cifra PIN 6">
+    </div>
+    <div class="pin-error-msg" id="recordsPinError" aria-live="polite"></div>
+    <div class="dialog-actions">
+      <button type="button" class="button secondary" id="recordsPinCancelBtn" style="width:100%;">Annulla</button>
+    </div>
+  </div>
+</div>
+
+<!-- Finestra "Reset classifiche" con 4 opzioni (v. 1.26) -->
+<div
+  class="overlay"
+  id="recordsResetOverlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="recordsResetTitle">
+  <div class="dialog reset-records-dialog">
+    <h2 id="recordsResetTitle">Reset classifiche</h2>
+    <div id="recordsResetMenuPanel">
+      <p class="reset-records-sub">Seleziona quale classifica desideri inizializzare:</p>
+      <div class="reset-level-picker" id="resetLevelPicker" role="radiogroup" aria-label="Livello da inizializzare"></div>
+      <div class="reset-records-options">
+        <button type="button" class="button warning" id="resetLevelBtn">Inizializza la classifica del livello 1</button>
+        <button type="button" class="button warning" id="resetSessionBtn">Inizializza la classifica partita completa</button>
+        <button type="button" class="button danger" id="resetAllBtn">Inizializza tutto</button>
+        <button type="button" class="button secondary" id="resetCancelBtn">Annulla</button>
+      </div>
+    </div>
+    <div id="recordsResetConfirmPanel" style="display:none;">
+      <p class="reset-records-sub" id="recordsResetConfirmText"></p>
+      <div class="dialog-actions exit-confirm-actions">
+        <button type="button" class="button secondary" id="resetConfirmBackBtn">Indietro</button>
+        <button type="button" class="button danger" id="resetConfirmExecBtn">Conferma</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -4992,8 +5194,9 @@ try {
   const vkSpaceBtn = $("vkSpaceBtn");
   const vkOkBtn = $("vkOkBtn");
 
-  /* Modale Record (v. 1.25) */
+  /* Modale Record & Reset Classifiche (v. 1.26) */
   const recordsOverlay = $("recordsOverlay");
+  const recordsCrest = $("recordsCrest");
   const recordsInfoBtn = $("recordsInfoBtn");
   const recordsInfoPopover = $("recordsInfoPopover");
   const recordsCloseBtn = $("recordsCloseBtn");
@@ -5001,6 +5204,21 @@ try {
   const recordsLevelTabs = $("recordsLevelTabs");
   const recordsPodiumStage = $("recordsPodiumStage");
   const recordsSessionList = $("recordsSessionList");
+  const recordsPinOverlay = $("recordsPinOverlay");
+  const recordsPinBoxes = $("recordsPinBoxes");
+  const recordsPinError = $("recordsPinError");
+  const recordsPinCancelBtn = $("recordsPinCancelBtn");
+  const recordsResetOverlay = $("recordsResetOverlay");
+  const recordsResetMenuPanel = $("recordsResetMenuPanel");
+  const resetLevelPicker = $("resetLevelPicker");
+  const resetLevelBtn = $("resetLevelBtn");
+  const resetSessionBtn = $("resetSessionBtn");
+  const resetAllBtn = $("resetAllBtn");
+  const resetCancelBtn = $("resetCancelBtn");
+  const recordsResetConfirmPanel = $("recordsResetConfirmPanel");
+  const recordsResetConfirmText = $("recordsResetConfirmText");
+  const resetConfirmBackBtn = $("resetConfirmBackBtn");
+  const resetConfirmExecBtn = $("resetConfirmExecBtn");
 
   /* Modale Ritaglio / Zoom Nuovo Livello (v. 1.24) */
   const nextLevelCropOverlay = $("nextLevelCropOverlay");
@@ -5792,6 +6010,136 @@ try {
     }
   }
 
+  let recordsCrestLongPressTimer = null;
+  let recordsPinPendingFocus = false;
+  let resetTargetLevel = 0;
+  let pendingResetAction = "";
+
+  function getTodayPinGGMMAA(){
+    const now = new Date();
+    const gg = String(now.getDate()).padStart(2, "0");
+    const mm = String(now.getMonth() + 1).padStart(2, "0");
+    const aa = String(now.getFullYear()).slice(-2);
+    return `${gg}${mm}${aa}`;
+  }
+
+  function getPinInputs(){
+    return recordsPinBoxes ? Array.from(recordsPinBoxes.querySelectorAll(".pin-digit-input")) : [];
+  }
+
+  function clearPinInputs(focusFirst = true){
+    const inputs = getPinInputs();
+    inputs.forEach(inp => { inp.value = ""; });
+    if(focusFirst && inputs[0]){
+      try { inputs[0].focus(); } catch(_) {}
+    }
+  }
+
+  function openRecordsPinModal(){
+    toggleRecordsInfoPopover(false);
+    if(recordsPinError) recordsPinError.textContent = "";
+    if(recordsPinBoxes) recordsPinBoxes.classList.remove("is-shake");
+    clearPinInputs(false);
+    recordsPinPendingFocus = true;
+    activeOverlay = "recordsPin";
+    if(recordsPinOverlay) recordsPinOverlay.classList.add("show");
+    const inputs = getPinInputs();
+    if(inputs[0]){
+      try { inputs[0].focus(); } catch(_) {}
+      requestAnimationFrame(() => {
+        if(recordsPinOverlay && recordsPinOverlay.classList.contains("show")){
+          try { inputs[0].focus(); } catch(_) {}
+        }
+      });
+    }
+  }
+
+  function closeRecordsPinModal(){
+    recordsPinPendingFocus = false;
+    if(recordsPinOverlay) recordsPinOverlay.classList.remove("show");
+    if(recordsOverlay && recordsOverlay.classList.contains("show")){
+      activeOverlay = "records";
+    } else if(activeOverlay === "recordsPin"){
+      activeOverlay = "";
+    }
+  }
+
+  function renderResetLevelPicker(){
+    if(resetLevelPicker){
+      resetLevelPicker.innerHTML = "";
+      for(let i = 0; i < LEVELS.length; i++){
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "reset-lvl-pill" + (i === resetTargetLevel ? " is-selected" : "");
+        btn.textContent = String(i + 1);
+        btn.setAttribute("aria-label", `Livello ${i + 1}`);
+        btn.addEventListener("click", () => {
+          resetTargetLevel = i;
+          renderResetLevelPicker();
+        });
+        resetLevelPicker.appendChild(btn);
+      }
+    }
+    if(resetLevelBtn){
+      resetLevelBtn.textContent = `Inizializza la classifica del livello ${resetTargetLevel + 1}`;
+    }
+  }
+
+  function openRecordsResetModal(){
+    resetTargetLevel = recordsViewLevel;
+    pendingResetAction = "";
+    if(recordsResetMenuPanel) recordsResetMenuPanel.style.display = "";
+    if(recordsResetConfirmPanel) recordsResetConfirmPanel.style.display = "none";
+    renderResetLevelPicker();
+    activeOverlay = "recordsReset";
+    if(recordsResetOverlay) recordsResetOverlay.classList.add("show");
+  }
+
+  function closeRecordsResetModal(){
+    pendingResetAction = "";
+    if(recordsResetOverlay) recordsResetOverlay.classList.remove("show");
+    if(recordsOverlay && recordsOverlay.classList.contains("show")){
+      activeOverlay = "records";
+    } else if(activeOverlay === "recordsReset"){
+      activeOverlay = "";
+    }
+  }
+
+  function showRecordsResetConfirm(actionType){
+    pendingResetAction = actionType;
+    if(recordsResetConfirmText){
+      if(actionType === "level"){
+        recordsResetConfirmText.textContent = `Confermi l'azzeramento della classifica del Livello ${resetTargetLevel + 1}? I record eliminati non potranno essere recuperati.`;
+      } else if(actionType === "session"){
+        recordsResetConfirmText.textContent = "Confermi l'azzeramento della classifica Partita Completa? I record eliminati non potranno essere recuperati.";
+      } else {
+        recordsResetConfirmText.textContent = "Confermi l'azzeramento di TUTTE le classifiche (tutti i livelli e Partita Completa)?";
+      }
+    }
+    if(recordsResetMenuPanel) recordsResetMenuPanel.style.display = "none";
+    if(recordsResetConfirmPanel) recordsResetConfirmPanel.style.display = "";
+  }
+
+  function executeRecordsReset(){
+    if(pendingResetAction === "level"){
+      const key = String(resetTargetLevel);
+      delete levelLeaderboards[key];
+      delete levelRecords[key];
+    } else if(pendingResetAction === "session"){
+      sessionLeaderboard = [];
+    } else if(pendingResetAction === "all"){
+      levelLeaderboards = {};
+      levelRecords = {};
+      sessionLeaderboard = [];
+    } else {
+      return;
+    }
+    persistRecords();
+    updateHomeLevelRecordUI();
+    renderRecordsModal(recordsViewLevel);
+    closeRecordsResetModal();
+  }
+
   function openRecordsModal(lvlIdx = selectedLevel){
     toggleRecordsInfoPopover(false);
     renderRecordsModal(lvlIdx);
@@ -5800,6 +6148,12 @@ try {
   }
 
   function closeRecordsModal(){
+    if(recordsCrestLongPressTimer){
+      clearTimeout(recordsCrestLongPressTimer);
+      recordsCrestLongPressTimer = null;
+    }
+    closeRecordsResetModal();
+    closeRecordsPinModal();
     toggleRecordsInfoPopover(false);
     if(recordsOverlay) recordsOverlay.classList.remove("show");
     if(activeOverlay === "records") activeOverlay = "";
@@ -6009,6 +6363,12 @@ try {
 
     if(nextLevelCropOverlay && nextLevelCropOverlay.classList.contains("show"))
       return "nextCrop";
+
+    if(recordsResetOverlay && recordsResetOverlay.classList.contains("show"))
+      return "recordsReset";
+
+    if(recordsPinOverlay && recordsPinOverlay.classList.contains("show"))
+      return "recordsPin";
 
     if(recordsOverlay && recordsOverlay.classList.contains("show"))
       return "records";
@@ -9316,7 +9676,7 @@ try {
   }
 
   /*
-   * EVENTI FINESTRA CLASSIFICA RECORD (v. 1.25)
+   * EVENTI FINESTRA CLASSIFICA RECORD, PIN E RESET (v. 1.26)
    */
   if(openRecordsBtn){
     openRecordsBtn.addEventListener("click", () => openRecordsModal(selectedLevel));
@@ -9340,6 +9700,144 @@ try {
       if(event.target === recordsOverlay){
         closeRecordsModal();
       }
+    });
+  }
+
+  if(recordsCrest){
+    let crestStartX = 0;
+    let crestStartY = 0;
+    const clearCrestTimer = () => {
+      if(recordsCrestLongPressTimer){
+        clearTimeout(recordsCrestLongPressTimer);
+        recordsCrestLongPressTimer = null;
+      }
+    };
+    recordsCrest.addEventListener("contextmenu", event => event.preventDefault());
+    recordsCrest.addEventListener("pointerdown", event => {
+      if(event.pointerType === "mouse" && event.button !== 0) return;
+      clearCrestTimer();
+      crestStartX = event.clientX;
+      crestStartY = event.clientY;
+      recordsCrestLongPressTimer = setTimeout(() => {
+        recordsCrestLongPressTimer = null;
+        try { if(navigator.vibrate) navigator.vibrate(25); } catch(_) {}
+        openRecordsPinModal();
+      }, 1500);
+    });
+    recordsCrest.addEventListener("pointermove", event => {
+      if(!recordsCrestLongPressTimer) return;
+      if(Math.hypot(event.clientX - crestStartX, event.clientY - crestStartY) > 10){
+        clearCrestTimer();
+      }
+    });
+    const finishCrestPointer = () => {
+      clearCrestTimer();
+      if(recordsPinPendingFocus){
+        recordsPinPendingFocus = false;
+        const firstInput = getPinInputs()[0];
+        if(firstInput){
+          try { firstInput.focus(); } catch(_) {}
+        }
+      }
+    };
+    recordsCrest.addEventListener("pointerup", finishCrestPointer);
+    recordsCrest.addEventListener("pointercancel", finishCrestPointer);
+  }
+
+  if(recordsPinBoxes){
+    const pinInputs = getPinInputs();
+    const verifyPinIfComplete = () => {
+      const code = pinInputs.map(inp => inp.value).join("");
+      if(code.length < 6) return;
+      if(code === getTodayPinGGMMAA()){
+        closeRecordsPinModal();
+        openRecordsResetModal();
+      } else {
+        if(recordsPinError) recordsPinError.textContent = "PIN errato. Riprova.";
+        recordsPinBoxes.classList.remove("is-shake");
+        void recordsPinBoxes.offsetWidth;
+        recordsPinBoxes.classList.add("is-shake");
+        clearPinInputs(true);
+      }
+    };
+
+    pinInputs.forEach((inp, idx) => {
+      inp.addEventListener("focus", () => {
+        if(recordsPinError && recordsPinError.textContent) recordsPinError.textContent = "";
+      });
+      inp.addEventListener("input", () => {
+        const digits = (inp.value || "").replace(/\D/g, "");
+        if(digits.length > 1){
+          for(let k = 0; k < digits.length && idx + k < pinInputs.length; k++){
+            pinInputs[idx + k].value = digits[k];
+          }
+          const nextIdx = Math.min(pinInputs.length - 1, idx + digits.length);
+          pinInputs[nextIdx].focus();
+          verifyPinIfComplete();
+          return;
+        }
+        inp.value = digits;
+        if(digits.length === 1 && idx < pinInputs.length - 1){
+          pinInputs[idx + 1].focus();
+        }
+        verifyPinIfComplete();
+      });
+      inp.addEventListener("keydown", event => {
+        if(event.key === "Backspace" && !inp.value && idx > 0){
+          event.preventDefault();
+          pinInputs[idx - 1].value = "";
+          pinInputs[idx - 1].focus();
+        } else if(event.key === "ArrowLeft" && idx > 0){
+          event.preventDefault();
+          pinInputs[idx - 1].focus();
+        } else if(event.key === "ArrowRight" && idx < pinInputs.length - 1){
+          event.preventDefault();
+          pinInputs[idx + 1].focus();
+        }
+      });
+    });
+
+    recordsPinBoxes.addEventListener("click", event => {
+      if(event.target && event.target.classList && event.target.classList.contains("pin-digit-input")) return;
+      const firstEmpty = pinInputs.find(inp => !inp.value) || pinInputs[pinInputs.length - 1];
+      if(firstEmpty) firstEmpty.focus();
+    });
+  }
+
+  if(recordsPinCancelBtn){
+    recordsPinCancelBtn.addEventListener("click", closeRecordsPinModal);
+  }
+  if(recordsPinOverlay){
+    recordsPinOverlay.addEventListener("click", event => {
+      if(event.target === recordsPinOverlay) closeRecordsPinModal();
+    });
+  }
+
+  if(resetLevelBtn){
+    resetLevelBtn.addEventListener("click", () => showRecordsResetConfirm("level"));
+  }
+  if(resetSessionBtn){
+    resetSessionBtn.addEventListener("click", () => showRecordsResetConfirm("session"));
+  }
+  if(resetAllBtn){
+    resetAllBtn.addEventListener("click", () => showRecordsResetConfirm("all"));
+  }
+  if(resetCancelBtn){
+    resetCancelBtn.addEventListener("click", closeRecordsResetModal);
+  }
+  if(resetConfirmBackBtn){
+    resetConfirmBackBtn.addEventListener("click", () => {
+      pendingResetAction = "";
+      if(recordsResetConfirmPanel) recordsResetConfirmPanel.style.display = "none";
+      if(recordsResetMenuPanel) recordsResetMenuPanel.style.display = "";
+    });
+  }
+  if(resetConfirmExecBtn){
+    resetConfirmExecBtn.addEventListener("click", executeRecordsReset);
+  }
+  if(recordsResetOverlay){
+    recordsResetOverlay.addEventListener("click", event => {
+      if(event.target === recordsResetOverlay) closeRecordsResetModal();
     });
   }
 
@@ -9797,6 +10295,16 @@ try {
       }
 
       if(event.key !== "Escape") return;
+
+      if(activeOverlay === "recordsReset"){
+        closeRecordsResetModal();
+        return;
+      }
+
+      if(activeOverlay === "recordsPin"){
+        closeRecordsPinModal();
+        return;
+      }
 
       if(activeOverlay === "records"){
         closeRecordsModal();
