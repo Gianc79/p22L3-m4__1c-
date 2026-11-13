@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Puzzle Magic v. 1.24</title>
+<title>Puzzle Magic v. 1.25</title>
 <meta name="description" content="Ricomponi la tua foto, un livello alla volta. Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
 <meta property="og:title" content="Puzzle Magic">
 <meta property="og:description" content="Ricomponi la tua foto, un livello alla volta. Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
@@ -226,15 +226,15 @@ h1 {
   border-bottom: 2.5px solid #94a3b8;
   border-radius: 10px;
   background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
-  color: var(--primary-dark);
+  color: #ca8a04;
   cursor: pointer;
   touch-action: manipulation;
   transition: transform .08s ease, background .12s ease, border-color .12s ease;
 }
 
 .records-icon-btn:hover {
-  background: #eef2ff;
-  border-color: var(--primary);
+  background: #fefce8;
+  border-color: #eab308;
 }
 
 .records-icon-btn:active {
@@ -3252,6 +3252,7 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .records-header{
+  position:relative;
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -3264,6 +3265,7 @@ body.is-fullscreen #previewOverlay .preview-image{
   align-items:center;
   gap:8px;
   text-align:left;
+  min-width:0;
 }
 
 .records-crest{
@@ -3284,11 +3286,72 @@ body.is-fullscreen #previewOverlay .preview-image{
   line-height:1.1;
 }
 
-.records-subtitle{
-  margin:1px 0 0;
-  font-size:11px;
-  color:var(--muted);
+.records-info-btn{
+  width:22px;
+  height:22px;
+  padding:0;
+  border-radius:50%;
+  border:1.5px solid #93c5fd;
+  background:#eff6ff;
+  color:#1d4ed8;
+  font-size:12px;
+  font-weight:900;
+  font-style:italic;
+  font-family:Georgia, serif;
+  line-height:1;
+  display:inline-grid;
+  place-items:center;
+  cursor:pointer;
+  flex-shrink:0;
+  touch-action:manipulation;
+  transition:background .15s ease, transform .1s ease, border-color .15s ease;
+}
+
+.records-info-btn:hover,
+.records-info-btn[aria-expanded="true"]{
+  background:#fef08a;
+  border-color:#eab308;
+  color:#713f12;
+}
+
+.records-info-btn:active{
+  transform:scale(0.92);
+}
+
+.records-info-popover{
+  position:absolute;
+  top:calc(100% + 6px);
+  left:0;
+  right:0;
+  z-index:20;
+  display:none;
+  padding:9px 12px;
+  border-radius:12px;
+  background:linear-gradient(180deg, #fef9c3 0%, #fef08a 100%);
+  border:1.5px solid #eab308;
+  color:#713f12;
+  font-size:11.5px;
   font-weight:700;
+  line-height:1.38;
+  text-align:left;
+  box-shadow:0 10px 24px rgba(180, 83, 9, 0.22);
+}
+
+.records-info-popover.show{
+  display:block;
+  animation:pop-in .16s ease-out;
+}
+
+.records-info-popover-arrow{
+  position:absolute;
+  top:-7px;
+  left:176px;
+  width:12px;
+  height:12px;
+  background:#fef9c3;
+  border-top:1.5px solid #eab308;
+  border-left:1.5px solid #eab308;
+  transform:rotate(45deg);
 }
 
 .records-close-x{
@@ -3314,12 +3377,12 @@ body.is-fullscreen #previewOverlay .preview-image{
   box-shadow:0 2px 10px rgba(36,50,71,0.04);
   display:flex;
   flex-direction:column;
-  gap:clamp(6px, 0.9dvh, 8px);
+  gap:clamp(5px, 0.8dvh, 7px);
   min-height:0;
 }
 
 .records-section-level{
-  flex:1.15 1 0;
+  flex:1.18 1 0;
 }
 
 .records-section-session{
@@ -3343,29 +3406,40 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .records-lvl-tabs{
-  display:flex;
-  align-items:center;
-  gap:3px;
+  display:grid;
+  grid-template-columns:repeat(7, minmax(0, 1fr));
+  gap:5px;
+  width:100%;
+  flex:0 0 auto;
 }
 
 .records-lvl-tab{
-  width:22px;
-  height:22px;
+  width:100%;
+  height:28px;
   padding:0;
-  border:1px solid var(--border);
-  border-radius:6px;
+  border:1px solid #cbd5e1;
+  border-bottom:2.5px solid #94a3b8;
+  border-radius:8px;
   background:#f8fafc;
-  color:var(--muted);
-  font-size:11px;
-  font-weight:800;
+  color:var(--text);
+  font-size:12.5px;
+  font-weight:900;
   cursor:pointer;
   display:grid;
   place-items:center;
+  touch-action:manipulation;
+  transition:transform .08s ease, background .12s ease, border-color .12s ease;
+}
+
+.records-lvl-tab:active{
+  transform:translateY(1.5px);
+  border-bottom-width:1px;
 }
 
 .records-lvl-tab.is-active{
   background:var(--primary);
-  border-color:var(--primary);
+  border-color:var(--primary-dark);
+  border-bottom-color:#312e81;
   color:#ffffff;
 }
 
@@ -3377,7 +3451,7 @@ body.is-fullscreen #previewOverlay .preview-image{
   grid-template-columns:repeat(3, minmax(0, 1fr));
   align-items:end;
   gap:6px;
-  padding-top:4px;
+  padding-top:2px;
 }
 
 .podium-col{
@@ -3396,11 +3470,7 @@ body.is-fullscreen #previewOverlay .preview-image{
   margin-bottom:4px;
   width:100%;
   min-width:0;
-}
-
-.podium-medal{
-  font-size:clamp(16px, 2.5dvh, 22px);
-  line-height:1;
+  flex:0 0 auto;
 }
 
 .podium-name{
@@ -3413,27 +3483,24 @@ body.is-fullscreen #previewOverlay .preview-image{
   text-overflow:ellipsis;
 }
 
-.podium-date{
-  font-size:9.5px;
-  font-weight:600;
-  color:var(--muted);
-}
-
 .podium-block{
   width:100%;
+  flex:0 0 auto;
   border-radius:12px 12px 6px 6px;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
+  gap:2px;
   padding:4px;
   font-variant-numeric:tabular-nums;
   border:1px solid transparent;
+  overflow:hidden;
 }
 
 .podium-col.rank-1 .podium-block{
-  height:58%;
-  min-height:44px;
+  height:66%;
+  min-height:66px;
   background:linear-gradient(180deg, #fef08a 0%, #facc15 100%);
   border-color:#eab308;
   color:#713f12;
@@ -3441,16 +3508,16 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .podium-col.rank-2 .podium-block{
-  height:44%;
-  min-height:36px;
+  height:54%;
+  min-height:54px;
   background:linear-gradient(180deg, #f1f5f9 0%, #cbd5e1 100%);
   border-color:#94a3b8;
   color:#1e293b;
 }
 
 .podium-col.rank-3 .podium-block{
-  height:34%;
-  min-height:30px;
+  height:44%;
+  min-height:46px;
   background:linear-gradient(180deg, #ffedd5 0%, #fdba74 100%);
   border-color:#ea580c;
   color:#7c2d12;
@@ -3463,16 +3530,28 @@ body.is-fullscreen #previewOverlay .preview-image{
   box-shadow:none;
 }
 
-.podium-score{
-  font-size:clamp(12px, 1.9dvh, 15px);
-  font-weight:900;
-  line-height:1.1;
+.podium-medal{
+  line-height:1;
+  flex-shrink:0;
 }
 
-.podium-rank-lbl{
-  font-size:9.5px;
-  font-weight:800;
-  opacity:0.8;
+.podium-col.rank-1 .podium-medal{
+  font-size:clamp(34px, 6.2dvh, 56px);
+}
+
+.podium-col.rank-2 .podium-medal{
+  font-size:clamp(28px, 4.8dvh, 44px);
+}
+
+.podium-col.rank-3 .podium-medal{
+  font-size:clamp(22px, 3.8dvh, 34px);
+}
+
+.podium-score{
+  font-size:clamp(12px, 1.8dvh, 14.5px);
+  font-weight:900;
+  line-height:1.1;
+  flex-shrink:0;
 }
 
 /* Lista Classifica Partita Completa */
@@ -3481,15 +3560,16 @@ body.is-fullscreen #previewOverlay .preview-image{
   min-height:0;
   display:flex;
   flex-direction:column;
-  justify-content:space-evenly;
-  gap:5px;
+  justify-content:space-between;
+  gap:3px;
 }
 
 .session-rank-row{
+  flex:1 1 0;
   display:flex;
   align-items:center;
-  gap:8px;
-  padding:clamp(5px, 0.9dvh, 8px) 10px;
+  gap:10px;
+  padding:clamp(6px, 1.1dvh, 10px) 10px;
   border-radius:12px;
   background:#f8fafc;
   border:1px solid var(--border);
@@ -3512,7 +3592,7 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .session-rank-badge{
-  font-size:17px;
+  font-size:clamp(22px, 3.1dvh, 27px);
   line-height:1;
   flex-shrink:0;
 }
@@ -3748,7 +3828,7 @@ body.is-fullscreen #previewOverlay .preview-image{
       <div>
         <div class="title-row">
           <h1>Puzzle Magic</h1>
-          <span class="version">v. 1.24</span>
+          <span class="version">v. 1.25</span>
         </div>
         <p class="subtitle">Ricomponi la foto, un livello alla volta!</p>
       </div>
@@ -3805,10 +3885,10 @@ body.is-fullscreen #previewOverlay .preview-image{
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
           <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
-          <path d="M4 22h16"/>
+          <path d="M4 22h16" stroke="#b45309"/>
           <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
           <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
-          <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+          <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" fill="#facc15"/>
         </svg>
       </button>
     </div>
@@ -3821,7 +3901,6 @@ body.is-fullscreen #previewOverlay .preview-image{
       <button class="upload-btn-3d" id="uploadPhotoBtn" type="button" title="Apri galleria foto">
         📷 Carica foto
       </button>
-      <input id="photoInput" type="file" accept="image/*" multiple style="display:none">
     </div>
 
     <div class="crop-preview-box" id="cropPreviewBox" title="Trascina la foto o esegui lo zoom">
@@ -4095,25 +4174,26 @@ body.is-fullscreen #previewOverlay .preview-image{
     <div class="records-header">
       <div class="records-title-wrap">
         <div class="records-crest" aria-hidden="true">🏆</div>
-        <div>
-          <h2 id="recordsTitle">Sala dei Record</h2>
-          <p class="records-subtitle">Classifiche locali · A parità di punti vince il più recente</p>
-        </div>
+        <h2 id="recordsTitle">Sala dei Record</h2>
+        <button type="button" class="records-info-btn" id="recordsInfoBtn" aria-label="Modalità di calcolo punteggio" aria-expanded="false" title="Info punteggio">i</button>
       </div>
-      <button type="button" class="records-close-x" id="recordsCloseXBtn" aria-label="Chiudi classifica">✕</button>
+      <div class="records-info-popover" id="recordsInfoPopover" role="note" aria-hidden="true">
+        <div class="records-info-popover-arrow" aria-hidden="true"></div>
+        <div id="recordsInfoText">Punti = (tasselli × 120) − (mosse × 12) − (secondi × 3), minimo 50 pt. A parità di punti vince il più recente.</div>
+      </div>
     </div>
 
     <section class="records-section records-section-level" aria-label="Classifica livello selezionato">
       <div class="records-sec-head">
-        <span class="records-sec-title" id="recordsLevelHeading">Podio Livello 1</span>
-        <div class="records-lvl-tabs" id="recordsLevelTabs"></div>
+        <span class="records-sec-title" id="recordsLevelHeading">Classifica Livello 1</span>
       </div>
+      <div class="records-lvl-tabs" id="recordsLevelTabs"></div>
       <div class="podium-stage" id="recordsPodiumStage"></div>
     </section>
 
     <section class="records-section records-section-session" aria-label="Classifica partita completa">
       <div class="records-sec-head">
-        <span class="records-sec-title">Top 3 Partita Completa</span>
+        <span class="records-sec-title">Classifica Partita Completa</span>
       </div>
       <div class="session-rank-list" id="recordsSessionList"></div>
     </section>
@@ -4176,14 +4256,13 @@ body.is-fullscreen #previewOverlay .preview-image{
     <div class="gallery-header">
       <div>
         <h2 id="galleryTitle">Galleria Foto</h2>
-        <div class="gallery-quota" id="galleryQuotaLabel">0.0 MB / 15 MB</div>
+        <div class="gallery-quota" id="galleryQuotaLabel">0.0 MB / 100 MB</div>
       </div>
       <button type="button" class="records-close-x" id="galleryCloseBtn" aria-label="Chiudi galleria">✕</button>
     </div>
 
     <div class="gallery-toolbar">
       <button type="button" class="upload-btn-3d" id="galleryAddPhotoBtn">➕ Aggiungi foto</button>
-      <button type="button" class="button secondary" id="galleryCancelBtn" style="min-height:34px;padding:6px 12px;font-size:13px;">Chiudi</button>
     </div>
 
     <div class="gallery-limit-alert" id="galleryLimitAlert" role="alert"></div>
@@ -4191,6 +4270,7 @@ body.is-fullscreen #previewOverlay .preview-image{
     <div class="gallery-scroll-body" id="galleryScrollBody"></div>
   </div>
 </div>
+<input id="photoInput" type="file" accept="image/*" multiple style="display:none">
 
 
 <!-- Anteprima foto -->
@@ -4772,9 +4852,10 @@ try {
   const vkSpaceBtn = $("vkSpaceBtn");
   const vkOkBtn = $("vkOkBtn");
 
-  /* Modale Record (v. 1.24) */
+  /* Modale Record (v. 1.25) */
   const recordsOverlay = $("recordsOverlay");
-  const recordsCloseXBtn = $("recordsCloseXBtn");
+  const recordsInfoBtn = $("recordsInfoBtn");
+  const recordsInfoPopover = $("recordsInfoPopover");
   const recordsCloseBtn = $("recordsCloseBtn");
   const recordsLevelHeading = $("recordsLevelHeading");
   const recordsLevelTabs = $("recordsLevelTabs");
@@ -4793,12 +4874,11 @@ try {
   const nlCropCancelBtn = $("nlCropCancelBtn");
   const nlCropConfirmBtn = $("nlCropConfirmBtn");
 
-  /* Finestra Galleria Foto Interna (v. 1.24) */
+  /* Finestra Galleria Foto Interna (v. 1.25) */
   const galleryOverlay = $("galleryOverlay");
   const galleryQuotaLabel = $("galleryQuotaLabel");
   const galleryCloseBtn = $("galleryCloseBtn");
   const galleryAddPhotoBtn = $("galleryAddPhotoBtn");
-  const galleryCancelBtn = $("galleryCancelBtn");
   const galleryLimitAlert = $("galleryLimitAlert");
   const galleryScrollBody = $("galleryScrollBody");
 
@@ -4941,7 +5021,7 @@ try {
   const GALLERY_DB_VERSION = 1;
   const GALLERY_STORE_NAME = "photos";
   const GALLERY_SEEDED_KEY = "puzzleMagic_gallerySeeded_v1";
-  const GALLERY_MAX_BYTES = 15 * 1024 * 1024;
+  const GALLERY_MAX_BYTES = 100 * 1024 * 1024;
   let galleryMode = "home"; // "home" | "nextLevel"
   let galleryTargetLevel = 0;
   let galleryRestoreWinOnCancel = false;
@@ -4997,6 +5077,19 @@ try {
       }
     }
   });
+  // Mantiene in memoria esclusivamente i primi 3 punteggi per ciascuna classifica
+  Object.keys(levelLeaderboards).forEach(lvlKey => {
+    if(Array.isArray(levelLeaderboards[lvlKey])){
+      levelLeaderboards[lvlKey] = levelLeaderboards[lvlKey]
+        .filter(item => item && typeof item.score === "number")
+        .sort((a, b) => (b.score - a.score) || ((b.timestamp || 0) - (a.timestamp || 0)))
+        .slice(0, 3);
+    }
+  });
+  sessionLeaderboard = sessionLeaderboard
+    .filter(item => item && typeof item.score === "number")
+    .sort((a, b) => (b.score - a.score) || ((b.timestamp || 0) - (a.timestamp || 0)))
+    .slice(0, 3);
 
   let savedPlayerName = (localStorage.getItem(PLAYER_NAME_STORAGE_KEY) || "").slice(0, MAX_RECORD_NAME_LEN);
   let currentPlayerName = savedPlayerName;
@@ -5302,6 +5395,15 @@ try {
       .slice(0, 3);
   }
 
+  function qualifiesForTop3(sortedTop3, entry){
+    if(!entry || typeof entry.score !== "number") return false;
+    if(!Array.isArray(sortedTop3) || sortedTop3.length < 3) return true;
+    const third = sortedTop3[2];
+    if(entry.score > third.score) return true;
+    if(entry.score === third.score && (entry.timestamp || 0) >= (third.timestamp || 0)) return true;
+    return false;
+  }
+
   function getLevelTop3(lvlIdx){
     const arr = levelLeaderboards && levelLeaderboards[String(lvlIdx)];
     if(!Array.isArray(arr)) return [];
@@ -5318,13 +5420,18 @@ try {
 
   function persistRecords(){
     try {
-      // Sincronizza il primo posto in levelRecords per retrocompatibilità
+      // Sincronizza il primo posto in levelRecords e mantiene solo i primi 3 punteggi
       Object.keys(levelLeaderboards).forEach(k => {
-        const sorted = sortLeaderboardEntries(levelLeaderboards[k] || []);
-        levelLeaderboards[k] = sorted;
-        if(sorted[0]) levelRecords[k] = sorted[0];
+        const sorted = sortLeaderboardEntries((levelLeaderboards[k] || []).filter(item => item && typeof item.score === "number"));
+        if(sorted.length > 0){
+          levelLeaderboards[k] = sorted;
+          levelRecords[k] = sorted[0];
+        } else {
+          delete levelLeaderboards[k];
+          delete levelRecords[k];
+        }
       });
-      sessionLeaderboard = sortLeaderboardEntries(sessionLeaderboard || []);
+      sessionLeaderboard = sortLeaderboardEntries((sessionLeaderboard || []).filter(item => item && typeof item.score === "number"));
       localStorage.setItem(RECORDS_STORAGE_KEY, JSON.stringify(levelRecords));
       localStorage.setItem(LEADERBOARDS_STORAGE_KEY, JSON.stringify({
         levels: levelLeaderboards,
@@ -5338,7 +5445,10 @@ try {
     const currentList = getLevelTop3(lvlIdx);
     const prevTop = currentList[0] || null;
     // A parità di punteggio vince il più recente (timestamp maggiore)
-    const isNewTop = !prevTop || entry.score >= prevTop.score;
+    const isNewTop = !prevTop || entry.score > prevTop.score || (entry.score === prevTop.score && (entry.timestamp || 0) >= (prevTop.timestamp || 0));
+    if(!qualifiesForTop3(currentList, entry)){
+      return false;
+    }
     currentList.push(entry);
     levelLeaderboards[key] = sortLeaderboardEntries(currentList);
     persistRecords();
@@ -5350,14 +5460,19 @@ try {
     if(sessionFinalized || currentSessionScore <= 0 || currentSessionLevelsCleared <= 0) return;
     sessionFinalized = true;
     const cleanName = (currentPlayerName || savedPlayerName || "Giocatore").trim().slice(0, MAX_RECORD_NAME_LEN) || "Giocatore";
-    sessionLeaderboard.push({
+    const entry = {
       score: currentSessionScore,
       name: cleanName,
       date: formatShortDate(),
       timestamp: Date.now(),
       levelsCleared: currentSessionLevelsCleared
-    });
-    sessionLeaderboard = sortLeaderboardEntries(sessionLeaderboard);
+    };
+    const currentTop = sortLeaderboardEntries(sessionLeaderboard || []);
+    if(!qualifiesForTop3(currentTop, entry)){
+      return;
+    }
+    currentTop.push(entry);
+    sessionLeaderboard = sortLeaderboardEntries(currentTop);
     persistRecords();
   }
 
@@ -5399,12 +5514,31 @@ try {
   }
 
   /*
-   * Finestra Record Fissa Verticale (v. 1.24)
+   * Finestra Record Fissa Verticale (v. 1.25)
    */
+  function toggleRecordsInfoPopover(forceState){
+    if(!recordsInfoPopover || !recordsInfoBtn) return;
+    const shouldShow = typeof forceState === "boolean" ? forceState : !recordsInfoPopover.classList.contains("show");
+    recordsInfoPopover.classList.toggle("show", shouldShow);
+    recordsInfoPopover.setAttribute("aria-hidden", shouldShow ? "false" : "true");
+    recordsInfoBtn.setAttribute("aria-expanded", shouldShow ? "true" : "false");
+    if(shouldShow){
+      const arrow = recordsInfoPopover.querySelector(".records-info-popover-arrow");
+      if(arrow){
+        const btnRect = recordsInfoBtn.getBoundingClientRect();
+        const popRect = recordsInfoPopover.getBoundingClientRect();
+        if(popRect.width > 0){
+          const leftPx = Math.max(12, Math.min(popRect.width - 24, (btnRect.left - popRect.left) + (btnRect.width / 2) - 6));
+          arrow.style.left = `${leftPx}px`;
+        }
+      }
+    }
+  }
+
   function renderRecordsModal(lvlIdx = recordsViewLevel){
     recordsViewLevel = Math.max(0, Math.min(LEVELS.length - 1, lvlIdx));
     if(recordsLevelHeading){
-      recordsLevelHeading.textContent = `Podio Livello ${recordsViewLevel + 1}`;
+      recordsLevelHeading.textContent = `Classifica Livello ${recordsViewLevel + 1}`;
     }
 
     if(recordsLevelTabs){
@@ -5423,9 +5557,9 @@ try {
     if(recordsPodiumStage){
       const top3 = getLevelTop3(recordsViewLevel);
       const slots = [
-        { rankIdx: 1, medal: "🥈", label: "2°", cls: "rank-2" },
-        { rankIdx: 0, medal: "🥇", label: "1°", cls: "rank-1" },
-        { rankIdx: 2, medal: "🥉", label: "3°", cls: "rank-3" }
+        { rankIdx: 1, medal: "🥈", cls: "rank-2" },
+        { rankIdx: 0, medal: "🥇", cls: "rank-1" },
+        { rankIdx: 2, medal: "🥉", cls: "rank-3" }
       ];
       recordsPodiumStage.innerHTML = "";
       slots.forEach(slot => {
@@ -5435,26 +5569,20 @@ try {
 
         const playerDiv = document.createElement("div");
         playerDiv.className = "podium-player";
-        const medalDiv = document.createElement("div");
-        medalDiv.className = "podium-medal";
-        medalDiv.textContent = slot.medal;
         const nameDiv = document.createElement("div");
         nameDiv.className = "podium-name";
         nameDiv.textContent = entry ? (entry.name || "Giocatore") : "—";
-        const dateDiv = document.createElement("div");
-        dateDiv.className = "podium-date";
-        dateDiv.textContent = entry ? (entry.date || "") : "Libero";
-        playerDiv.append(medalDiv, nameDiv, dateDiv);
+        playerDiv.appendChild(nameDiv);
 
         const blockDiv = document.createElement("div");
         blockDiv.className = "podium-block";
+        const medalDiv = document.createElement("div");
+        medalDiv.className = "podium-medal";
+        medalDiv.textContent = slot.medal;
         const scoreDiv = document.createElement("div");
         scoreDiv.className = "podium-score";
         scoreDiv.textContent = entry ? `${entry.score} pt` : "---";
-        const rankLbl = document.createElement("div");
-        rankLbl.className = "podium-rank-lbl";
-        rankLbl.textContent = slot.label;
-        blockDiv.append(scoreDiv, rankLbl);
+        blockDiv.append(medalDiv, scoreDiv);
 
         col.append(playerDiv, blockDiv);
         recordsPodiumStage.appendChild(col);
@@ -5501,12 +5629,14 @@ try {
   }
 
   function openRecordsModal(lvlIdx = selectedLevel){
+    toggleRecordsInfoPopover(false);
     renderRecordsModal(lvlIdx);
     activeOverlay = "records";
     if(recordsOverlay) recordsOverlay.classList.add("show");
   }
 
   function closeRecordsModal(){
+    toggleRecordsInfoPopover(false);
     if(recordsOverlay) recordsOverlay.classList.remove("show");
     if(activeOverlay === "records") activeOverlay = "";
   }
@@ -6345,6 +6475,7 @@ try {
     nlCropPanRatioX = 0;
     nlCropPanRatioY = 0;
 
+    if(winOverlay) winOverlay.classList.remove("show");
     if(nextLevelCropOverlay) nextLevelCropOverlay.classList.add("show");
     activeOverlay = "nextCrop";
     updateNlCropZoomUI();
@@ -6548,7 +6679,7 @@ try {
     const totalBytes = items.reduce((acc, it) => acc + (it.byteSize || estimateDataUrlBytes(it.dataUrl)), 0);
     if(galleryQuotaLabel){
       const mbUsed = (totalBytes / (1024 * 1024)).toFixed(1);
-      galleryQuotaLabel.textContent = `${mbUsed} MB / 15 MB · ${items.length} foto`;
+      galleryQuotaLabel.textContent = `${mbUsed} MB / 100 MB · ${items.length} foto`;
     }
 
     galleryScrollBody.innerHTML = "";
@@ -6665,20 +6796,37 @@ try {
   }
 
   async function addFilesToGallery(fileList){
-    if(!fileList || fileList.length === 0 || galleryBusy) return;
+    const files = Array.isArray(fileList) ? fileList : Array.from(fileList || []);
+    if(files.length === 0 || galleryBusy) return;
     galleryBusy = true;
     showGalleryAlert("");
     try {
       const existing = await getAllGalleryPhotos();
       let currentBytes = existing.reduce((acc, it) => acc + (it.byteSize || estimateDataUrlBytes(it.dataUrl)), 0);
       let limitHit = false;
+      let addedCount = 0;
 
-      for(let i = 0; i < fileList.length; i++){
-        const file = fileList[i];
-        if(!file || !file.type || !file.type.startsWith("image/")) continue;
+      for(let i = 0; i < files.length; i++){
+        const file = files[i];
+        if(!file) continue;
+        const hasImageMime = Boolean(file.type && file.type.startsWith("image/"));
+        const hasImageExt = /\.(jpe?g|png|webp|gif|bmp|avif|heic|heif|svg)$/i.test(file.name || "");
+        if(file.type && !hasImageMime && !hasImageExt) continue;
+        let objectUrl = "";
         try {
-          const rawUrl = await readFileAsDataUrl(file);
-          const imgEl = await loadImageFromUrl(rawUrl);
+          let imgEl;
+          if(typeof URL !== "undefined" && typeof URL.createObjectURL === "function"){
+            objectUrl = URL.createObjectURL(file);
+            try {
+              imgEl = await loadImageFromUrl(objectUrl);
+            } catch(_) {
+              const rawUrl = await readFileAsDataUrl(file);
+              imgEl = await loadImageFromUrl(rawUrl);
+            }
+          } else {
+            const rawUrl = await readFileAsDataUrl(file);
+            imgEl = await loadImageFromUrl(rawUrl);
+          }
           const optimizedUrl = encodeImageToOptimizedDataUrl(imgEl, 1600, 0.85);
           const byteSize = estimateDataUrlBytes(optimizedUrl);
           if(currentBytes + byteSize > GALLERY_MAX_BYTES){
@@ -6694,12 +6842,20 @@ try {
             dateKey: getDateKeyFromTs(addedAt)
           });
           currentBytes += byteSize;
-        } catch(_) {}
+          addedCount += 1;
+        } catch(_) {
+        } finally {
+          if(objectUrl && typeof URL !== "undefined" && typeof URL.revokeObjectURL === "function"){
+            try { URL.revokeObjectURL(objectUrl); } catch(_) {}
+          }
+        }
       }
 
       await renderGalleryView();
       if(limitHit){
-        showGalleryAlert("Limite massimo di 15 MB raggiunto! Elimina alcune foto esistenti per liberare spazio.");
+        showGalleryAlert("Limite massimo di 100 MB raggiunto! Elimina alcune foto esistenti per liberare spazio.");
+      } else if(addedCount === 0){
+        showGalleryAlert("Impossibile caricare la foto selezionata. Prova con un altro file immagine (JPG, PNG o WebP).");
       }
     } finally {
       galleryBusy = false;
@@ -8268,15 +8424,15 @@ try {
 
 
   /*
-   * Aggiunta foto nella Galleria Interna (v. 1.24)
+   * Aggiunta foto nella Galleria Interna (v. 1.25)
    */
   if(photoInput){
     photoInput.addEventListener("change", event => {
-      const files = event.target.files;
-      if(files && files.length > 0){
-        addFilesToGallery(files);
-      }
+      const selectedFiles = Array.from(event.target.files || []);
       photoInput.value = "";
+      if(selectedFiles.length > 0){
+        addFilesToGallery(selectedFiles);
+      }
     });
   }
 
@@ -8687,7 +8843,7 @@ try {
   }
 
   /*
-   * PROSSIMO LIVELLO
+   * PROSSIMO LIVELLO (apre la finestra di ritaglio/zoom con griglia attiva, v. 1.25)
    */
   const nextLevelBtnEl = $("nextLevelBtn");
   if(nextLevelBtnEl){
@@ -8695,7 +8851,8 @@ try {
       "click",
       ()=>{
         if(levelIndex < LEVELS.length - 1){
-          nextLevel();
+          const currentPhotoUrl = rawPhotoUrl || photoData || resolveHeroUrl(DEFAULT_HOME_PHOTO);
+          openNextLevelCropModal(currentPhotoUrl, levelIndex + 1, true);
         }else{
           if(winOverlay) winOverlay.classList.remove("show");
           activeOverlay="";
@@ -8830,19 +8987,27 @@ try {
   }
 
   /*
-   * EVENTI FINESTRA CLASSIFICA RECORD (v. 1.24)
+   * EVENTI FINESTRA CLASSIFICA RECORD (v. 1.25)
    */
   if(openRecordsBtn){
     openRecordsBtn.addEventListener("click", () => openRecordsModal(selectedLevel));
   }
-  if(recordsCloseXBtn){
-    recordsCloseXBtn.addEventListener("click", closeRecordsModal);
+  if(recordsInfoBtn){
+    recordsInfoBtn.addEventListener("click", event => {
+      event.stopPropagation();
+      toggleRecordsInfoPopover();
+    });
   }
   if(recordsCloseBtn){
     recordsCloseBtn.addEventListener("click", closeRecordsModal);
   }
   if(recordsOverlay){
     recordsOverlay.addEventListener("click", event => {
+      if(recordsInfoPopover && recordsInfoPopover.classList.contains("show")){
+        if(!recordsInfoPopover.contains(event.target) && event.target !== recordsInfoBtn){
+          toggleRecordsInfoPopover(false);
+        }
+      }
       if(event.target === recordsOverlay){
         closeRecordsModal();
       }
@@ -8850,7 +9015,7 @@ try {
   }
 
   /*
-   * EVENTI GALLERIA FOTO INTERNA (v. 1.24)
+   * EVENTI GALLERIA FOTO INTERNA (v. 1.25)
    */
   if(galleryAddPhotoBtn){
     galleryAddPhotoBtn.addEventListener("click", () => {
@@ -8862,9 +9027,6 @@ try {
   }
   if(galleryCloseBtn){
     galleryCloseBtn.addEventListener("click", () => closeGalleryModal(true));
-  }
-  if(galleryCancelBtn){
-    galleryCancelBtn.addEventListener("click", () => closeGalleryModal(true));
   }
   if(galleryOverlay){
     galleryOverlay.addEventListener("click", event => {
