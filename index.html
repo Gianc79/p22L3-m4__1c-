@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Puzzle Hero v. 1.30</title>
+<title>Puzzle Hero v. 1.31</title>
 <meta name="description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
 <meta property="og:title" content="Puzzle Hero">
 <meta property="og:description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
@@ -3899,16 +3899,16 @@ body.is-fullscreen #previewOverlay .preview-image{
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:2px;
-  padding:4px;
+  gap:1px;
+  padding:3px 4px;
   font-variant-numeric:tabular-nums;
   border:1px solid transparent;
   overflow:hidden;
 }
 
 .podium-col.rank-1 .podium-block{
-  height:74%;
-  min-height:78px;
+  height:76%;
+  min-height:84px;
   background:linear-gradient(180deg, #fef08a 0%, #facc15 100%);
   border-color:#eab308;
   color:#713f12;
@@ -3916,16 +3916,16 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .podium-col.rank-2 .podium-block{
-  height:58%;
-  min-height:62px;
+  height:62%;
+  min-height:70px;
   background:linear-gradient(180deg, #f1f5f9 0%, #cbd5e1 100%);
   border-color:#94a3b8;
   color:#1e293b;
 }
 
 .podium-col.rank-3 .podium-block{
-  height:42%;
-  min-height:46px;
+  height:48%;
+  min-height:58px;
   background:linear-gradient(180deg, #ffedd5 0%, #fdba74 100%);
   border-color:#ea580c;
   color:#7c2d12;
@@ -3944,21 +3944,30 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .podium-col.rank-1 .podium-medal{
-  font-size:clamp(38px, 6.6dvh, 60px);
+  font-size:clamp(34px, 6dvh, 56px);
 }
 
 .podium-col.rank-2 .podium-medal{
-  font-size:clamp(32px, 5.2dvh, 48px);
+  font-size:clamp(28px, 4.6dvh, 44px);
 }
 
 .podium-col.rank-3 .podium-medal{
-  font-size:clamp(26px, 4.2dvh, 38px);
+  font-size:clamp(22px, 3.6dvh, 34px);
 }
 
 .podium-score{
   font-size:clamp(13.5px, 2.1dvh, 16.5px);
   font-weight:900;
   line-height:1.1;
+  flex-shrink:0;
+}
+
+.podium-levels{
+  font-size:clamp(10px, 1.4dvh, 11.5px);
+  font-weight:400;
+  line-height:1.1;
+  opacity:0.9;
+  white-space:nowrap;
   flex-shrink:0;
 }
 
@@ -4522,7 +4531,7 @@ body.is-fullscreen #previewOverlay .preview-image{
       <div>
         <div class="title-row">
           <h1>Puzzle Hero</h1>
-          <span class="version">v. 1.30</span>
+          <span class="version">v. 1.31</span>
         </div>
         <p class="subtitle">Ricomponi la foto, con l'aiuto dei tuoi Supereroi!</p>
       </div>
@@ -4933,13 +4942,13 @@ body.is-fullscreen #previewOverlay .preview-image{
   <div class="dialog reset-records-dialog">
     <h2 id="recordsResetTitle">Reset classifiche</h2>
     <div id="recordsResetMenuPanel">
-      <p class="reset-records-sub">Seleziona quale classifica desideri inizializzare:</p>
-      <div class="reset-level-picker" id="resetLevelPicker" role="radiogroup" aria-label="Livello da inizializzare"></div>
+      <p class="reset-records-sub">Seleziona quale classifica desideri resettare:</p>
+      <div class="reset-level-picker" id="resetLevelPicker" role="radiogroup" aria-label="Livello da resettare"></div>
       <div class="reset-records-options">
-        <button type="button" class="button warning" id="resetLevelBtn">Inizializza la classifica del livello 1</button>
-        <button type="button" class="button warning" id="resetAllLevelsBtn">Inizializza la classifica di tutti i livelli</button>
-        <button type="button" class="button warning" id="resetSessionBtn">Inizializza la classifica partita completa</button>
-        <button type="button" class="button danger" id="resetAllBtn">Inizializza tutte le classifiche</button>
+        <button type="button" class="button warning" id="resetLevelBtn">Resetta la classifica del livello 1</button>
+        <button type="button" class="button warning" id="resetAllLevelsBtn">Resetta la classifica di tutti i livelli</button>
+        <button type="button" class="button warning" id="resetSessionBtn">Resetta la classifica partita completa</button>
+        <button type="button" class="button danger" id="resetAllBtn">Resetta tutte le classifiche</button>
         <button type="button" class="button secondary" id="resetCancelBtn">Annulla</button>
       </div>
     </div>
@@ -6504,11 +6513,10 @@ try {
         nameDiv.className = "podium-name";
         nameDiv.textContent = entry ? (entry.name || "Giocatore") : "—";
         playerDiv.appendChild(nameDiv);
-        if(entry){
+        if(entry && entry.date){
           const metaDiv = document.createElement("div");
           metaDiv.className = "podium-meta";
-          const lvls = entry.levelsCleared || 1;
-          metaDiv.textContent = `${lvls} liv.${entry.date ? ` · ${entry.date}` : ""}`;
+          metaDiv.textContent = entry.date;
           playerDiv.appendChild(metaDiv);
         }
 
@@ -6521,6 +6529,13 @@ try {
         scoreDiv.className = "podium-score";
         scoreDiv.textContent = entry ? `${entry.score} pt` : "---";
         blockDiv.append(medalDiv, scoreDiv);
+        if(entry){
+          const lvls = entry.levelsCleared || 1;
+          const levelsDiv = document.createElement("div");
+          levelsDiv.className = "podium-levels";
+          levelsDiv.textContent = lvls === 1 ? "1 livello" : `${lvls} livelli`;
+          blockDiv.appendChild(levelsDiv);
+        }
 
         col.append(playerDiv, blockDiv);
         recordsPodiumStage.appendChild(col);
@@ -6643,7 +6658,7 @@ try {
       }
     }
     if(resetLevelBtn){
-      resetLevelBtn.textContent = `Inizializza la classifica del livello ${resetTargetLevel + 1}`;
+      resetLevelBtn.textContent = `Resetta la classifica del livello ${resetTargetLevel + 1}`;
     }
   }
 
@@ -6915,20 +6930,30 @@ try {
     return Promise.resolve();
   }
 
+  let pendingOrientationPromise = null;
+  let pendingOrientationTarget = "";
+
   function syncScreenOrientation(active, isLandscape){
+    const target = (active && isLandscape) ? "landscape" : "portrait";
     try {
       const orientationApi = window.screen && window.screen.orientation;
-      if(!orientationApi) return;
-      if(active){
-        if(typeof orientationApi.lock === "function"){
-          orientationApi.lock(isLandscape ? "landscape" : "portrait").catch(() => {});
-        }
-      } else {
-        if(typeof orientationApi.unlock === "function"){
-          orientationApi.unlock();
-        }
+      if(!orientationApi || typeof orientationApi.lock !== "function") return Promise.resolve();
+      if(pendingOrientationPromise && pendingOrientationTarget === target){
+        return pendingOrientationPromise;
       }
-    } catch(_) {}
+      pendingOrientationTarget = target;
+      const p = Promise.resolve(orientationApi.lock(target))
+        .catch(() => {})
+        .finally(() => {
+          if(pendingOrientationPromise === p){
+            pendingOrientationPromise = null;
+          }
+        });
+      pendingOrientationPromise = p;
+      return p;
+    } catch(_) {
+      return Promise.resolve();
+    }
   }
 
   function applyFullscreenLayoutClass(isHorizontal){
@@ -6964,8 +6989,21 @@ try {
       resetPreviewZoom();
     } else {
       gamePanel.classList.remove("fs-layout-landscape", "fs-layout-portrait");
-      syncScreenOrientation(false, false);
-      exitNativeFullscreen().catch(() => {});
+      const orientPromise = syncScreenOrientation(false, false);
+      Promise.race([
+        orientPromise,
+        new Promise(resolve => setTimeout(resolve, 250))
+      ]).finally(() => {
+        exitNativeFullscreen()
+          .catch(() => {})
+          .finally(() => {
+            setTimeout(() => {
+              if(!inGameSession){
+                updateCropFrameAndImage();
+              }
+            }, 120);
+          });
+      });
     }
 
     if(fullscreenToggleBtn){
@@ -10593,7 +10631,9 @@ try {
   }
   if(recordsResetOverlay){
     recordsResetOverlay.addEventListener("click", event => {
-      if(event.target === recordsResetOverlay) closeRecordsResetModal();
+      if(event.target === recordsResetOverlay){
+        /* intenzionale: chiusura consentita solo tramite le opzioni della finestra */
+      }
     });
   }
 
