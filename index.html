@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Puzzle Magic v. 1.26</title>
+<title>Puzzle Magic v. 1.27</title>
 <meta name="description" content="Ricomponi la tua foto, un livello alla volta. Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
 <meta property="og:title" content="Puzzle Magic">
 <meta property="og:description" content="Ricomponi la tua foto, un livello alla volta. Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
@@ -3083,6 +3083,11 @@ body.is-fullscreen #previewOverlay .preview-image{
   .hero-aura{
     animation:none!important
   }
+
+  .name-display-caret{
+    animation:none!important;
+    opacity:1!important
+  }
 }
 
 /* Finestra ESCI compatta con icona moderna (v. 1.23) */
@@ -3139,7 +3144,7 @@ body.is-fullscreen #previewOverlay .preview-image{
   background:linear-gradient(180deg, #dc2626 0%, #b91c1c 100%);
 }
 
-/* Modale Nome Giocatore con Tastiera Virtuale a 21 lettere (v. 1.24) */
+/* Modale Nome Giocatore con Tastiera Virtuale a 26 lettere (v. 1.27) */
 .name-dialog{
   width:min(100%, 420px);
   padding:18px 14px 16px;
@@ -3158,6 +3163,10 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .name-display-box{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   width:100%;
   height:52px;
   padding:0 14px;
@@ -3171,7 +3180,44 @@ body.is-fullscreen #previewOverlay .preview-image{
   text-align:center;
   text-transform:uppercase;
   outline:none;
+  cursor:text;
+  user-select:none;
+  -webkit-user-select:none;
+  overflow:hidden;
   box-shadow:inset 0 2px 5px rgba(91,110,225,0.08);
+}
+
+.name-display-placeholder{
+  color:#94a3b8;
+  pointer-events:none;
+}
+
+.name-display-chars{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  white-space:pre;
+}
+
+.name-display-char{
+  display:inline-block;
+}
+
+.name-display-caret{
+  display:inline-block;
+  width:2.5px;
+  height:1.12em;
+  margin:0 -1.25px;
+  border-radius:2px;
+  background:var(--primary-dark);
+  animation:nameCaretBlink 1s step-end infinite;
+  pointer-events:none;
+  flex-shrink:0;
+}
+
+@keyframes nameCaretBlink{
+  0%, 49%{ opacity:1; }
+  50%, 100%{ opacity:0; }
 }
 
 .name-tip-error{
@@ -3189,14 +3235,25 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .vk-grid{
-  display:grid;
-  grid-template-columns:repeat(7, minmax(0, 1fr));
+  display:flex;
+  flex-direction:column;
   gap:6px;
-  margin-bottom:7px;
+  margin-bottom:16px;
+}
+
+.vk-row{
+  display:flex;
+  justify-content:center;
+  gap:6px;
+}
+
+.vk-row .vk-key{
+  width:calc((100% - 36px) / 7);
+  flex:0 0 auto;
 }
 
 .vk-key{
-  height:clamp(40px, 6vh, 48px);
+  height:clamp(38px, 5.6vh, 46px);
   padding:0;
   border:1px solid #cbd5e1;
   border-bottom:3px solid #94a3b8;
@@ -3348,7 +3405,8 @@ body.is-fullscreen #previewOverlay .preview-image{
   border-radius:12px;
   background:#f8fafc;
   color:var(--text);
-  font-size:20px;
+  font-size:24px;
+  line-height:48px;
   font-weight:900;
   font-variant-numeric:tabular-nums;
   text-align:center;
@@ -3449,7 +3507,7 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .records-header h2{
-  margin:0;
+  margin:0 0 0 8px;
   font-size:clamp(17px, 2.4dvh, 21px);
   line-height:1.1;
 }
@@ -3522,8 +3580,8 @@ body.is-fullscreen #previewOverlay .preview-image{
   margin-bottom:4px;
 }
 
-.records-info-black{
-  color:#000000;
+.records-info-green{
+  color:#15803d;
   font-weight:800;
 }
 
@@ -4082,7 +4140,7 @@ body.is-fullscreen #previewOverlay .preview-image{
       <div>
         <div class="title-row">
           <h1>Puzzle Magic</h1>
-          <span class="version">v. 1.26</span>
+          <span class="version">v. 1.27</span>
         </div>
         <p class="subtitle">Ricomponi la foto, un livello alla volta!</p>
       </div>
@@ -4399,14 +4457,13 @@ body.is-fullscreen #previewOverlay .preview-image{
   <div class="dialog name-dialog">
     <h2 id="playerNameTitle">Inserisci il tuo nome</h2>
     <p class="name-dialog-sub">I tuoi punteggi verranno salvati automaticamente.</p>
-    <input
-      type="text"
+    <div
       class="name-display-box"
       id="playerNameDisplay"
-      readonly
-      maxlength="12"
-      placeholder="NOME"
-      aria-label="Nome giocatore">
+      tabindex="0"
+      role="textbox"
+      aria-label="Nome giocatore"
+      aria-multiline="false"><span class="name-display-placeholder">NOME</span></div>
     <div class="name-tip-error" id="playerNameTip">Immettere un numero di caratteri da 1 a 12</div>
     <div class="vk-grid" id="virtualKeyboardLetters" aria-label="Tastiera lettere"></div>
     <div class="vk-bottom-row">
@@ -4434,8 +4491,8 @@ body.is-fullscreen #previewOverlay .preview-image{
       <div class="records-info-popover" id="recordsInfoPopover" role="note" aria-hidden="true">
         <div class="records-info-popover-arrow" aria-hidden="true"></div>
         <div id="recordsInfoText">
-          <div class="records-info-title">MODALITA' DI ASSEGNAZIONE PUNTEGGIO:</div>
-          <div class="records-info-black">120 Punti per ogni tassello del Puzzle;</div>
+          <div class="records-info-title">MODALITA' DI ATTRIBUZIONE PUNTEGGIO:</div>
+          <div class="records-info-green">120 Punti per ogni tassello del Puzzle;</div>
           <div class="records-info-red records-info-red-heading">Penalità:</div>
           <div class="records-info-red">-12 Punti per ogni mossa eseguita;</div>
           <div class="records-info-red">- 3 Punti per ogni secondo trascorso.</div>
@@ -4473,12 +4530,12 @@ body.is-fullscreen #previewOverlay .preview-image{
     <h2 id="recordsPinTitle">Codice di sicurezza</h2>
     <p>Inserisci il PIN a 6 cifre per accedere alle opzioni di reset.</p>
     <div class="pin-boxes-row" id="recordsPinBoxes">
-      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit-input" autocomplete="off" aria-label="Cifra PIN 1">
-      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit-input" autocomplete="off" aria-label="Cifra PIN 2">
-      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit-input" autocomplete="off" aria-label="Cifra PIN 3">
-      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit-input" autocomplete="off" aria-label="Cifra PIN 4">
-      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit-input" autocomplete="off" aria-label="Cifra PIN 5">
-      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit-input" autocomplete="off" aria-label="Cifra PIN 6">
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="6" class="pin-digit-input" autocomplete="off" aria-label="Cifra PIN 1">
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="6" class="pin-digit-input" autocomplete="off" aria-label="Cifra PIN 2">
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="6" class="pin-digit-input" autocomplete="off" aria-label="Cifra PIN 3">
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="6" class="pin-digit-input" autocomplete="off" aria-label="Cifra PIN 4">
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="6" class="pin-digit-input" autocomplete="off" aria-label="Cifra PIN 5">
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="6" class="pin-digit-input" autocomplete="off" aria-label="Cifra PIN 6">
     </div>
     <div class="pin-error-msg" id="recordsPinError" aria-live="polite"></div>
     <div class="dialog-actions">
@@ -4501,6 +4558,7 @@ body.is-fullscreen #previewOverlay .preview-image{
       <div class="reset-level-picker" id="resetLevelPicker" role="radiogroup" aria-label="Livello da inizializzare"></div>
       <div class="reset-records-options">
         <button type="button" class="button warning" id="resetLevelBtn">Inizializza la classifica del livello 1</button>
+        <button type="button" class="button warning" id="resetAllLevelsBtn">Inizializza la classifica di tutti i livelli</button>
         <button type="button" class="button warning" id="resetSessionBtn">Inizializza la classifica partita completa</button>
         <button type="button" class="button danger" id="resetAllBtn">Inizializza tutto</button>
         <button type="button" class="button secondary" id="resetCancelBtn">Annulla</button>
@@ -4570,7 +4628,7 @@ body.is-fullscreen #previewOverlay .preview-image{
     <div class="gallery-header">
       <div>
         <h2 id="galleryTitle">Galleria Foto</h2>
-        <div class="gallery-quota" id="galleryQuotaLabel">0.0 MB / 100 MB</div>
+        <div class="gallery-quota" id="galleryQuotaLabel">0.0 MB / 75 MB</div>
       </div>
       <button type="button" class="records-close-x" id="galleryCloseBtn" aria-label="Chiudi galleria">✕</button>
     </div>
@@ -5212,6 +5270,7 @@ try {
   const recordsResetMenuPanel = $("recordsResetMenuPanel");
   const resetLevelPicker = $("resetLevelPicker");
   const resetLevelBtn = $("resetLevelBtn");
+  const resetAllLevelsBtn = $("resetAllLevelsBtn");
   const resetSessionBtn = $("resetSessionBtn");
   const resetAllBtn = $("resetAllBtn");
   const resetCancelBtn = $("resetCancelBtn");
@@ -5386,7 +5445,7 @@ try {
   const GALLERY_DB_VERSION = 1;
   const GALLERY_STORE_NAME = "photos";
   const GALLERY_SEEDED_KEY = "puzzleMagic_gallerySeeded_v1";
-  const GALLERY_MAX_BYTES = 100 * 1024 * 1024;
+  const GALLERY_MAX_BYTES = 75 * 1024 * 1024;
   let galleryMode = "home"; // "home" | "nextLevel"
   let galleryTargetLevel = 0;
   let galleryRestoreWinOnCancel = false;
@@ -5403,10 +5462,11 @@ try {
   const LEADERBOARDS_STORAGE_KEY = "puzzleMagic_leaderboards_v1";
   const PLAYER_NAME_STORAGE_KEY = "puzzleMagic_playerName_v1";
   const MAX_RECORD_NAME_LEN = 12;
-  const ITALIAN_LETTERS = [
-    "A", "B", "C", "D", "E", "F", "G",
-    "H", "I", "L", "M", "N", "O", "P",
-    "Q", "R", "S", "T", "U", "V", "Z"
+  const LATIN_LETTER_ROWS = [
+    ["A", "B", "C", "D", "E", "F", "G"],
+    ["H", "I", "J", "K", "L", "M", "N"],
+    ["O", "P", "Q", "R", "S", "T", "U"],
+    ["V", "W", "X", "Y", "Z"]
   ];
 
   let lastWinScore = null;
@@ -5463,6 +5523,8 @@ try {
   let savedPlayerName = (localStorage.getItem(PLAYER_NAME_STORAGE_KEY) || "").slice(0, MAX_RECORD_NAME_LEN);
   let currentPlayerName = savedPlayerName;
   let playerNameBuffer = "";
+  let playerNameCursorPos = 0;
+  let playerNameCaretVisible = false;
   let currentSessionScore = 0;
   let currentSessionLevelsCleared = 0;
   let sessionFinalized = false;
@@ -6029,7 +6091,10 @@ try {
 
   function clearPinInputs(focusFirst = true){
     const inputs = getPinInputs();
-    inputs.forEach(inp => { inp.value = ""; });
+    inputs.forEach(inp => {
+      inp.value = "";
+      inp.dataset.digit = "";
+    });
     if(focusFirst && inputs[0]){
       try { inputs[0].focus(); } catch(_) {}
     }
@@ -6110,6 +6175,8 @@ try {
     if(recordsResetConfirmText){
       if(actionType === "level"){
         recordsResetConfirmText.textContent = `Confermi l'azzeramento della classifica del Livello ${resetTargetLevel + 1}? I record eliminati non potranno essere recuperati.`;
+      } else if(actionType === "allLevels"){
+        recordsResetConfirmText.textContent = "Confermi l'azzeramento della classifica di TUTTI i livelli (1-7)? La classifica Partita Completa resterà invariata.";
       } else if(actionType === "session"){
         recordsResetConfirmText.textContent = "Confermi l'azzeramento della classifica Partita Completa? I record eliminati non potranno essere recuperati.";
       } else {
@@ -6125,6 +6192,9 @@ try {
       const key = String(resetTargetLevel);
       delete levelLeaderboards[key];
       delete levelRecords[key];
+    } else if(pendingResetAction === "allLevels"){
+      levelLeaderboards = {};
+      levelRecords = {};
     } else if(pendingResetAction === "session"){
       sessionLeaderboard = [];
     } else if(pendingResetAction === "all"){
@@ -6296,6 +6366,58 @@ try {
     return rows < cols;
   }
 
+  function isStandaloneDisplayMode(){
+    try {
+      return (window.matchMedia && (
+        window.matchMedia("(display-mode: fullscreen)").matches ||
+        window.matchMedia("(display-mode: standalone)").matches
+      )) || window.navigator.standalone === true;
+    } catch(_) {
+      return false;
+    }
+  }
+
+  let pendingFullscreenPromise = null;
+
+  function requestNativeFullscreen(){
+    if(isStandaloneDisplayMode()) return Promise.resolve();
+    const fsEl = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+    if(fsEl) return Promise.resolve();
+    if(pendingFullscreenPromise) return pendingFullscreenPromise;
+    const docEl = document.documentElement;
+    try {
+      if(docEl && typeof docEl.requestFullscreen === "function"){
+        const p = docEl.requestFullscreen({ navigationUI: "hide" });
+        if(p && typeof p.then === "function"){
+          pendingFullscreenPromise = p.finally(() => { pendingFullscreenPromise = null; });
+          return pendingFullscreenPromise;
+        }
+        return Promise.resolve();
+      }
+      const legacyReq = docEl && (docEl.webkitRequestFullscreen || docEl.mozRequestFullScreen || docEl.msRequestFullscreen);
+      if(typeof legacyReq === "function"){
+        legacyReq.call(docEl);
+      }
+    } catch(_) {}
+    return Promise.resolve();
+  }
+
+  function exitNativeFullscreen(){
+    const fsEl = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+    if(!fsEl) return Promise.resolve();
+    try {
+      if(typeof document.exitFullscreen === "function"){
+        const p = document.exitFullscreen();
+        return p && typeof p.then === "function" ? p : Promise.resolve();
+      }
+      const legacyExit = document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+      if(typeof legacyExit === "function"){
+        legacyExit.call(document);
+      }
+    } catch(_) {}
+    return Promise.resolve();
+  }
+
   function syncScreenOrientation(active, isLandscape){
     try {
       const orientationApi = window.screen && window.screen.orientation;
@@ -6305,13 +6427,7 @@ try {
           orientationApi.lock(isLandscape ? "landscape" : "portrait").catch(() => {});
         }
       } else {
-        if(typeof orientationApi.lock === "function"){
-          orientationApi.lock("portrait").catch(() => {
-            try {
-              if(typeof orientationApi.unlock === "function") orientationApi.unlock();
-            } catch(_) {}
-          });
-        } else if(typeof orientationApi.unlock === "function"){
+        if(typeof orientationApi.unlock === "function"){
           orientationApi.unlock();
         }
       }
@@ -6325,7 +6441,7 @@ try {
   }
 
   /*
-   * Schermo intero simulato senza popup nativi del browser (v. 1.26)
+   * Schermo intero immersivo con blocco orientamento e rimozione barra indirizzi (v. 1.27)
    */
   function toggleFullscreen(enable){
     isFullscreen = typeof enable === "boolean" ? enable : !isFullscreen;
@@ -6336,12 +6452,23 @@ try {
     if (isFullscreen) {
       const useLandscape = shouldUseLandscapeGameView(levelIndex);
       applyFullscreenLayoutClass(useLandscape);
-      syncScreenOrientation(true, useLandscape);
+      requestNativeFullscreen()
+        .catch(() => {})
+        .finally(() => {
+          syncScreenOrientation(true, useLandscape);
+          setTimeout(() => {
+            if(inGameSession && isFullscreen){
+              applyFullscreenLayoutClass(shouldUseLandscapeGameView(levelIndex));
+              renderBoard();
+            }
+          }, 120);
+        });
       window.scrollTo(0, 0);
       resetPreviewZoom();
     } else {
       gamePanel.classList.remove("fs-layout-landscape", "fs-layout-portrait");
       syncScreenOrientation(false, false);
+      exitNativeFullscreen().catch(() => {});
     }
 
     if(fullscreenToggleBtn){
@@ -7331,7 +7458,7 @@ try {
     const totalBytes = items.reduce((acc, it) => acc + (it.byteSize || estimateDataUrlBytes(it.dataUrl)), 0);
     if(galleryQuotaLabel){
       const mbUsed = (totalBytes / (1024 * 1024)).toFixed(1);
-      galleryQuotaLabel.textContent = `${mbUsed} MB / 100 MB · ${items.length} foto`;
+      galleryQuotaLabel.textContent = `${mbUsed} MB / 75 MB · ${items.length} foto`;
     }
 
     galleryScrollBody.innerHTML = "";
@@ -7541,7 +7668,7 @@ try {
 
       await renderGalleryView();
       if(limitHit){
-        showGalleryAlert("Limite massimo di 100 MB raggiunto! Elimina alcune foto esistenti per liberare spazio.");
+        showGalleryAlert("Limite massimo di 75 MB raggiunto! Elimina alcune foto esistenti per liberare spazio.");
       } else if(addedCount === 0){
         showGalleryAlert("Impossibile caricare la foto selezionata. Prova con un altro file immagine (JPG, PNG o WebP).");
       }
@@ -9587,11 +9714,42 @@ try {
   }
 
   /*
-   * TASTIERA VIRTUALE NOME GIOCATORE ALL'AVVIO PARTITA (v. 1.24)
+   * TASTIERA VIRTUALE NOME GIOCATORE ALL'AVVIO PARTITA (v. 1.27)
    */
+  function createNameCaretEl(){
+    const caret = document.createElement("span");
+    caret.className = "name-display-caret";
+    caret.setAttribute("aria-hidden", "true");
+    return caret;
+  }
+
   function updatePlayerNameModalUI(){
+    playerNameCursorPos = Math.max(0, Math.min(playerNameBuffer.length, playerNameCursorPos));
     if(playerNameDisplay){
-      playerNameDisplay.value = playerNameBuffer;
+      playerNameDisplay.innerHTML = "";
+      if(playerNameBuffer.length === 0 && !playerNameCaretVisible){
+        const ph = document.createElement("span");
+        ph.className = "name-display-placeholder";
+        ph.textContent = "NOME";
+        playerNameDisplay.appendChild(ph);
+      } else {
+        const charsWrap = document.createElement("span");
+        charsWrap.className = "name-display-chars";
+        for(let i = 0; i < playerNameBuffer.length; i++){
+          if(playerNameCaretVisible && i === playerNameCursorPos){
+            charsWrap.appendChild(createNameCaretEl());
+          }
+          const chSpan = document.createElement("span");
+          chSpan.className = "name-display-char";
+          chSpan.dataset.charIndex = String(i);
+          chSpan.textContent = playerNameBuffer[i] === " " ? "\u00A0" : playerNameBuffer[i];
+          charsWrap.appendChild(chSpan);
+        }
+        if(playerNameCaretVisible && playerNameCursorPos === playerNameBuffer.length){
+          charsWrap.appendChild(createNameCaretEl());
+        }
+        playerNameDisplay.appendChild(charsWrap);
+      }
     }
     const hasLetter = playerNameBuffer.trim().length > 0;
     if(playerNameTip){
@@ -9602,28 +9760,58 @@ try {
     }
   }
 
+  function insertCharAtPlayerNameCursor(ch){
+    playerNameCaretVisible = true;
+    if(playerNameBuffer.length >= MAX_RECORD_NAME_LEN) return;
+    const pos = Math.max(0, Math.min(playerNameBuffer.length, playerNameCursorPos));
+    playerNameBuffer = playerNameBuffer.slice(0, pos) + ch + playerNameBuffer.slice(pos);
+    playerNameCursorPos = pos + ch.length;
+    updatePlayerNameModalUI();
+  }
+
+  function deleteBeforePlayerNameCursor(){
+    playerNameCaretVisible = true;
+    const pos = Math.max(0, Math.min(playerNameBuffer.length, playerNameCursorPos));
+    if(pos <= 0) return;
+    playerNameBuffer = playerNameBuffer.slice(0, pos - 1) + playerNameBuffer.slice(pos);
+    playerNameCursorPos = pos - 1;
+    updatePlayerNameModalUI();
+  }
+
+  function deleteAtPlayerNameCursor(){
+    playerNameCaretVisible = true;
+    const pos = Math.max(0, Math.min(playerNameBuffer.length, playerNameCursorPos));
+    if(pos >= playerNameBuffer.length) return;
+    playerNameBuffer = playerNameBuffer.slice(0, pos) + playerNameBuffer.slice(pos + 1);
+    updatePlayerNameModalUI();
+  }
+
   function buildVirtualKeyboard(){
     if(!virtualKeyboardLetters) return;
     virtualKeyboardLetters.innerHTML = "";
-    ITALIAN_LETTERS.forEach(letter => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "vk-key";
-      btn.textContent = letter;
-      btn.setAttribute("aria-label", `Lettera ${letter}`);
-      btn.addEventListener("click", () => {
-        if(playerNameBuffer.length < MAX_RECORD_NAME_LEN){
-          playerNameBuffer += letter;
-          updatePlayerNameModalUI();
-        }
+    LATIN_LETTER_ROWS.forEach(rowLetters => {
+      const rowEl = document.createElement("div");
+      rowEl.className = "vk-row";
+      rowLetters.forEach(letter => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "vk-key";
+        btn.textContent = letter;
+        btn.setAttribute("aria-label", `Lettera ${letter}`);
+        btn.addEventListener("click", () => {
+          insertCharAtPlayerNameCursor(letter);
+        });
+        rowEl.appendChild(btn);
       });
-      virtualKeyboardLetters.appendChild(btn);
+      virtualKeyboardLetters.appendChild(rowEl);
     });
   }
 
   function openPlayerNameModal(){
     buildVirtualKeyboard();
     playerNameBuffer = "";
+    playerNameCursorPos = 0;
+    playerNameCaretVisible = false;
     updatePlayerNameModalUI();
     activeOverlay = "playerName";
     if(playerNameOverlay) playerNameOverlay.classList.add("show");
@@ -9632,6 +9820,7 @@ try {
   function confirmPlayerNameAndStart(){
     const trimmed = playerNameBuffer.trim().slice(0, MAX_RECORD_NAME_LEN);
     if(!trimmed) return;
+    requestNativeFullscreen().catch(() => {});
     currentPlayerName = trimmed;
     savedPlayerName = trimmed;
     try { localStorage.setItem(PLAYER_NAME_STORAGE_KEY, trimmed); } catch(_) {}
@@ -9645,19 +9834,41 @@ try {
     startGameFromHome();
   }
 
+  if(playerNameDisplay){
+    playerNameDisplay.addEventListener("click", event => {
+      playerNameCaretVisible = true;
+      const charNodes = Array.from(playerNameDisplay.querySelectorAll(".name-display-char"));
+      let nextPos = playerNameBuffer.length;
+      if(charNodes.length > 0 && typeof event.clientX === "number"){
+        nextPos = charNodes.length;
+        for(let i = 0; i < charNodes.length; i++){
+          const rect = charNodes[i].getBoundingClientRect();
+          if(event.clientX < rect.left + rect.width / 2){
+            nextPos = i;
+            break;
+          }
+        }
+      } else {
+        nextPos = playerNameBuffer.length;
+      }
+      playerNameCursorPos = nextPos;
+      updatePlayerNameModalUI();
+      try { playerNameDisplay.focus(); } catch(_) {}
+    });
+  }
+
   if(vkBackspaceBtn){
     vkBackspaceBtn.addEventListener("click", () => {
-      if(playerNameBuffer.length > 0){
-        playerNameBuffer = playerNameBuffer.slice(0, -1);
-        updatePlayerNameModalUI();
-      }
+      deleteBeforePlayerNameCursor();
     });
   }
 
   if(vkSpaceBtn){
     vkSpaceBtn.addEventListener("click", () => {
-      if(playerNameBuffer.length > 0 && playerNameBuffer.length < MAX_RECORD_NAME_LEN){
-        playerNameBuffer += " ";
+      if(playerNameBuffer.length > 0 && playerNameCursorPos > 0 && playerNameBuffer.length < MAX_RECORD_NAME_LEN){
+        insertCharAtPlayerNameCursor(" ");
+      } else {
+        playerNameCaretVisible = true;
         updatePlayerNameModalUI();
       }
     });
@@ -9747,7 +9958,7 @@ try {
   if(recordsPinBoxes){
     const pinInputs = getPinInputs();
     const verifyPinIfComplete = () => {
-      const code = pinInputs.map(inp => inp.value).join("");
+      const code = pinInputs.map(inp => inp.dataset.digit || "").join("");
       if(code.length < 6) return;
       if(code === getTodayPinGGMMAA()){
         closeRecordsPinModal();
@@ -9764,29 +9975,44 @@ try {
     pinInputs.forEach((inp, idx) => {
       inp.addEventListener("focus", () => {
         if(recordsPinError && recordsPinError.textContent) recordsPinError.textContent = "";
+        try { inp.select(); } catch(_) {}
       });
       inp.addEventListener("input", () => {
         const digits = (inp.value || "").replace(/\D/g, "");
         if(digits.length > 1){
           for(let k = 0; k < digits.length && idx + k < pinInputs.length; k++){
-            pinInputs[idx + k].value = digits[k];
+            pinInputs[idx + k].dataset.digit = digits[k];
+            pinInputs[idx + k].value = "*";
           }
           const nextIdx = Math.min(pinInputs.length - 1, idx + digits.length);
           pinInputs[nextIdx].focus();
           verifyPinIfComplete();
           return;
         }
-        inp.value = digits;
-        if(digits.length === 1 && idx < pinInputs.length - 1){
-          pinInputs[idx + 1].focus();
+        if(digits.length === 1){
+          inp.dataset.digit = digits;
+          inp.value = "*";
+          if(idx < pinInputs.length - 1){
+            pinInputs[idx + 1].focus();
+          }
+        } else {
+          inp.dataset.digit = "";
+          inp.value = "";
         }
         verifyPinIfComplete();
       });
       inp.addEventListener("keydown", event => {
-        if(event.key === "Backspace" && !inp.value && idx > 0){
-          event.preventDefault();
-          pinInputs[idx - 1].value = "";
-          pinInputs[idx - 1].focus();
+        if(event.key === "Backspace"){
+          if(inp.dataset.digit){
+            event.preventDefault();
+            inp.dataset.digit = "";
+            inp.value = "";
+          } else if(idx > 0){
+            event.preventDefault();
+            pinInputs[idx - 1].dataset.digit = "";
+            pinInputs[idx - 1].value = "";
+            pinInputs[idx - 1].focus();
+          }
         } else if(event.key === "ArrowLeft" && idx > 0){
           event.preventDefault();
           pinInputs[idx - 1].focus();
@@ -9799,7 +10025,7 @@ try {
 
     recordsPinBoxes.addEventListener("click", event => {
       if(event.target && event.target.classList && event.target.classList.contains("pin-digit-input")) return;
-      const firstEmpty = pinInputs.find(inp => !inp.value) || pinInputs[pinInputs.length - 1];
+      const firstEmpty = pinInputs.find(inp => !inp.dataset.digit) || pinInputs[pinInputs.length - 1];
       if(firstEmpty) firstEmpty.focus();
     });
   }
@@ -9815,6 +10041,9 @@ try {
 
   if(resetLevelBtn){
     resetLevelBtn.addEventListener("click", () => showRecordsResetConfirm("level"));
+  }
+  if(resetAllLevelsBtn){
+    resetAllLevelsBtn.addEventListener("click", () => showRecordsResetConfirm("allLevels"));
   }
   if(resetSessionBtn){
     resetSessionBtn.addEventListener("click", () => showRecordsResetConfirm("session"));
@@ -10264,10 +10493,40 @@ try {
         }
         if(event.key === "Backspace"){
           event.preventDefault();
-          if(playerNameBuffer.length > 0){
-            playerNameBuffer = playerNameBuffer.slice(0, -1);
-            updatePlayerNameModalUI();
-          }
+          deleteBeforePlayerNameCursor();
+          return;
+        }
+        if(event.key === "Delete"){
+          event.preventDefault();
+          deleteAtPlayerNameCursor();
+          return;
+        }
+        if(event.key === "ArrowLeft"){
+          event.preventDefault();
+          playerNameCaretVisible = true;
+          if(playerNameCursorPos > 0) playerNameCursorPos--;
+          updatePlayerNameModalUI();
+          return;
+        }
+        if(event.key === "ArrowRight"){
+          event.preventDefault();
+          playerNameCaretVisible = true;
+          if(playerNameCursorPos < playerNameBuffer.length) playerNameCursorPos++;
+          updatePlayerNameModalUI();
+          return;
+        }
+        if(event.key === "Home"){
+          event.preventDefault();
+          playerNameCaretVisible = true;
+          playerNameCursorPos = 0;
+          updatePlayerNameModalUI();
+          return;
+        }
+        if(event.key === "End"){
+          event.preventDefault();
+          playerNameCaretVisible = true;
+          playerNameCursorPos = playerNameBuffer.length;
+          updatePlayerNameModalUI();
           return;
         }
         if(event.key === "Enter"){
@@ -10277,18 +10536,14 @@ try {
         }
         if(event.key === " "){
           event.preventDefault();
-          if(playerNameBuffer.length > 0 && playerNameBuffer.length < MAX_RECORD_NAME_LEN){
-            playerNameBuffer += " ";
-            updatePlayerNameModalUI();
+          if(playerNameBuffer.length > 0 && playerNameCursorPos > 0 && playerNameBuffer.length < MAX_RECORD_NAME_LEN){
+            insertCharAtPlayerNameCursor(" ");
           }
           return;
         }
         if(/^[a-zA-Z]$/.test(event.key) && !event.ctrlKey && !event.metaKey && !event.altKey){
           event.preventDefault();
-          if(playerNameBuffer.length < MAX_RECORD_NAME_LEN){
-            playerNameBuffer += event.key.toUpperCase();
-            updatePlayerNameModalUI();
-          }
+          insertCharAtPlayerNameCursor(event.key.toUpperCase());
           return;
         }
         return;
@@ -10369,7 +10624,7 @@ try {
     }
   );
 
-  window.addEventListener("resize", () => {
+  const handleViewportUpdate = () => {
     updateCropFrameAndImage();
     if(activeOverlay === "nextCrop"){
       updateNlCropFrameAndImage();
@@ -10380,10 +10635,15 @@ try {
       }
       renderBoard();
     }
+  };
+
+  window.addEventListener("resize", handleViewportUpdate);
+  window.addEventListener("orientationchange", () => {
+    setTimeout(handleViewportUpdate, 80);
   });
 
   /*
-   * AVVIO DELL'APPLICAZIONE (v. 1.26)
+   * AVVIO DELL'APPLICAZIONE (v. 1.27)
    */
   updateSoundUI();
   updateTimerDisplay();
