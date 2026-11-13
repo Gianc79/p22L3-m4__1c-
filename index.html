@@ -7,12 +7,13 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Puzzle Magic v. 1.28</title>
+<title>Puzzle Magic v. 1.29</title>
 <meta name="description" content="Ricomponi la tua foto, un livello alla volta. Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
 <meta property="og:title" content="Puzzle Magic">
 <meta property="og:description" content="Ricomponi la tua foto, un livello alla volta. Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
+<link rel="preload" as="image" href="./assets/aistudio/training_celebration.jpg">
 <link rel="preload" as="image" href="./Livello4.webp">
 <link rel="preload" as="image" href="./Livello5.webp">
 <link rel="preload" as="image" href="./Livello6.webp">
@@ -1379,18 +1380,10 @@ footer{
   border:1px solid #e1e6ef;
   border-radius:12px;
   background:#edf1f6;
-  touch-action:none;
+  touch-action:manipulation;
   user-select:none;
   -webkit-user-select:none;
-  cursor:zoom-in
-}
-
-.preview-tile.is-zoomed{
-  cursor:grab
-}
-
-.preview-tile.is-panning{
-  cursor:grabbing
+  cursor:default
 }
 
 .preview-zoom-stage{
@@ -1672,14 +1665,14 @@ footer{
 .win-stats-summary{
   display:inline-flex;
   flex-wrap:wrap;
-  gap:10px 14px;
+  gap:10px 16px;
   justify-content:center;
   align-items:center;
-  padding:8px 14px;
+  padding:8px 16px;
   border-radius:14px;
   background:#f4f7fb;
   margin:0 auto 10px;
-  font-size:13px;
+  font-size:13.5px;
   font-weight:700;
   color:var(--text)
 }
@@ -1688,33 +1681,138 @@ footer{
   color:var(--primary-dark)
 }
 
-.win-record-box{
+.win-score-widget{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
   width:100%;
-  margin:0 0 14px;
+  padding:10px 16px;
+  margin:0 auto 14px;
+  border-radius:16px;
+  background:linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+  border:1.5px solid #c7d2fe;
+  box-shadow:0 4px 14px rgba(79, 70, 229, 0.12);
+  box-sizing:border-box;
+}
+
+.win-score-main{
   display:flex;
   flex-direction:column;
-  gap:7px
+  align-items:center;
+  justify-content:center;
+  line-height:1.1;
 }
 
-.win-record-line{
-  padding:6px 10px;
-  border-radius:10px;
-  background:#f8fafc;
-  border:1px solid var(--border);
-  font-size:11.5px;
-  font-weight:700;
-  color:var(--text);
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  line-height:1.25;
-  text-align:center
+.win-score-label{
+  font-size:10.5px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.6px;
+  color:#4338ca;
+  margin-bottom:2px;
 }
 
-.win-record-line.is-new{
-  background:#fefce8;
-  border-color:#fde047;
-  color:#854d0e
+.win-score-value{
+  font-size:clamp(28px, 6.2vw, 36px);
+  font-weight:900;
+  color:#1e1b4b;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:-.5px;
+}
+
+.win-score-unit{
+  font-size:15px;
+  font-weight:800;
+  color:#4338ca;
+  margin-left:3px;
+}
+
+.win-score-medal-badge{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:5px 10px;
+  border-radius:14px;
+  background:rgba(255,255,255,0.88);
+  border:1.5px solid #fde047;
+  box-shadow:0 4px 12px rgba(234, 179, 8, 0.25);
+  animation:winMedalSpotlight 1.5s ease-in-out infinite;
+}
+
+.win-score-medal-badge.rank-2{
+  border-color:#cbd5e1;
+  box-shadow:0 4px 12px rgba(148, 163, 184, 0.28);
+}
+
+.win-score-medal-badge.rank-3{
+  border-color:#fdba74;
+  box-shadow:0 4px 12px rgba(234, 88, 12, 0.22);
+}
+
+.win-score-medal-icon{
+  font-size:32px;
+  line-height:1;
+}
+
+.win-score-medal-rank{
+  font-size:10px;
+  font-weight:900;
+  color:#854d0e;
+  margin-top:2px;
+  text-transform:uppercase;
+  letter-spacing:.3px;
+}
+
+.win-score-medal-badge.rank-2 .win-score-medal-rank{ color:#334155; }
+.win-score-medal-badge.rank-3 .win-score-medal-rank{ color:#9a3412; }
+
+@keyframes winMedalSpotlight{
+  0%, 100%{
+    transform:scale(1) rotate(0deg);
+    box-shadow:0 4px 12px rgba(234, 179, 8, 0.25);
+  }
+  50%{
+    transform:scale(1.12) rotate(-4deg);
+    box-shadow:0 6px 20px rgba(234, 179, 8, 0.5);
+  }
+}
+
+.win-actions-stack{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  width:100%;
+}
+
+.win-actions-top{
+  display:flex;
+  justify-content:center;
+  width:100%;
+}
+
+.win-actions-bottom{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  width:100%;
+}
+
+.win-actions-bottom .button{
+  min-width:110px;
+}
+
+.button.danger-soft{
+  background:#fff1f2;
+  border-color:#fecdd3;
+  color:#be123c;
+}
+
+.button.danger-soft:hover{
+  background:#ffe4e6;
 }
 
 .win-record-form{
@@ -1904,6 +2002,26 @@ footer{
   white-space:pre-line
 }
 
+.win-dialog #winMessage.is-training-msg{
+  font-weight:400;
+  color:var(--text);
+}
+
+.hero-training-img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center center;
+  display:block;
+  border-radius:14px;
+  animation:trainingHeroFloat 3.6s ease-in-out infinite;
+}
+
+@keyframes trainingHeroFloat{
+  0%, 100%{ transform:scale(1.01); filter:brightness(1); }
+  50%{ transform:scale(1.05); filter:brightness(1.08); }
+}
+
 .win-content{
   display:contents
 }
@@ -1973,23 +2091,30 @@ footer{
   }
 
   .win-dialog .win-stats-summary{
-    margin:0 0 6px;
-    padding:5px 10px;
+    margin:0 0 8px;
+    padding:5px 12px;
     font-size:12px;
     gap:6px 12px;
   }
 
-  .win-dialog .win-record-box{
-    margin:0 0 8px;
+  .win-dialog .win-score-widget{
+    padding:7px 12px;
+    margin:0 0 10px;
   }
 
-  .win-dialog .dialog-actions{
-    justify-content:flex-start;
-    width:100%;
-    gap:8px;
+  .win-dialog .win-score-value{
+    font-size:clamp(22px, 5.2dvh, 28px);
   }
 
-  .win-dialog .dialog-actions .button{
+  .win-dialog .win-score-medal-icon{
+    font-size:26px;
+  }
+
+  .win-dialog .win-actions-stack{
+    gap:7px;
+  }
+
+  .win-dialog .win-actions-stack .button{
     min-height:36px;
     padding:7px 12px;
     font-size:13.5px;
@@ -2112,7 +2237,7 @@ body.is-fullscreen{
 }
 
 .game-panel.is-fullscreen .preview-tile{
-  cursor:pointer!important
+  cursor:default!important
 }
 
 /* Barra superiore Schermo Intero VERTICALE: AIUTO (sx), MIX (centro), ESCI (dx) */
@@ -2429,21 +2554,10 @@ body.is-fullscreen #previewOverlay .preview-image{
   border-radius:10px;
   overflow:hidden;
   background:#e2e8f0;
-  cursor:pointer;
-  transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease;
+  cursor:default;
   touch-action:manipulation;
   flex-shrink:0;
   margin-top:auto
-}
-
-.fs-strip-thumb-btn:hover{
-  border-color:var(--primary);
-  transform:scale(1.06);
-  box-shadow:0 3px 10px rgba(70,86,194,.25)
-}
-
-.fs-strip-thumb-btn:active{
-  transform:scale(.95)
 }
 
 .fs-strip-thumb-btn img{
@@ -2572,7 +2686,7 @@ body.is-fullscreen #previewOverlay .preview-image{
   border-radius:12px!important;
   box-shadow:0 4px 14px rgba(0,0,0,.12)!important;
   border:2px solid #cbd5e1!important;
-  cursor:pointer!important;
+  cursor:default!important;
   display:block!important;
   margin:auto!important;
   position:relative!important;
@@ -2695,7 +2809,7 @@ body.is-fullscreen #previewOverlay .preview-image{
   border-radius:14px!important;
   box-shadow:0 4px 18px rgba(0,0,0,.15)!important;
   border:2px solid #cbd5e1!important;
-  cursor:pointer!important;
+  cursor:default!important;
   display:block!important;
   margin:auto!important;
   position:relative!important;
@@ -2828,7 +2942,7 @@ body.is-fullscreen #previewOverlay .preview-image{
     position:relative;
     overflow:hidden;
     margin:auto;
-    cursor:pointer
+    cursor:default
   }
 }
 
@@ -2932,7 +3046,7 @@ body.is-fullscreen #previewOverlay .preview-image{
     border-radius:14px!important;
     box-shadow:0 4px 18px rgba(0,0,0,.15)!important;
     border:2px solid #cbd5e1!important;
-    cursor:pointer!important;
+    cursor:default!important;
     display:block!important;
     margin:auto!important;
     position:relative!important;
@@ -3294,6 +3408,9 @@ body.is-fullscreen #previewOverlay .preview-image{
 .vk-key-action{
   font-size:13.5px;
   font-weight:800;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 .vk-key-backspace{
@@ -3301,6 +3418,18 @@ body.is-fullscreen #previewOverlay .preview-image{
   border-color:#fda4af;
   border-bottom-color:#e11d48;
   color:#9f1239;
+}
+
+.vk-key-backspace svg{
+  width:24px;
+  height:24px;
+  display:block;
+}
+
+.vk-key-space svg{
+  width:30px;
+  height:16px;
+  display:block;
 }
 
 .vk-key-ok{
@@ -4147,6 +4276,193 @@ body.is-fullscreen #previewOverlay .preview-image{
   color:var(--muted);
   font-size:13px;
 }
+
+/* Finestra Riepilogo Fine Partita (v. 1.29) */
+.summary-dialog{
+  width:min(100%, 430px);
+  max-height:92dvh;
+  padding:20px 18px 18px;
+  border-radius:23px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.summary-dialog h2{
+  margin:0;
+  font-size:22px;
+}
+
+.summary-player-sub{
+  margin:-6px 0 0;
+  font-size:13px;
+  font-weight:700;
+  color:var(--muted);
+}
+
+.summary-top3-banner{
+  padding:12px 14px;
+  border-radius:16px;
+  background:linear-gradient(135deg, #fef9c3 0%, #fde68a 100%);
+  border:2px solid #eab308;
+  color:#713f12;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  box-shadow:0 6px 20px rgba(234, 179, 8, 0.28);
+  animation:summaryBannerPop .55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.summary-top3-medal{
+  font-size:40px;
+  line-height:1;
+  animation:summaryMedalBounce 1.4s ease-in-out infinite;
+}
+
+.summary-top3-title{
+  font-size:16px;
+  font-weight:900;
+}
+
+.summary-top3-sub{
+  font-size:12.5px;
+  font-weight:700;
+}
+
+@keyframes summaryBannerPop{
+  0%{ opacity:0; transform:scale(0.85); }
+  100%{ opacity:1; transform:scale(1); }
+}
+
+@keyframes summaryMedalBounce{
+  0%, 100%{ transform:translateY(0) scale(1); }
+  50%{ transform:translateY(-4px) scale(1.1); }
+}
+
+.summary-stats-grid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:8px;
+  width:100%;
+}
+
+.summary-stat-card{
+  padding:10px 12px;
+  border-radius:14px;
+  background:#f8fafc;
+  border:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+.summary-stat-card.is-highlight{
+  grid-column:span 2;
+  background:linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+  border-color:#c7d2fe;
+}
+
+.summary-stat-lbl{
+  font-size:10.5px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.4px;
+  color:var(--muted);
+}
+
+.summary-stat-card.is-highlight .summary-stat-lbl{
+  color:#4338ca;
+}
+
+.summary-stat-val{
+  font-size:20px;
+  font-weight:900;
+  color:var(--text);
+  font-variant-numeric:tabular-nums;
+  margin-top:2px;
+}
+
+.summary-stat-card.is-highlight .summary-stat-val{
+  font-size:28px;
+  color:#1e1b4b;
+}
+
+.summary-medals-section{
+  width:100%;
+  text-align:left;
+  background:#f8fafc;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:10px 12px;
+  box-sizing:border-box;
+}
+
+.summary-medals-title{
+  font-size:11px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  color:var(--muted);
+  margin-bottom:8px;
+  text-align:center;
+}
+
+.summary-medals-list{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  max-height:150px;
+  overflow-y:auto;
+}
+
+.summary-medal-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  padding:6px 10px;
+  border-radius:10px;
+  background:#ffffff;
+  border:1px solid var(--border);
+  font-size:12.5px;
+  font-weight:700;
+}
+
+.summary-medal-row.has-medal{
+  border-color:#fde047;
+  background:#fefce8;
+}
+
+.summary-medal-lvl{
+  color:var(--text);
+  font-weight:800;
+}
+
+.summary-medal-meta{
+  color:var(--muted);
+  font-size:11.5px;
+  font-weight:600;
+}
+
+.summary-medal-badge{
+  font-size:20px;
+  line-height:1;
+}
+
+.summary-actions{
+  width:100%;
+  display:flex;
+  gap:10px;
+  margin-top:2px;
+}
+
+.summary-actions .button{
+  flex:1 1 0;
+  min-height:42px;
+}
 </style>
 </head>
 
@@ -4160,7 +4476,7 @@ body.is-fullscreen #previewOverlay .preview-image{
       <div>
         <div class="title-row">
           <h1>Puzzle Magic</h1>
-          <span class="version">v. 1.28</span>
+          <span class="version">v. 1.29</span>
         </div>
         <p class="subtitle">Ricomponi la foto, un livello alla volta!</p>
       </div>
@@ -4326,16 +4642,14 @@ body.is-fullscreen #previewOverlay .preview-image{
     <aside class="game-side-col">
       <div class="side-preview-card">
         <div class="preview-tile-container">
-          <button
+          <div
             class="preview-tile"
             id="previewTile"
-            type="button"
-            title="Clicca per ingrandire la foto originale"
-            aria-label="Apri foto originale a grandezza intera">
+            aria-label="Modello foto originale">
             <div class="preview-zoom-stage" id="previewZoomStage">
               <img id="previewThumb" alt="Miniatura foto originale" draggable="false">
             </div>
-          </button>
+          </div>
         </div>
 
         <div class="fullscreen-hud" id="fullscreenHud" aria-label="Statistiche e timer a schermo intero">
@@ -4429,15 +4743,13 @@ body.is-fullscreen #previewOverlay .preview-image{
       <span id="fsStripPauseIcon">⏸️</span>
     </button>
 
-    <!-- 7. MODELLO FOTO (miniatura che apre la foto ingrandita senza bottoni/scroll) -->
-    <button
+    <!-- 7. MODELLO FOTO (anteprima fissa) -->
+    <div
       class="fs-strip-thumb-btn"
       id="fsStripThumbBtn"
-      type="button"
-      title="Apri modello foto a grandezza intera"
-      aria-label="Apri modello foto a grandezza intera">
+      aria-label="Modello foto originale">
       <img id="fsStripThumbImg" alt="Miniatura foto originale" draggable="false">
-    </button>
+    </div>
 
   </aside>
 
@@ -4488,8 +4800,8 @@ body.is-fullscreen #previewOverlay .preview-image{
     <div class="name-tip-error" id="playerNameTip">Immettere un numero di caratteri da 1 a 12</div>
     <div class="vk-grid" id="virtualKeyboardLetters" aria-label="Tastiera lettere"></div>
     <div class="vk-bottom-row">
-      <button type="button" class="vk-key vk-key-action vk-key-backspace" id="vkBackspaceBtn" aria-label="Cancella carattere">⌫ Canc</button>
-      <button type="button" class="vk-key vk-key-action" id="vkSpaceBtn" aria-label="Spazio">Spazio</button>
+      <button type="button" class="vk-key vk-key-action vk-key-backspace" id="vkBackspaceBtn" aria-label="Cancella carattere"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg></button>
+      <button type="button" class="vk-key vk-key-action vk-key-space" id="vkSpaceBtn" aria-label="Spazio"><svg width="30" height="16" viewBox="0 0 30 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5v6h24V5"/></svg></button>
       <button type="button" class="vk-key vk-key-action vk-key-ok" id="vkOkBtn" disabled>OK</button>
     </div>
   </div>
@@ -4762,7 +5074,7 @@ body.is-fullscreen #previewOverlay .preview-image{
     <div class="win-content">
 
       <h2 id="winTitle">
-        Livello completato! 🏆
+        Livello completato!
       </h2>
 
       <div
@@ -4778,39 +5090,71 @@ body.is-fullscreen #previewOverlay .preview-image{
       </div>
 
       <p id="winMessage">
-        Hai ricomposto correttamente la foto.
+        Completa ancora 3 livelli per incontrare i tuoi Supereroi!
       </p>
 
       <div class="win-stats-summary" id="winStatsSummary">
-        <!-- Inserito dinamicamente: mosse, tempo e punteggio -->
+        <!-- Inserito dinamicamente: mosse e tempo -->
       </div>
 
-      <div class="win-record-box" id="winRecordBox">
-        <div class="win-record-line" id="winRecordLine"></div>
+      <div class="win-score-widget" id="winScoreWidget">
+        <!-- Inserito dinamicamente: punteggio in grande ed eventuale medaglia podio -->
       </div>
 
-      <div class="dialog-actions">
+      <div class="win-actions-stack">
+        <div class="win-actions-top" id="winActionsTop">
+          <button
+            class="button secondary"
+            id="newGameBtn"
+            type="button">
+            📷 Cambia foto
+          </button>
+        </div>
 
-        <button
-          class="button primary"
-          id="nextLevelBtn"
-          type="button">
-          Prossimo livello →
-        </button>
+        <div class="win-actions-bottom">
+          <button
+            class="button danger-soft"
+            id="winExitBtn"
+            type="button">
+            Esci
+          </button>
 
-        <button
-          class="button secondary"
-          id="newGameBtn"
-          type="button">
-          📷 Cambia foto
-        </button>
-
+          <button
+            class="button primary"
+            id="nextLevelBtn"
+            type="button">
+            Livello 2 →
+          </button>
+        </div>
       </div>
 
     </div>
 
   </div>
 
+</div>
+
+<!-- Riepilogo Fine Partita (v. 1.29) -->
+<div
+  class="overlay"
+  id="gameSummaryOverlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="gameSummaryTitle">
+  <div class="dialog summary-dialog">
+    <div class="summary-top3-banner" id="summaryTop3Banner" style="display:none;"></div>
+    <h2 id="gameSummaryTitle">Partita completata!</h2>
+    <p class="summary-player-sub" id="summaryPlayerSub"></p>
+    <div class="summary-stats-grid" id="summaryStatsGrid"></div>
+    <div class="summary-medals-section" id="summaryMedalsSection">
+      <div class="summary-medals-title">Medaglie ottenute nei livelli</div>
+      <div class="summary-medals-list" id="summaryMedalsList"></div>
+    </div>
+    <div class="dialog-actions summary-actions">
+      <button class="button secondary" id="summaryExitBtn" type="button">Esci</button>
+      <button class="button primary" id="summaryRecordsBtn" type="button">Vai alle Classifiche</button>
+    </div>
+  </div>
 </div>
 
 
@@ -5385,9 +5729,18 @@ try {
   const toggleStateLabel = $("toggleStateLabel");
   const formatChoiceGrid = $("formatChoiceGrid");
   const winStatsSummary = $("winStatsSummary");
+  const winScoreWidget = $("winScoreWidget");
+  const winActionsTop = $("winActionsTop");
+  const winExitBtn = $("winExitBtn");
   const homeLevelRecord = $("homeLevelRecord");
-  const winRecordBox = $("winRecordBox");
-  const winRecordLine = $("winRecordLine");
+
+  const gameSummaryOverlay = $("gameSummaryOverlay");
+  const summaryTop3Banner = $("summaryTop3Banner");
+  const summaryPlayerSub = $("summaryPlayerSub");
+  const summaryStatsGrid = $("summaryStatsGrid");
+  const summaryMedalsList = $("summaryMedalsList");
+  const summaryExitBtn = $("summaryExitBtn");
+  const summaryRecordsBtn = $("summaryRecordsBtn");
 
   const heroStage = $("heroStage");
   const heroPhoto = $("heroPhoto");
@@ -5493,6 +5846,7 @@ try {
 
   let lastWinScore = null;
   let lastWinIsNewRecord = false;
+  let lastWinRank = null;
   let levelRecords = {};
   try {
     const parsedRec = JSON.parse(localStorage.getItem(RECORDS_STORAGE_KEY) || "{}");
@@ -5549,6 +5903,10 @@ try {
   let playerNameCaretVisible = false;
   let currentSessionScore = 0;
   let currentSessionLevelsCleared = 0;
+  let currentSessionMoves = 0;
+  let currentSessionTime = 0;
+  let currentSessionDetails = [];
+  let lastSessionRank = null;
   let sessionFinalized = false;
   let recordsViewLevel = 0;
 
@@ -5900,17 +6258,20 @@ try {
     // A parità di punteggio vince il più recente (timestamp maggiore)
     const isNewTop = !prevTop || entry.score > prevTop.score || (entry.score === prevTop.score && (entry.timestamp || 0) >= (prevTop.timestamp || 0));
     if(!qualifiesForTop3(currentList, entry)){
-      return false;
+      return { isNewTop: false, rank: null };
     }
     currentList.push(entry);
-    levelLeaderboards[key] = sortLeaderboardEntries(currentList);
+    const sorted = sortLeaderboardEntries(currentList);
+    levelLeaderboards[key] = sorted;
+    const posIdx = sorted.indexOf(entry);
+    const rank = posIdx >= 0 && posIdx < 3 ? posIdx + 1 : null;
     persistRecords();
     updateHomeLevelRecordUI();
-    return isNewTop;
+    return { isNewTop, rank };
   }
 
   function finalizeSessionScore(){
-    if(sessionFinalized || currentSessionScore <= 0 || currentSessionLevelsCleared <= 0) return;
+    if(sessionFinalized || currentSessionScore <= 0 || currentSessionLevelsCleared <= 0) return lastSessionRank;
     sessionFinalized = true;
     const cleanName = (currentPlayerName || savedPlayerName || "Giocatore").trim().slice(0, MAX_RECORD_NAME_LEN) || "Giocatore";
     const entry = {
@@ -5922,11 +6283,16 @@ try {
     };
     const currentTop = sortLeaderboardEntries(sessionLeaderboard || []);
     if(!qualifiesForTop3(currentTop, entry)){
-      return;
+      lastSessionRank = null;
+      return null;
     }
     currentTop.push(entry);
-    sessionLeaderboard = sortLeaderboardEntries(currentTop);
+    const sorted = sortLeaderboardEntries(currentTop);
+    sessionLeaderboard = sorted;
+    const posIdx = sorted.indexOf(entry);
+    lastSessionRank = posIdx >= 0 && posIdx < 3 ? posIdx + 1 : null;
     persistRecords();
+    return lastSessionRank;
   }
 
   function formatSingleLineRecord(rec, prefix = "🏆 Record:"){
@@ -6544,6 +6910,9 @@ try {
     if(actionChoiceOverlay && actionChoiceOverlay.classList.contains("show"))
       return "actionChoice";
 
+    if(gameSummaryOverlay && gameSummaryOverlay.classList.contains("show"))
+      return "gameSummary";
+
     if(winOverlay && winOverlay.classList.contains("show"))
       return "win";
 
@@ -6571,6 +6940,12 @@ try {
         currentPlayerName,
         currentSessionScore,
         currentSessionLevelsCleared,
+        currentSessionMoves,
+        currentSessionTime,
+        currentSessionDetails,
+        lastSessionRank,
+        lastWinScore,
+        lastWinRank,
         sessionFinalized,
         inGameSession,
         pieces,
@@ -6674,6 +7049,28 @@ try {
       if(Number.isInteger(data.currentSessionLevelsCleared)){
         currentSessionLevelsCleared = Math.max(0, data.currentSessionLevelsCleared);
       }
+      if(Number.isFinite(data.currentSessionMoves)){
+        currentSessionMoves = Math.max(0, Math.round(data.currentSessionMoves));
+      }
+      if(Number.isFinite(data.currentSessionTime)){
+        currentSessionTime = Math.max(0, Math.round(data.currentSessionTime));
+      }
+      if(Array.isArray(data.currentSessionDetails)){
+        currentSessionDetails = data.currentSessionDetails;
+      }
+      if(data.lastSessionRank === 1 || data.lastSessionRank === 2 || data.lastSessionRank === 3){
+        lastSessionRank = data.lastSessionRank;
+      } else {
+        lastSessionRank = null;
+      }
+      if(Number.isFinite(data.lastWinScore)){
+        lastWinScore = Math.round(data.lastWinScore);
+      }
+      if(data.lastWinRank === 1 || data.lastWinRank === 2 || data.lastWinRank === 3){
+        lastWinRank = data.lastWinRank;
+      } else {
+        lastWinRank = null;
+      }
       if(typeof data.sessionFinalized === "boolean"){
         sessionFinalized = data.sessionFinalized;
       }
@@ -6710,6 +7107,11 @@ try {
 
       const savedOverlay = data.overlay || "";
 
+      if(savedOverlay === "gameSummary" && currentSessionLevelsCleared > 0){
+        openGameSummaryModal(false);
+        return true;
+      }
+
       if(inGameSession && photoData){
         if(homeView){
           homeView.classList.add("is-hidden");
@@ -6723,10 +7125,7 @@ try {
         toggleFullscreen(true);
         renderBoard();
 
-        if(savedOverlay === "preview"){
-          activeOverlay = "preview";
-          if(previewOverlay) previewOverlay.classList.add("show");
-        }else if(savedOverlay === "exitConfirm"){
+        if(savedOverlay === "exitConfirm"){
           activeOverlay = "exitConfirm";
           if(exitConfirmOverlay) exitConfirmOverlay.classList.add("show");
         }else if(savedOverlay === "win" && locked){
@@ -8221,34 +8620,20 @@ try {
 
   function showHero(index){
     if(index < 3){
-      // Livelli 1, 2, 3: Addestramento e sprono per raggiungere i supereroi
       const trainingGlows = ["#86efac", "#93c5fd", "#fde047"];
-      const trainingBadges = ["🥉", "🥈", "🥇"];
-      const trainingTitles = [
-        "Recluta dei Puzzle 🥉",
-        "Eroe in Addestramento 🥈",
-        "Maestro d'Addestramento 🥇"
-      ];
-      const trainingTaglines = [
-        "Ottimo inizio! Continua ad allenarti per sbloccare la lega dei supereroi!",
-        "Grande ritmo! Sei sempre più vicino a incontrare i supereroi leggendari!",
-        "Complimenti, hai superato l'addestramento base! I supereroi ti stanno aspettando!"
-      ];
 
       if(heroStage){
         heroStage.style.setProperty("--hero-glow", trainingGlows[index] || "#86efac");
       }
 
-      if(heroRank){
-        heroRank.textContent = `ADDESTRAMENTO · LIVELLO ${index + 1} / 7 · ${trainingBadges[index]}`;
-      }
-
       if(heroName){
-        heroName.textContent = trainingTitles[index];
+        heroName.textContent = "";
+        heroName.style.display = "none";
       }
 
       if(heroTagline){
-        heroTagline.textContent = trainingTaglines[index];
+        heroTagline.textContent = "";
+        heroTagline.style.display = "none";
       }
 
       if(heroPhoto) heroPhoto.style.display = "none";
@@ -8258,20 +8643,11 @@ try {
         heroArt.style.display = "flex";
         heroArt.style.alignItems = "center";
         heroArt.style.justifyContent = "center";
-        heroArt.style.flexDirection = "column";
-        heroArt.style.padding = "8px 12px";
+        heroArt.style.padding = "0";
         heroArt.style.width = "100%";
-        heroArt.innerHTML = `
-          <div style="font-size: clamp(2.6rem, 7dvh, 4rem); line-height: 1; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.3)); animation: floatHero 3s ease-in-out infinite;">
-            ${trainingBadges[index]}
-          </div>
-          <div style="margin-top: clamp(4px, 1dvh, 10px); font-weight: 900; font-size: clamp(0.9rem, 2.5vw, 1.08rem); color: #f8fafc; letter-spacing: 0.04em; text-transform: uppercase; line-height: 1.2;">
-            ${index === 2 ? "Passaggio di Grado!" : "Obiettivo Raggiunto!"}
-          </div>
-          <div style="margin-top: 4px; font-size: clamp(0.72rem, 2vw, 0.82rem); line-height: 1.3; color: #cbd5e1; text-align: center; max-width: 92%;">
-            ${index === 2 ? "Dal prossimo livello sblocchi i veri Supereroi!" : "Completa il livello 3 per sbloccare i Supereroi!"}
-          </div>
-        `;
+        heroArt.style.height = "100%";
+        const imgUrl = resolveHeroUrl("./assets/aistudio/training_celebration.jpg");
+        heroArt.innerHTML = `<img class="hero-training-img" src="${imgUrl}" alt="Livello completato" draggable="false">`;
       }
       return;
     }
@@ -8287,24 +8663,19 @@ try {
       );
     }
 
-    if(heroRank){
-      heroRank.textContent =
-        `SUPEREROE ${heroIdx + 1} / 4 · ` +
-        hero.power.toUpperCase();
-    }
-
     if(heroName){
       heroName.textContent = hero.name;
+      heroName.style.display = "";
     }
 
     if(heroTagline){
       heroTagline.textContent = hero.tagline;
+      heroTagline.style.display = "";
     }
 
     if(heroArt) heroArt.style.display = "none";
 
     // Mostra istantaneamente l'immagine già decodificata nello stage se disponibile
-    const preloadedEl = heroStageImgs.get(heroIdx);
     let shownPreloaded = false;
     heroStageImgs.forEach((img, key) => {
       const match = key === heroIdx && img.complete && img.naturalWidth > 0;
@@ -8357,19 +8728,21 @@ try {
   }
 
 
-  function renderWinRecordUI(scoreToShow){
-    if(!winRecordBox || !winRecordLine) return;
-    const rec = getLevelRecord(levelIndex);
-    if(lastWinIsNewRecord && rec){
-      winRecordLine.className = "win-record-line is-new";
-      winRecordLine.textContent = formatSingleLineRecord(rec, "🏆 Nuovo Record!");
-    } else if(rec){
-      winRecordLine.className = "win-record-line";
-      winRecordLine.textContent = formatSingleLineRecord(rec, `🏆 Record Lv.${levelIndex + 1}:`);
-    } else {
-      winRecordLine.className = "win-record-line";
-      winRecordLine.textContent = `🏆 Record Lv.${levelIndex + 1}: ${scoreToShow} pt`;
-    }
+  function renderWinScoreWidget(scoreToShow, rank){
+    if(!winScoreWidget) return;
+    const medalIcons = { 1: "🥇", 2: "🥈", 3: "🥉" };
+    const medalHtml = (rank === 1 || rank === 2 || rank === 3)
+      ? `<div class="win-score-medal-badge rank-${rank}" aria-label="${rank}° posto in classifica">` +
+        `<span class="win-score-medal-icon">${medalIcons[rank]}</span>` +
+        `<span class="win-score-medal-rank">${rank}° posto</span>` +
+        `</div>`
+      : "";
+    winScoreWidget.innerHTML =
+      `<div class="win-score-main">` +
+        `<span class="win-score-label">Punteggio</span>` +
+        `<div class="win-score-value">${scoreToShow}<span class="win-score-unit">pt</span></div>` +
+      `</div>` +
+      medalHtml;
   }
 
 
@@ -8384,81 +8757,59 @@ try {
     if(winStatsSummary){
       winStatsSummary.innerHTML =
         `<span>🎯 Mosse: <strong>${moves}</strong></span>` +
-        `<span>⏱️ Tempo: <strong>${formatTime(timerSeconds)}</strong></span>` +
-        `<span>⭐ Punti: <strong>${displayScore}</strong></span>`;
+        `<span>⏱️ Tempo: <strong>${formatTime(timerSeconds)}</strong></span>`;
     }
 
-    renderWinRecordUI(displayScore);
+    renderWinScoreWidget(displayScore, lastWinRank);
+
+    const winTitleEl = $("winTitle");
+    const winMsgEl = $("winMessage");
+    const nextBtnEl = $("nextLevelBtn");
+    const newGameBtnEl = $("newGameBtn");
+    const bottomRowEl = winExitBtn ? winExitBtn.parentElement : null;
+
+    if(winTitleEl){
+      winTitleEl.textContent = `Livello ${levelIndex + 1} completato!`;
+    }
+
+    if(levelIndex < 3){
+      const remaining = 3 - levelIndex;
+      if(winMsgEl){
+        winMsgEl.classList.add("is-training-msg");
+        winMsgEl.style.display = "";
+        winMsgEl.textContent = `Completa ancora ${remaining} ${remaining === 1 ? "livello" : "livelli"} per incontrare i tuoi Supereroi!`;
+      }
+    } else if(levelIndex === LEVELS.length - 1){
+      if(winMsgEl){
+        winMsgEl.classList.remove("is-training-msg");
+        winMsgEl.style.display = "";
+        winMsgEl.textContent = "Superman ti applaude: hai completato tutti e sette i livelli!";
+      }
+    } else {
+      if(winMsgEl){
+        winMsgEl.classList.remove("is-training-msg");
+        winMsgEl.style.display = "none";
+        winMsgEl.textContent = "";
+      }
+    }
 
     if(levelIndex === LEVELS.length - 1){
-      $("winTitle").textContent =
-        "Hai vinto! 🏆";
-
-      $("winMessage").textContent =
-        `Superman ti applaude: hai completato tutti e sette i livelli! ` +
-        `Punteggio finale: ${displayScore} pt (${moves} mosse in ${formatTime(timerSeconds)}).`;
-
-      $("nextLevelBtn").textContent =
-        "Chiudi";
-
-      $("nextLevelBtn").disabled =
-        false;
-
-      $("newGameBtn").textContent =
-        "Nuova partita";
-
-    }else if(levelIndex === 2){
-      // Messaggio specifico per il livello 3 senza spoiler sul prossimo supereroe
-      $("winTitle").textContent =
-        "Addestramento Superato! 🥇";
-
-      $("winMessage").textContent =
-        "Complimenti, hai superato l'addestramento base! Scopri chi ti sta aspettando alla fine del prossimo livello!";
-
-      $("nextLevelBtn").textContent =
-        "Prossimo livello →";
-
-      $("nextLevelBtn").disabled =
-        false;
-
-      $("newGameBtn").textContent =
-        "📷 Cambia foto";
-
-    }else if(levelIndex < 2){
-      $("winTitle").textContent =
-        `Livello ${levelIndex + 1} completato! ${levelIndex === 0 ? "🥉" : "🥈"}`;
-
-      $("winMessage").textContent =
-        `Hai ricomposto la foto in ${moves} mosse e ${formatTime(timerSeconds)} (${displayScore} pt).\n` +
-        `Continua ad aumentare di livello per incontrare i tuoi supereroi!`;
-
-      $("nextLevelBtn").textContent =
-        "Prossimo livello →";
-
-      $("nextLevelBtn").disabled =
-        false;
-
-      $("newGameBtn").textContent =
-        "📷 Cambia foto";
-
-    }else{
-      // Livelli 4, 5, 6 (senza riferimenti al supereroe del livello successivo)
-      const currentHero = HEROES[levelIndex - 3] || HEROES[0];
-      $("winTitle").textContent =
-        `Livello ${levelIndex + 1} completato! 🦸`;
-
-      $("winMessage").textContent =
-        `Hai ricomposto la foto in ${moves} mosse e ${formatTime(timerSeconds)} (${displayScore} pt)!\n` +
-        `Hai sbloccato ${currentHero.name}. Continua al prossimo livello per una nuova sorpresa!`;
-
-      $("nextLevelBtn").textContent =
-        "Prossimo livello →";
-
-      $("nextLevelBtn").disabled =
-        false;
-
-      $("newGameBtn").textContent =
-        "📷 Cambia foto";
+      if(winActionsTop) winActionsTop.style.display = "none";
+      if(winExitBtn) winExitBtn.style.display = "none";
+      if(bottomRowEl) bottomRowEl.style.justifyContent = "center";
+      if(nextBtnEl){
+        nextBtnEl.textContent = "Riepilogo partita →";
+        nextBtnEl.disabled = false;
+      }
+    } else {
+      if(winActionsTop) winActionsTop.style.display = "";
+      if(winExitBtn) winExitBtn.style.display = "";
+      if(bottomRowEl) bottomRowEl.style.justifyContent = "space-between";
+      if(newGameBtnEl) newGameBtnEl.textContent = "📷 Cambia foto";
+      if(nextBtnEl){
+        nextBtnEl.textContent = `Livello ${levelIndex + 2} →`;
+        nextBtnEl.disabled = false;
+      }
     }
 
     activeOverlay = "win";
@@ -8466,6 +8817,111 @@ try {
 
     if(celebrate)
       launchConfetti();
+  }
+
+
+  function openGameSummaryModal(celebrate=true){
+    if(winOverlay) winOverlay.classList.remove("show");
+    if(exitConfirmOverlay) exitConfirmOverlay.classList.remove("show");
+
+    stopTimer();
+    finalizeSessionScore();
+    inGameSession = false;
+    toggleFullscreen(false);
+    showHomeView();
+
+    const activeName = (currentPlayerName || savedPlayerName || "Giocatore").trim().slice(0, MAX_RECORD_NAME_LEN) || "Giocatore";
+    const medalIcons = { 1: "🥇", 2: "🥈", 3: "🥉" };
+
+    if(summaryTop3Banner){
+      if(lastSessionRank === 1 || lastSessionRank === 2 || lastSessionRank === 3){
+        summaryTop3Banner.style.display = "flex";
+        summaryTop3Banner.innerHTML =
+          `<div class="summary-top3-medal">${medalIcons[lastSessionRank]}</div>` +
+          `<div class="summary-top3-title">Congratulazioni, ${activeName}!</div>` +
+          `<div class="summary-top3-sub">Sei nella Top 3 della Classifica Generale (${lastSessionRank}° posto)!</div>`;
+      } else {
+        summaryTop3Banner.style.display = "none";
+        summaryTop3Banner.innerHTML = "";
+      }
+    }
+
+    if(summaryPlayerSub){
+      summaryPlayerSub.textContent = `Giocatore: ${activeName}`;
+    }
+
+    if(summaryStatsGrid){
+      summaryStatsGrid.innerHTML =
+        `<div class="summary-stat-card is-highlight">` +
+          `<span class="summary-stat-lbl">Punteggio Finale</span>` +
+          `<span class="summary-stat-val">${currentSessionScore} pt</span>` +
+        `</div>` +
+        `<div class="summary-stat-card">` +
+          `<span class="summary-stat-lbl">Livelli</span>` +
+          `<span class="summary-stat-val">${currentSessionLevelsCleared}</span>` +
+        `</div>` +
+        `<div class="summary-stat-card">` +
+          `<span class="summary-stat-lbl">Mosse / Tempo</span>` +
+          `<span class="summary-stat-val">${currentSessionMoves} · ${formatTime(currentSessionTime)}</span>` +
+        `</div>`;
+    }
+
+    if(summaryMedalsList){
+      summaryMedalsList.innerHTML = "";
+      if(!Array.isArray(currentSessionDetails) || currentSessionDetails.length === 0){
+        const emptyEl = document.createElement("div");
+        emptyEl.className = "summary-medal-row";
+        emptyEl.textContent = "Nessun livello completato in questa partita.";
+        summaryMedalsList.appendChild(emptyEl);
+      } else {
+        let medalsCount = 0;
+        currentSessionDetails.forEach(item => {
+          const row = document.createElement("div");
+          const hasMedal = item.rank === 1 || item.rank === 2 || item.rank === 3;
+          if(hasMedal) medalsCount++;
+          row.className = "summary-medal-row" + (hasMedal ? " has-medal" : "");
+
+          const leftDiv = document.createElement("div");
+          const lvlSpan = document.createElement("div");
+          lvlSpan.className = "summary-medal-lvl";
+          lvlSpan.textContent = `Livello ${item.levelIndex + 1} · ${item.score} pt`;
+          const metaSpan = document.createElement("div");
+          metaSpan.className = "summary-medal-meta";
+          metaSpan.textContent = `${item.moves} mosse · ${formatTime(item.time)}`;
+          leftDiv.append(lvlSpan, metaSpan);
+
+          const badgeSpan = document.createElement("span");
+          badgeSpan.className = "summary-medal-badge";
+          badgeSpan.textContent = hasMedal ? medalIcons[item.rank] : "—";
+
+          row.append(leftDiv, badgeSpan);
+          summaryMedalsList.appendChild(row);
+        });
+        if(medalsCount === 0){
+          const note = document.createElement("div");
+          note.className = "summary-medal-meta";
+          note.style.textAlign = "center";
+          note.style.marginTop = "4px";
+          note.textContent = "Nessuna medaglia ottenuta nei livelli di questa partita.";
+          summaryMedalsList.appendChild(note);
+        }
+      }
+    }
+
+    activeOverlay = "gameSummary";
+    if(gameSummaryOverlay) gameSummaryOverlay.classList.add("show");
+    saveGame();
+
+    if(celebrate && (lastSessionRank === 1 || lastSessionRank === 2 || lastSessionRank === 3)){
+      launchConfetti();
+    }
+  }
+
+
+  function closeGameSummaryModal(){
+    if(gameSummaryOverlay) gameSummaryOverlay.classList.remove("show");
+    if(activeOverlay === "gameSummary") activeOverlay = "";
+    saveGame();
   }
 
 
@@ -8485,15 +8941,27 @@ try {
     lastWinScore = earnedScore;
     currentSessionScore += earnedScore;
     currentSessionLevelsCleared += 1;
+    currentSessionMoves += moves;
+    currentSessionTime += timerSeconds;
 
     const activeName = (currentPlayerName || savedPlayerName || "Giocatore").trim().slice(0, MAX_RECORD_NAME_LEN) || "Giocatore";
-    lastWinIsNewRecord = recordLevelScore(levelIndex, {
+    const recResult = recordLevelScore(levelIndex, {
       score: earnedScore,
       name: activeName,
       date: formatShortDate(),
       timestamp: Date.now(),
       moves,
       time: timerSeconds
+    });
+    lastWinIsNewRecord = recResult.isNewTop;
+    lastWinRank = recResult.rank;
+
+    currentSessionDetails.push({
+      levelIndex,
+      score: earnedScore,
+      moves,
+      time: timerSeconds,
+      rank: lastWinRank
     });
 
     if(levelIndex >= LEVELS.length - 1){
@@ -8534,18 +9002,7 @@ try {
   function nextLevel(){
 
     if(levelIndex >= LEVELS.length - 1){
-      winOverlay.classList.remove("show");
-      activeOverlay = "";
-      if(isFullscreen) toggleFullscreen(false);
-      inGameSession = false;
-      showHomeView();
-      saveGame();
-
-      setHint(
-        "Hai completato tutti i livelli! " +
-        "Carica una nuova foto o scegli un livello per iniziare " +
-        "un'altra partita."
-      );
+      openGameSummaryModal(true);
       return;
     }
 
@@ -8553,6 +9010,7 @@ try {
     activeOverlay = "";
     lastWinScore = null;
     lastWinIsNewRecord = false;
+    lastWinRank = null;
 
     levelIndex++;
     selectedLevel = levelIndex;
@@ -9137,6 +9595,10 @@ try {
     if(exitConfirmOverlay) exitConfirmOverlay.classList.remove("show");
     activeOverlay = "";
     stopTimer();
+    if(currentSessionLevelsCleared > 0){
+      openGameSummaryModal(true);
+      return;
+    }
     finalizeSessionScore();
     inGameSession = false;
     toggleFullscreen(false);
@@ -9205,13 +9667,6 @@ try {
     });
   }
 
-  // Thumbnail modello foto sotto il puzzle in verticale
-  if(fullscreenPortraitThumb){
-    fullscreenPortraitThumb.addEventListener("click", ()=>{
-      openPreviewModal();
-    });
-  }
-
   // Pulsante pausa in HUD verticale
   const fullscreenPauseBtn = $("fullscreenPauseBtn");
   if(fullscreenPauseBtn){
@@ -9258,13 +9713,6 @@ try {
       }else{
         pauseGame();
       }
-    });
-  }
-
-  const fsStripThumbBtn = $("fsStripThumbBtn");
-  if(fsStripThumbBtn){
-    fsStripThumbBtn.addEventListener("click", ()=>{
-      openPreviewModal();
     });
   }
 
@@ -9469,165 +9917,16 @@ try {
 
 
   /*
-   * ANTEPRIMA
-  /*
-   * ZOOM E PAN INTERNO AL MODELLO FOTO (v. 1.14)
-   * Lo zoom avviene esclusivamente all'interno del riquadro, senza aprire modali.
-   * Icona in basso a dx per riportare istantaneamente in scala 1:1.
+   * ANTEPRIMA MODELLO FOTO FISSA (v. 1.29)
+   * L'anteprima nelle schermate del Puzzle resta fissa senza zoom o ingrandimenti al click.
    */
-  let previewScale = 1;
-  let previewPanX = 0;
-  let previewPanY = 0;
-  let isPanning = false;
-  let panStartX = 0;
-  let panStartY = 0;
-  let initialPanX = 0;
-  let initialPanY = 0;
-  let touchStartDist = 0;
-  let touchStartScale = 1;
-
-  function updatePreviewTransform(smooth = false){
-    if(!previewZoomStage) return;
-    if(smooth){
-      previewZoomStage.classList.remove("no-transition");
-    }else{
-      previewZoomStage.classList.add("no-transition");
-    }
-    previewZoomStage.style.transform = `translate(${previewPanX}px, ${previewPanY}px) scale(${previewScale})`;
-    if(previewTile){
-      previewTile.classList.toggle("is-zoomed", previewScale > 1.05);
-    }
-  }
-
-  function clampPreviewPan(){
-    if(!previewTile) return;
-    const rect = previewTile.getBoundingClientRect();
-    const maxPanX = Math.max(0, (rect.width * (previewScale - 1)) / 2);
-    const maxPanY = Math.max(0, (rect.height * (previewScale - 1)) / 2);
-    previewPanX = Math.max(-maxPanX, Math.min(maxPanX, previewPanX));
-    previewPanY = Math.max(-maxPanY, Math.min(maxPanY, previewPanY));
-  }
-
   function resetPreviewZoom(){
-    previewScale = 1;
-    previewPanX = 0;
-    previewPanY = 0;
-    updatePreviewTransform(true);
-  }
-
-  function openPreviewModal(){
-    if(!photoData) return;
-    if($("previewImage") && photoData) $("previewImage").src = photoData;
-    activeOverlay = "preview";
-    if(previewOverlay) previewOverlay.classList.add("show");
-    saveGame();
-  }
-
-  if(previewTile){
-    previewTile.addEventListener("click", event => {
-      if(event.target === previewResetBtn || previewResetBtn?.contains(event.target)) return;
-      if(isFullscreen){
-        openPreviewModal();
-      }
-    });
-
-    previewTile.addEventListener("wheel", event => {
-      if(!photoData || isFullscreen) return;
-      event.preventDefault();
-      const delta = event.deltaY < 0 ? 0.35 : -0.35;
-      previewScale = Math.min(4, Math.max(1, previewScale + delta));
-      if(previewScale <= 1.05){
-        previewScale = 1;
-        previewPanX = 0;
-        previewPanY = 0;
-      }else{
-        clampPreviewPan();
-      }
-      updatePreviewTransform(true);
-    }, { passive: false });
-
-    previewTile.addEventListener("dblclick", event => {
-      if(!photoData || isFullscreen) return;
-      event.preventDefault();
-      if(previewScale > 1.05){
-        resetPreviewZoom();
-      }else{
-        previewScale = 2.2;
-        clampPreviewPan();
-        updatePreviewTransform(true);
-      }
-    });
-
-    previewTile.addEventListener("pointerdown", event => {
-      if(!photoData || isFullscreen) return;
-      if(event.target === previewResetBtn || previewResetBtn?.contains(event.target)) return;
-      if(previewScale <= 1.05) return;
-      isPanning = true;
-      panStartX = event.clientX;
-      panStartY = event.clientY;
-      initialPanX = previewPanX;
-      initialPanY = previewPanY;
-      previewTile.classList.add("is-panning");
-      try { previewTile.setPointerCapture(event.pointerId); } catch (_) {}
-    });
-
-    previewTile.addEventListener("pointermove", event => {
-      if(!isPanning || isFullscreen) return;
-      previewPanX = initialPanX + (event.clientX - panStartX);
-      previewPanY = initialPanY + (event.clientY - panStartY);
-      clampPreviewPan();
-      updatePreviewTransform(false);
-    });
-
-    const endPan = () => {
-      if(isPanning){
-        isPanning = false;
-        previewTile.classList.remove("is-panning");
-        clampPreviewPan();
-        updatePreviewTransform(true);
-      }
-    };
-
-    previewTile.addEventListener("pointerup", endPan);
-    previewTile.addEventListener("pointercancel", endPan);
-
-    // Gestione pinch touch su smartphone
-    previewTile.addEventListener("touchstart", event => {
-      if(!photoData || isFullscreen) return;
-      if(event.touches.length === 2){
-        const dx = event.touches[0].clientX - event.touches[1].clientX;
-        const dy = event.touches[0].clientY - event.touches[1].clientY;
-        touchStartDist = Math.hypot(dx, dy);
-        touchStartScale = previewScale;
-      }
-    }, { passive: true });
-
-    previewTile.addEventListener("touchmove", event => {
-      if(isFullscreen) return;
-      if(event.touches.length === 2 && touchStartDist > 0){
-        event.preventDefault();
-        const dx = event.touches[0].clientX - event.touches[1].clientX;
-        const dy = event.touches[0].clientY - event.touches[1].clientY;
-        const dist = Math.hypot(dx, dy);
-        const factor = dist / touchStartDist;
-        previewScale = Math.min(4, Math.max(1, touchStartScale * factor));
-        if(previewScale <= 1.05){
-          previewScale = 1;
-          previewPanX = 0;
-          previewPanY = 0;
-        }else{
-          clampPreviewPan();
-        }
-        updatePreviewTransform(false);
-      }
-    }, { passive: false });
-  }
-
-  if(previewResetBtn){
-    previewResetBtn.addEventListener("click", event => {
-      event.stopPropagation();
-      resetPreviewZoom();
-    });
+    if(!previewZoomStage) return;
+    previewZoomStage.classList.add("no-transition");
+    previewZoomStage.style.transform = "translate(0px, 0px) scale(1)";
+    if(previewTile){
+      previewTile.classList.remove("is-zoomed", "is-panning");
+    }
   }
 
 
@@ -9702,12 +10001,32 @@ try {
           const currentPhotoUrl = rawPhotoUrl || photoData || resolveHeroUrl(DEFAULT_HOME_PHOTO);
           openNextLevelCropModal(currentPhotoUrl, levelIndex + 1, true);
         }else{
-          if(winOverlay) winOverlay.classList.remove("show");
-          activeOverlay="";
-          saveGame();
+          openGameSummaryModal(true);
         }
       }
     );
+  }
+
+  if(winExitBtn){
+    winExitBtn.addEventListener("click", () => {
+      openGameSummaryModal(true);
+    });
+  }
+
+  if(summaryExitBtn){
+    summaryExitBtn.addEventListener("click", () => {
+      closeGameSummaryModal();
+    });
+  }
+
+  if(summaryRecordsBtn){
+    summaryRecordsBtn.addEventListener("click", () => {
+      const targetLvl = Array.isArray(currentSessionDetails) && currentSessionDetails.length > 0
+        ? currentSessionDetails[currentSessionDetails.length - 1].levelIndex
+        : selectedLevel;
+      closeGameSummaryModal();
+      openRecordsModal(targetLvl);
+    });
   }
 
   /*
@@ -9719,12 +10038,7 @@ try {
       "click",
       ()=>{
         if(levelIndex >= LEVELS.length - 1){
-          if(winOverlay) winOverlay.classList.remove("show");
-          activeOverlay="";
-          if(isFullscreen) toggleFullscreen(false);
-          inGameSession = false;
-          showHomeView();
-          saveGame();
+          openGameSummaryModal(true);
           return;
         }
 
@@ -9867,6 +10181,11 @@ try {
 
     currentSessionScore = 0;
     currentSessionLevelsCleared = 0;
+    currentSessionMoves = 0;
+    currentSessionTime = 0;
+    currentSessionDetails = [];
+    lastSessionRank = null;
+    lastWinRank = null;
     sessionFinalized = false;
 
     if(playerNameOverlay) playerNameOverlay.classList.remove("show");
@@ -10299,6 +10618,7 @@ try {
       closeNextLevelCropModal(false);
       lastWinScore = null;
       lastWinIsNewRecord = false;
+      lastWinRank = null;
 
       levelIndex = nlCropTargetLevel;
       selectedLevel = levelIndex;
@@ -10632,6 +10952,11 @@ try {
 
       if(activeOverlay === "exitConfirm"){
         cancelExitGame();
+        return;
+      }
+
+      if(activeOverlay === "gameSummary"){
+        closeGameSummaryModal();
         return;
       }
 
