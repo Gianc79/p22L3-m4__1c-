@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Puzzle Hero v. 1.36</title>
+<title>Puzzle Hero v. 1.37</title>
 <meta name="description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
 <meta property="og:title" content="Puzzle Hero">
 <meta property="og:description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
@@ -54,14 +54,13 @@ button:focus-visible {
   outline-offset: 3px;
 }
 
-/* SCHERMATA PRINCIPALE (Home / Setup v. 1.18) - Zero scrollbar */
+/* SCHERMATA PRINCIPALE (Home / Setup v. 1.37) - Zero scrollbar */
 .app.home-view {
   width: min(100% - 20px, 640px);
-  height: 100vh;
-  height: 100dvh;
-  max-height: 100dvh;
-  margin: 0 auto;
-  padding: clamp(8px, 1.8vh, 16px) 0;
+  height: min(93dvh, 780px);
+  max-height: 93dvh;
+  margin: max(10px, 2dvh) auto 0;
+  padding: max(8px, env(safe-area-inset-top)) 0 max(10px, env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -127,7 +126,8 @@ h1 {
   margin-left: auto;
 }
 
-.sound-toggle {
+.sound-toggle,
+.app-exit-btn {
   display: grid;
   place-items: center;
   width: 36px;
@@ -136,14 +136,27 @@ h1 {
   border: 1px solid var(--border);
   border-radius: 50%;
   background: white;
+  color: var(--text);
   cursor: pointer;
   font-size: 16px;
   line-height: 1;
-  transition: background .15s ease, transform .15s ease;
+  transition: background .15s ease, transform .15s ease, border-color .15s ease, color .15s ease;
 }
 
 .sound-toggle:hover { background: #f0f2ff; }
-.sound-toggle:active { transform: scale(.94); }
+.sound-toggle:active,
+.app-exit-btn:active { transform: scale(.94); }
+
+.app-exit-btn {
+  color: #dc2626;
+  border-color: #fecdd3;
+  background: #fff5f5;
+}
+
+.app-exit-btn:hover {
+  background: #ffe4e6;
+  border-color: #fda4af;
+}
 
 .version {
   flex: 0 0 auto;
@@ -372,7 +385,7 @@ h1 {
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
-  max-height: 55dvh;
+  max-height: 49dvh;
   margin-top: clamp(4px, 1vh, 8px);
   margin-bottom: clamp(4px, 1vh, 8px);
 }
@@ -436,6 +449,30 @@ h1 {
 
 .crop-preview-box.is-dragging {
   cursor: grabbing;
+}
+
+.crop-preview-box.is-empty {
+  cursor: default;
+}
+
+.crop-preview-box.is-empty .crop-source-img,
+.crop-preview-box.is-empty .crop-selection-frame,
+.crop-preview-box.is-empty .crop-center-btn {
+  display: none;
+}
+
+.crop-empty-message {
+  position: relative;
+  z-index: 6;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.45;
+  text-align: center;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .crop-source-img {
@@ -566,6 +603,11 @@ h1 {
   outline: none;
   cursor: grab;
   touch-action: none;
+}
+
+.crop-zoom-slider:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .crop-zoom-slider::-webkit-slider-thumb {
@@ -2680,7 +2722,7 @@ body.is-fullscreen #previewOverlay .preview-image{
   height:100%!important;
   height:100dvh!important;
   max-height:100dvh!important;
-  padding:max(6px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left))!important;
+  padding:max(14px, calc(env(safe-area-inset-top) + 8px)) max(8px, env(safe-area-inset-right)) max(18px, calc(env(safe-area-inset-bottom) + 12px)) max(8px, env(safe-area-inset-left))!important;
   box-sizing:border-box!important;
   overflow:hidden!important
 }
@@ -2711,7 +2753,7 @@ body.is-fullscreen #previewOverlay .preview-image{
   width:auto!important;
   height:auto!important;
   max-width:min(96vw, calc(100vw - 12px))!important;
-  max-height:min(68dvh, calc(100dvh - 210px))!important;
+  max-height:min(64dvh, calc(100dvh - 220px))!important;
   display:flex!important;
   align-items:center!important;
   justify-content:center!important;
@@ -2719,8 +2761,8 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .game-panel.is-fullscreen.fs-layout-portrait .board{
-  width:min(96vw, calc(100vw - 12px), calc(68dvh * var(--board-aspect-num, 1)), calc((100dvh - 210px) * var(--board-aspect-num, 1)))!important;
-  height:min(68dvh, calc(100dvh - 210px), calc(96vw / var(--board-aspect-num, 1)), calc((100vw - 12px) / var(--board-aspect-num, 1)))!important;
+  width:min(96vw, calc(100vw - 12px), calc(64dvh * var(--board-aspect-num, 1)), calc((100dvh - 220px) * var(--board-aspect-num, 1)))!important;
+  height:min(64dvh, calc(100dvh - 220px), calc(96vw / var(--board-aspect-num, 1)), calc((100vw - 12px) / var(--board-aspect-num, 1)))!important;
   max-width:none!important;
   max-height:none!important;
   aspect-ratio:var(--board-aspect, 1/1)!important;
@@ -2981,12 +3023,12 @@ body.is-fullscreen #previewOverlay .preview-image{
   .game-panel.is-fullscreen:not(.fs-layout-landscape) .board-wrap{
     width:auto;
     max-width:min(96vw, calc(100vw - 12px));
-    max-height:min(68dvh, calc(100dvh - 210px));
+    max-height:min(64dvh, calc(100dvh - 220px));
     margin:0 auto
   }
   .game-panel.is-fullscreen:not(.fs-layout-landscape) .board{
-    width:min(96vw, calc(100vw - 12px), calc(68dvh * var(--board-aspect-num, 1)), calc((100dvh - 210px) * var(--board-aspect-num, 1)));
-    height:min(68dvh, calc(100dvh - 210px), calc(96vw / var(--board-aspect-num, 1)), calc((100vw - 12px) / var(--board-aspect-num, 1)));
+    width:min(96vw, calc(100vw - 12px), calc(64dvh * var(--board-aspect-num, 1)), calc((100dvh - 220px) * var(--board-aspect-num, 1)));
+    height:min(64dvh, calc(100dvh - 220px), calc(96vw / var(--board-aspect-num, 1)), calc((100vw - 12px) / var(--board-aspect-num, 1)));
     aspect-ratio:var(--board-aspect, 1/1);
     box-shadow:0 8px 24px rgba(0,0,0,.08)
   }
@@ -3358,7 +3400,9 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 /* Finestra "Uscire?" allineata alla larghezza della finestra "Livello n completato!" (v. 1.34) */
-#exitConfirmOverlay .exit-confirm-dialog{
+#exitConfirmOverlay .exit-confirm-dialog,
+#appExitConfirmOverlay .exit-confirm-dialog,
+#appExitedOverlay .exit-confirm-dialog{
   width:min(100%, 390px);
   min-width:0;
   max-width:none;
@@ -3366,34 +3410,46 @@ body.is-fullscreen #previewOverlay .preview-image{
   border-radius:23px;
 }
 
-#exitConfirmOverlay .exit-icon-badge{
+#exitConfirmOverlay .exit-icon-badge,
+#appExitConfirmOverlay .exit-icon-badge,
+#appExitedOverlay .exit-icon-badge{
   width:68px;
   height:68px;
   margin:0 auto 16px;
   border-radius:18px;
 }
 
-#exitConfirmOverlay .exit-icon-badge svg{
+#exitConfirmOverlay .exit-icon-badge svg,
+#appExitConfirmOverlay .exit-icon-badge svg,
+#appExitedOverlay .exit-icon-badge svg{
   width:34px;
   height:34px;
 }
 
-#exitConfirmOverlay .exit-confirm-dialog h2{
+#exitConfirmOverlay .exit-confirm-dialog h2,
+#appExitConfirmOverlay .exit-confirm-dialog h2,
+#appExitedOverlay .exit-confirm-dialog h2{
   font-size:26px;
   margin:0 0 10px;
 }
 
-#exitConfirmOverlay .exit-confirm-dialog p{
+#exitConfirmOverlay .exit-confirm-dialog p,
+#appExitConfirmOverlay .exit-confirm-dialog p,
+#appExitedOverlay .exit-confirm-dialog p{
   font-size:16px;
   line-height:1.5;
   margin:0 0 24px;
 }
 
-#exitConfirmOverlay .exit-confirm-actions{
+#exitConfirmOverlay .exit-confirm-actions,
+#appExitConfirmOverlay .exit-confirm-actions,
+#appExitedOverlay .exit-confirm-actions{
   gap:12px;
 }
 
-#exitConfirmOverlay .exit-confirm-actions .button{
+#exitConfirmOverlay .exit-confirm-actions .button,
+#appExitConfirmOverlay .exit-confirm-actions .button,
+#appExitedOverlay .exit-confirm-actions .button{
   min-height:50px;
   padding:12px 18px;
   font-size:16px;
@@ -3434,34 +3490,46 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 @media (orientation: landscape) and (max-height: 640px), (orientation: landscape) and (min-width: 640px) {
-  #exitConfirmOverlay .exit-confirm-dialog{
-    width:min(94vw, 700px);
-    padding:clamp(20px, 4.5dvh, 36px) 28px;
+  #exitConfirmOverlay .exit-confirm-dialog,
+  #appExitConfirmOverlay .exit-confirm-dialog,
+  #appExitedOverlay .exit-confirm-dialog{
+    width:min(88vw, clamp(260px, 96dvh, 380px));
+    padding:clamp(18px, 4.2dvh, 32px) 24px;
   }
 
-  #exitConfirmOverlay .exit-icon-badge{
-    width:clamp(54px, 13dvh, 76px);
-    height:clamp(54px, 13dvh, 76px);
-    margin:0 auto clamp(10px, 2.5dvh, 18px);
+  #exitConfirmOverlay .exit-icon-badge,
+  #appExitConfirmOverlay .exit-icon-badge,
+  #appExitedOverlay .exit-icon-badge{
+    width:clamp(54px, 13dvh, 74px);
+    height:clamp(54px, 13dvh, 74px);
+    margin:0 auto clamp(10px, 2.5dvh, 16px);
   }
 
-  #exitConfirmOverlay .exit-icon-badge svg{
-    width:clamp(28px, 6.5dvh, 38px);
-    height:clamp(28px, 6.5dvh, 38px);
+  #exitConfirmOverlay .exit-icon-badge svg,
+  #appExitConfirmOverlay .exit-icon-badge svg,
+  #appExitedOverlay .exit-icon-badge svg{
+    width:clamp(28px, 6.5dvh, 36px);
+    height:clamp(28px, 6.5dvh, 36px);
   }
 
-  #exitConfirmOverlay .exit-confirm-dialog h2{
-    font-size:clamp(22px, 5dvh, 28px);
+  #exitConfirmOverlay .exit-confirm-dialog h2,
+  #appExitConfirmOverlay .exit-confirm-dialog h2,
+  #appExitedOverlay .exit-confirm-dialog h2{
+    font-size:clamp(21px, 4.8dvh, 26px);
   }
 
-  #exitConfirmOverlay .exit-confirm-dialog p{
-    font-size:clamp(15px, 3.4dvh, 18px);
-    margin:0 0 clamp(16px, 4dvh, 26px);
+  #exitConfirmOverlay .exit-confirm-dialog p,
+  #appExitConfirmOverlay .exit-confirm-dialog p,
+  #appExitedOverlay .exit-confirm-dialog p{
+    font-size:clamp(14px, 3.2dvh, 16px);
+    margin:0 0 clamp(14px, 3.8dvh, 22px);
   }
 
-  #exitConfirmOverlay .exit-confirm-actions .button{
-    min-height:clamp(44px, 9.5dvh, 54px);
-    font-size:clamp(15px, 3.4dvh, 18px);
+  #exitConfirmOverlay .exit-confirm-actions .button,
+  #appExitConfirmOverlay .exit-confirm-actions .button,
+  #appExitedOverlay .exit-confirm-actions .button{
+    min-height:clamp(42px, 9.2dvh, 52px);
+    font-size:clamp(14.5px, 3.2dvh, 17px);
   }
 }
 
@@ -4515,13 +4583,14 @@ body.is-fullscreen #previewOverlay .preview-image{
 
 .summary-dialog{
   width:min(100%, 440px);
-  max-height:94dvh;
-  padding:clamp(12px, 2.2dvh, 20px) 16px clamp(12px, 2dvh, 18px);
+  max-height:96dvh;
+  padding:clamp(14px, 2.4dvh, 22px) 16px clamp(14px, 2.2dvh, 20px);
   border-radius:23px;
-  overflow:hidden;
+  overflow-y:auto;
+  overflow-x:hidden;
   display:flex;
   flex-direction:column;
-  gap:clamp(6px, 1.3dvh, 11px);
+  gap:clamp(8px, 1.5dvh, 13px);
 }
 
 .summary-dialog h2{
@@ -4631,24 +4700,26 @@ body.is-fullscreen #previewOverlay .preview-image{
   background:#f8fafc;
   border:1px solid var(--border);
   border-radius:14px;
-  padding:clamp(7px, 1.2dvh, 10px) 10px;
+  padding:clamp(9px, 1.5dvh, 13px) 12px;
   box-sizing:border-box;
 }
 
 .summary-medals-title{
-  font-size:10.5px;
+  font-size:11px;
   font-weight:800;
   text-transform:uppercase;
   letter-spacing:.5px;
   color:var(--muted);
-  margin-bottom:clamp(5px, 0.9dvh, 8px);
+  margin-bottom:clamp(7px, 1.1dvh, 10px);
   text-align:center;
 }
 
 .summary-medals-list{
-  display:grid;
-  grid-template-columns:repeat(7, minmax(0, 1fr));
-  gap:clamp(3px, 1vw, 6px);
+  display:flex;
+  flex-wrap:wrap;
+  align-items:stretch;
+  justify-content:center;
+  gap:8px;
   width:100%;
 }
 
@@ -4657,12 +4728,12 @@ body.is-fullscreen #previewOverlay .preview-image{
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:2px;
-  padding:clamp(5px, 1dvh, 8px) 2px;
-  border-radius:10px;
+  gap:3px;
+  min-width:68px;
+  padding:8px 10px;
+  border-radius:12px;
   background:#ffffff;
-  border:1px solid var(--border);
-  min-width:0;
+  border:1.5px solid var(--border);
   box-sizing:border-box;
 }
 
@@ -4685,10 +4756,10 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .summary-medal-cell-lvl{
-  font-size:clamp(8.5px, 2.2vw, 10.5px);
+  font-size:11.5px;
   font-weight:800;
   color:var(--muted);
-  line-height:1.1;
+  line-height:1.15;
   white-space:nowrap;
 }
 
@@ -4697,10 +4768,17 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .summary-medal-cell-val{
-  font-size:clamp(16px, 3.6vw, 22px);
+  font-size:clamp(26px, 4.4dvh, 34px);
   font-weight:900;
-  line-height:1.15;
+  line-height:1.1;
   color:var(--muted);
+}
+
+.summary-medals-empty{
+  font-size:12.5px;
+  font-weight:600;
+  color:var(--muted);
+  padding:6px 4px;
 }
 
 .summary-actions{
@@ -4718,6 +4796,8 @@ body.is-fullscreen #previewOverlay .preview-image{
 @media (orientation: landscape) and (max-height: 540px){
   .summary-dialog{
     width:min(94vw, 560px);
+    max-height:96dvh;
+    overflow-y:auto;
     padding:10px 14px;
     gap:6px;
   }
@@ -4734,7 +4814,11 @@ body.is-fullscreen #previewOverlay .preview-image{
     font-size:20px;
   }
   .summary-medal-cell{
-    padding:4px 2px;
+    min-width:58px;
+    padding:6px 8px;
+  }
+  .summary-medal-cell-val{
+    font-size:24px;
   }
 }
 </style>
@@ -4752,7 +4836,7 @@ body.is-fullscreen #previewOverlay .preview-image{
       <div>
         <div class="title-row">
           <h1>Puzzle Hero</h1>
-          <span class="version">v. 1.36</span>
+          <span class="version">v. 1.37</span>
         </div>
         <p class="subtitle">Ricomponi la foto, con l'aiuto dei tuoi Supereroi!</p>
       </div>
@@ -4760,7 +4844,14 @@ body.is-fullscreen #previewOverlay .preview-image{
 
     <div class="header-actions">
       <button class="sound-toggle" id="soundToggleBtn" type="button" aria-label="Attiva o disattiva audio" title="Audio">
-        <span id="soundIcon">🔊</span>
+        <span id="soundIcon" aria-hidden="true"></span>
+      </button>
+      <button class="app-exit-btn" id="appExitBtn" type="button" aria-label="Esci dall'applicazione" title="Esci dall'app">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
       </button>
     </div>
   </header>
@@ -4827,7 +4918,8 @@ body.is-fullscreen #previewOverlay .preview-image{
       </button>
     </div>
 
-    <div class="crop-preview-box" id="cropPreviewBox" title="Trascina la foto o esegui lo zoom">
+    <div class="crop-preview-box is-empty" id="cropPreviewBox" title="Trascina la foto o esegui lo zoom">
+      <div class="crop-empty-message" id="cropEmptyMessage">Carica una foto e premi su GIOCA!</div>
       <img id="cropSourceImg" class="crop-source-img" alt="Foto modello" draggable="false">
       <div class="crop-selection-frame" id="cropSelectionFrame" aria-hidden="true">
         <div class="crop-grid-overlay" id="cropGridOverlay"></div>
@@ -5057,6 +5149,52 @@ body.is-fullscreen #previewOverlay .preview-image{
     <div class="dialog-actions exit-confirm-actions">
       <button class="button secondary" id="cancelExitBtn" type="button">Annulla</button>
       <button class="button danger" id="confirmExitBtn" type="button">Esci</button>
+    </div>
+  </div>
+</div>
+
+<!-- Dialog di conferma Uscita dall'applicazione (v. 1.37) -->
+<div
+  class="overlay"
+  id="appExitConfirmOverlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="appExitConfirmTitle">
+  <div class="dialog exit-confirm-dialog">
+    <div class="exit-icon-badge" aria-hidden="true">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+    </div>
+    <h2 id="appExitConfirmTitle">Uscire dall'app?</h2>
+    <p>Vuoi chiudere Puzzle Hero?</p>
+    <div class="dialog-actions exit-confirm-actions">
+      <button class="button secondary" id="cancelAppExitBtn" type="button">Annulla</button>
+      <button class="button danger" id="confirmAppExitBtn" type="button">Esci</button>
+    </div>
+  </div>
+</div>
+
+<!-- Schermata di chiusura applicazione (fallback se il browser blocca window.close) -->
+<div
+  class="overlay"
+  id="appExitedOverlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="appExitedTitle">
+  <div class="dialog exit-confirm-dialog">
+    <div class="exit-icon-badge" aria-hidden="true">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18.36 6.64a9 9 0 1 1-12.73 0"/>
+        <line x1="12" y1="2" x2="12" y2="12"/>
+      </svg>
+    </div>
+    <h2 id="appExitedTitle">Arrivederci!</h2>
+    <p>Puoi chiudere questa finestra o tornare alla schermata iniziale del dispositivo.</p>
+    <div class="dialog-actions exit-confirm-actions">
+      <button class="button primary" id="reopenAppBtn" type="button">Riapri app</button>
     </div>
   </div>
 </div>
@@ -5435,7 +5573,7 @@ body.is-fullscreen #previewOverlay .preview-image{
     <p class="summary-player-sub" id="summaryPlayerSub"></p>
     <div class="summary-stats-grid" id="summaryStatsGrid"></div>
     <div class="summary-medals-section" id="summaryMedalsSection">
-      <div class="summary-medals-title">Medaglie ottenute nei livelli</div>
+      <div class="summary-medals-title">MEDAGLIE OTTENUTE</div>
       <div class="summary-medals-list" id="summaryMedalsList"></div>
     </div>
     <div class="dialog-actions summary-actions">
@@ -5944,6 +6082,7 @@ try {
   const homeLevelSummary = $("homeLevelSummary");
   const uploadPhotoBtn = $("uploadPhotoBtn");
   const cropPreviewBox = $("cropPreviewBox");
+  const cropEmptyMessage = $("cropEmptyMessage");
   const cropSourceImg = $("cropSourceImg");
   const cropSelectionFrame = $("cropSelectionFrame");
   const cropGridOverlay = $("cropGridOverlay");
@@ -5952,6 +6091,7 @@ try {
   const cropCenterBtn = $("cropCenterBtn");
   const homePlayBtn = $("homePlayBtn");
   const openRecordsBtn = $("openRecordsBtn");
+  const appExitBtn = $("appExitBtn");
 
   /* Modale Nome Giocatore con Tastiera Virtuale (v. 1.28) */
   const playerNameOverlay = $("playerNameOverlay");
@@ -6043,10 +6183,15 @@ try {
   const fsPortraitExitBtn = $("fsPortraitExitBtn");
   const fullscreenPortraitThumb = $("fullscreenPortraitThumb");
 
-  /* Dialog Uscita Partita (ESCI) */
+  /* Dialog Uscita Partita & Applicazione (ESCI) */
   const exitConfirmOverlay = $("exitConfirmOverlay");
   const confirmExitBtn = $("confirmExitBtn");
   const cancelExitBtn = $("cancelExitBtn");
+  const appExitConfirmOverlay = $("appExitConfirmOverlay");
+  const confirmAppExitBtn = $("confirmAppExitBtn");
+  const cancelAppExitBtn = $("cancelAppExitBtn");
+  const appExitedOverlay = $("appExitedOverlay");
+  const reopenAppBtn = $("reopenAppBtn");
 
   const closePreviewBtn = $("closePreviewBtn");
 
@@ -6310,6 +6455,25 @@ try {
         osc.start(now);
         osc.stop(now + 0.07);
 
+      }else if(type === "correct"){
+        const notes = [
+          { freq: 659.25, start: 0, dur: 0.09, vol: 0.18 },
+          { freq: 987.77, start: 0.055, dur: 0.14, vol: 0.2 }
+        ];
+        notes.forEach(n => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(n.freq, now + n.start);
+          gain.gain.setValueAtTime(0.001, now + n.start);
+          gain.gain.linearRampToValueAtTime(n.vol, now + n.start + 0.012);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + n.start + n.dur);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + n.start);
+          osc.stop(now + n.start + n.dur + 0.01);
+        });
+
       }else if(type === "win"){
         const freqs = [523.25, 659.25, 783.99, 1046.50];
         freqs.forEach((freq, i) => {
@@ -6331,7 +6495,9 @@ try {
 
   function updateSoundUI(){
     if(soundIcon){
-      soundIcon.textContent = soundEnabled ? "🔊" : "🔇";
+      soundIcon.innerHTML = soundEnabled
+        ? `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`
+        : `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
     }
     if(soundToggleBtn){
       soundToggleBtn.setAttribute(
@@ -7311,6 +7477,12 @@ try {
     if(recordsOverlay && recordsOverlay.classList.contains("show"))
       return "records";
 
+    if(appExitedOverlay && appExitedOverlay.classList.contains("show"))
+      return "appExited";
+
+    if(appExitConfirmOverlay && appExitConfirmOverlay.classList.contains("show"))
+      return "appExitConfirm";
+
     if(exitConfirmOverlay && exitConfirmOverlay.classList.contains("show"))
       return "exitConfirm";
 
@@ -7436,9 +7608,17 @@ try {
 
       const data = JSON.parse(raw);
 
-      if(typeof data.rawPhotoUrl === "string" && data.rawPhotoUrl){
+      if(data.inGameSession && data.photoData && typeof data.rawPhotoUrl === "string" && data.rawPhotoUrl){
         rawPhotoUrl = data.rawPhotoUrl;
         if(cropSourceImg) cropSourceImg.src = rawPhotoUrl;
+        syncHomePhotoEmptyUI();
+      } else {
+        rawPhotoUrl = "";
+        if(cropSourceImg){
+          cropSourceImg.onload = null;
+          cropSourceImg.removeAttribute("src");
+        }
+        syncHomePhotoEmptyUI();
       }
       if(Number.isInteger(data.selectedLevel)){
         selectedLevel = Math.max(0, Math.min(data.selectedLevel, LEVELS.length - 1));
@@ -8049,6 +8229,46 @@ try {
     }
   }
 
+  function hasLoadedHomePhoto(){
+    return Boolean(
+      rawPhotoUrl &&
+      cropSourceImg &&
+      cropSourceImg.getAttribute("src") &&
+      cropSourceImg.complete &&
+      cropSourceImg.naturalWidth > 0
+    );
+  }
+
+  function syncHomePhotoEmptyUI(){
+    const hasPhoto = Boolean(rawPhotoUrl && cropSourceImg && cropSourceImg.getAttribute("src"));
+    if(cropPreviewBox){
+      cropPreviewBox.classList.toggle("is-empty", !hasPhoto);
+    }
+    if(cropEmptyMessage){
+      cropEmptyMessage.style.display = hasPhoto ? "none" : "";
+    }
+    if(cropZoomSlider){
+      cropZoomSlider.disabled = !hasPhoto;
+    }
+  }
+
+  function clearHomePhoto(){
+    rawPhotoUrl = "";
+    photoData = null;
+    isPortraitPhoto = false;
+    cropZoom = 1;
+    cropPanX = 0;
+    cropPanY = 0;
+    cropPanRatioX = 0;
+    cropPanRatioY = 0;
+    if(cropSourceImg){
+      cropSourceImg.onload = null;
+      cropSourceImg.removeAttribute("src");
+    }
+    updateCropZoomUI();
+    syncHomePhotoEmptyUI();
+  }
+
   function applyHomePhotoFromDataUrl(dataUrl){
     if(!dataUrl) return;
     rawPhotoUrl = dataUrl;
@@ -8060,11 +8280,13 @@ try {
         cropPanY = 0;
         cropPanRatioX = 0;
         cropPanRatioY = 0;
+        syncHomePhotoEmptyUI();
         updateLevelButtonsUI();
         updateCropFrameAndImage();
         saveGame();
       };
       cropSourceImg.src = dataUrl;
+      syncHomePhotoEmptyUI();
     }
   }
 
@@ -8684,7 +8906,9 @@ try {
 
     resumeFromPause();
 
-    playSound("swap");
+    if(!isSolved()){
+      playSound(newlyCorrect.length > 0 ? "correct" : "swap");
+    }
 
     if(typeof navigator !== "undefined" && typeof navigator.vibrate === "function"){
       try{
@@ -9383,7 +9607,7 @@ try {
         summaryTop3Banner.innerHTML =
           `<div class="summary-top3-medal">${medalIcons[lastSessionRank]}</div>` +
           `<div class="summary-top3-title">Congratulazioni, ${activeName}!</div>` +
-          `<div class="summary-top3-sub">Sei nella Top 3 della Classifica Generale (${lastSessionRank}° posto)!</div>`;
+          `<div class="summary-top3-sub">Sei nella Top 3 della Classifica Generale<br>(${lastSessionRank}° posto)!</div>`;
       } else {
         summaryTop3Banner.style.display = "none";
         summaryTop3Banner.innerHTML = "";
@@ -9412,6 +9636,36 @@ try {
 
     if(summaryMedalsList){
       summaryMedalsList.innerHTML = "";
+
+      const createMedalCell = (labelText, rank, ariaLabel, isGeneral = false) => {
+        const cell = document.createElement("div");
+        cell.className = `summary-medal-cell has-medal rank-${rank}` + (isGeneral ? " is-general" : "");
+        cell.setAttribute("aria-label", ariaLabel);
+
+        const lvlSpan = document.createElement("span");
+        lvlSpan.className = "summary-medal-cell-lvl";
+        lvlSpan.textContent = labelText;
+
+        const valSpan = document.createElement("span");
+        valSpan.className = "summary-medal-cell-val";
+        valSpan.textContent = medalIcons[rank];
+
+        cell.append(lvlSpan, valSpan);
+        return cell;
+      };
+
+      // Priorità da sinistra verso destra: medaglia Classifica Generale, poi singoli livelli
+      if(lastSessionRank === 1 || lastSessionRank === 2 || lastSessionRank === 3){
+        summaryMedalsList.appendChild(
+          createMedalCell(
+            "Generale",
+            lastSessionRank,
+            `Classifica Generale: ${lastSessionRank}° posto`,
+            true
+          )
+        );
+      }
+
       const rankByLevel = new Map();
       if(Array.isArray(currentSessionDetails)){
         currentSessionDetails.forEach(item => {
@@ -9429,24 +9683,22 @@ try {
 
       for(let i = 0; i < LEVELS.length; i++){
         const rank = rankByLevel.get(i) ?? null;
-        const hasMedal = rank === 1 || rank === 2 || rank === 3;
-        const cell = document.createElement("div");
-        cell.className = "summary-medal-cell" + (hasMedal ? ` has-medal rank-${rank}` : "");
-        cell.setAttribute(
-          "aria-label",
-          hasMedal ? `Livello ${i + 1}: ${rank}° posto` : `Livello ${i + 1}: nessuna medaglia`
-        );
+        if(rank === 1 || rank === 2 || rank === 3){
+          summaryMedalsList.appendChild(
+            createMedalCell(
+              `Liv. ${i + 1}`,
+              rank,
+              `Livello ${i + 1}: ${rank}° posto`
+            )
+          );
+        }
+      }
 
-        const lvlSpan = document.createElement("span");
-        lvlSpan.className = "summary-medal-cell-lvl";
-        lvlSpan.textContent = `Liv. ${i + 1}`;
-
-        const valSpan = document.createElement("span");
-        valSpan.className = "summary-medal-cell-val";
-        valSpan.textContent = hasMedal ? medalIcons[rank] : "-";
-
-        cell.append(lvlSpan, valSpan);
-        summaryMedalsList.appendChild(cell);
+      if(summaryMedalsList.children.length === 0){
+        const emptyEl = document.createElement("div");
+        emptyEl.className = "summary-medals-empty";
+        emptyEl.textContent = "Nessuna medaglia ottenuta in questa partita";
+        summaryMedalsList.appendChild(emptyEl);
       }
     }
 
@@ -10441,7 +10693,64 @@ try {
   if(exitConfirmOverlay){
     exitConfirmOverlay.addEventListener("click", event => {
       if(event.target === exitConfirmOverlay){
-        cancelExitGame();
+        /* intenzionale: clic esterno disattivato per non far sparire la finestra "Uscire?" */
+      }
+    });
+  }
+
+  /*
+   * USCITA DALL'APPLICAZIONE (v. 1.37)
+   */
+  function requestAppExit(){
+    activeOverlay = "appExitConfirm";
+    if(appExitConfirmOverlay) appExitConfirmOverlay.classList.add("show");
+  }
+
+  function cancelAppExit(){
+    if(appExitConfirmOverlay) appExitConfirmOverlay.classList.remove("show");
+    if(activeOverlay === "appExitConfirm") activeOverlay = "";
+  }
+
+  function confirmAppExit(){
+    saveGame();
+    if(appExitConfirmOverlay) appExitConfirmOverlay.classList.remove("show");
+    activeOverlay = "";
+    try { window.close(); } catch(_) {}
+    try { window.open("", "_self"); window.close(); } catch(_) {}
+    setTimeout(() => {
+      if(document.visibilityState !== "hidden"){
+        activeOverlay = "appExited";
+        if(appExitedOverlay) appExitedOverlay.classList.add("show");
+      }
+    }, 200);
+  }
+
+  if(appExitBtn){
+    appExitBtn.addEventListener("click", requestAppExit);
+  }
+  if(cancelAppExitBtn){
+    cancelAppExitBtn.addEventListener("click", cancelAppExit);
+  }
+  if(confirmAppExitBtn){
+    confirmAppExitBtn.addEventListener("click", confirmAppExit);
+  }
+  if(reopenAppBtn){
+    reopenAppBtn.addEventListener("click", () => {
+      if(appExitedOverlay) appExitedOverlay.classList.remove("show");
+      if(activeOverlay === "appExited") activeOverlay = "";
+    });
+  }
+  if(appExitConfirmOverlay){
+    appExitConfirmOverlay.addEventListener("click", event => {
+      if(event.target === appExitConfirmOverlay){
+        /* intenzionale: clic esterno disattivato */
+      }
+    });
+  }
+  if(appExitedOverlay){
+    appExitedOverlay.addEventListener("click", event => {
+      if(event.target === appExitedOverlay){
+        /* intenzionale: clic esterno disattivato */
       }
     });
   }
@@ -10971,6 +11280,7 @@ try {
   }
 
   function openPlayerNameModal(){
+    if(!hasLoadedHomePhoto()) return;
     buildVirtualKeyboard();
     playerNameBuffer = "";
     playerNameCursorPos = 0;
@@ -11426,6 +11736,7 @@ try {
     });
 
     sliderEl.addEventListener("pointerdown", event => {
+      if(sliderEl.disabled) return;
       if(event.button !== undefined && event.button !== 0) return;
       event.preventDefault();
       activePointerId = event.pointerId;
@@ -11735,22 +12046,15 @@ try {
       saveGame();
     };
 
-    if(!cropSourceImg.src || cropSourceImg.src.endsWith("#") || !cropSourceImg.complete || cropSourceImg.naturalWidth === 0){
-      const defaultImg = rawPhotoUrl || resolveHeroUrl(DEFAULT_HOME_PHOTO);
-      cropSourceImg.onload = () => {
-        isPortraitPhoto = cropSourceImg.naturalHeight > cropSourceImg.naturalWidth;
-        updateLevelButtonsUI();
-        updateCropFrameAndImage();
-        proceed();
-      };
-      cropSourceImg.src = defaultImg;
-    }else{
-      proceed();
-    }
+    if(!hasLoadedHomePhoto()) return;
+    proceed();
   }
 
   if(homePlayBtn){
-    homePlayBtn.addEventListener("click", openPlayerNameModal);
+    homePlayBtn.addEventListener("click", () => {
+      if(!hasLoadedHomePhoto()) return;
+      openPlayerNameModal();
+    });
   }
 
   /*
@@ -11859,6 +12163,15 @@ try {
         return;
       }
 
+      if(activeOverlay === "appExited"){
+        return;
+      }
+
+      if(activeOverlay === "appExitConfirm"){
+        cancelAppExit();
+        return;
+      }
+
       if(activeOverlay === "exitConfirm"){
         cancelExitGame();
         return;
@@ -11931,33 +12244,18 @@ try {
   const restored = restoreGame();
 
   if(!restored){
-    // Inizializza la schermata principale (Home View)
+    // Inizializza la schermata principale (Home View) senza foto precaricata
     inGameSession = false;
     if(homeView) homeView.style.display = "";
     if(gamePanel) gamePanel.classList.add("hidden-initial");
     document.body.classList.remove("in-game");
     syncScreenOrientation(false, false);
 
-    const defaultImg = rawPhotoUrl || resolveHeroUrl(DEFAULT_HOME_PHOTO);
-    cropSourceImg.onload = () => {
-      isPortraitPhoto = cropSourceImg.naturalHeight > cropSourceImg.naturalWidth;
-      updateLevelButtonsUI();
-      updateCropFrameAndImage();
-    };
-    cropSourceImg.src = defaultImg;
-
+    clearHomePhoto();
     updateLevelButtonsUI();
-    setHint("Scegli il livello, posiziona la foto nel riquadro e premi GIOCA!");
+    setHint("Carica una foto e premi su GIOCA!");
   }else{
-    if(!cropSourceImg.src || cropSourceImg.src.endsWith("#")){
-      const defaultImg = rawPhotoUrl || resolveHeroUrl(DEFAULT_HOME_PHOTO);
-      cropSourceImg.onload = () => {
-        isPortraitPhoto = cropSourceImg.naturalHeight > cropSourceImg.naturalWidth;
-        updateLevelButtonsUI();
-        updateCropFrameAndImage();
-      };
-      cropSourceImg.src = defaultImg;
-    }
+    syncHomePhotoEmptyUI();
   }
 
 })();
