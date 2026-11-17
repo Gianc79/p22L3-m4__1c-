@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Puzzle Hero v. 1.34</title>
+<title>Puzzle Hero v. 1.35</title>
 <meta name="description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
 <meta property="og:title" content="Puzzle Hero">
 <meta property="og:description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
@@ -3362,6 +3362,17 @@ body.is-fullscreen #previewOverlay .preview-image{
   border-radius:14px;
 }
 
+#exitConfirmOverlay.is-transitioning{
+  pointer-events:none;
+}
+
+#exitConfirmOverlay.is-transitioning .exit-confirm-dialog{
+  animation:none;
+  opacity:0;
+  transform:scale(0.95);
+  transition:opacity .12s ease, transform .12s ease;
+}
+
 @media (orientation: landscape) and (max-height: 640px), (orientation: landscape) and (min-width: 640px) {
   #exitConfirmOverlay .exit-confirm-dialog{
     width:min(94vw, 700px);
@@ -4675,7 +4686,7 @@ body.is-fullscreen #previewOverlay .preview-image{
       <div>
         <div class="title-row">
           <h1>Puzzle Hero</h1>
-          <span class="version">v. 1.34</span>
+          <span class="version">v. 1.35</span>
         </div>
         <p class="subtitle">Ricomponi la foto, con l'aiuto dei tuoi Supereroi!</p>
       </div>
@@ -5130,6 +5141,12 @@ body.is-fullscreen #previewOverlay .preview-image{
       <div class="crop-selection-frame" id="nlCropSelectionFrame" aria-hidden="true">
         <div class="crop-grid-overlay" id="nlCropGridOverlay"></div>
       </div>
+      <button type="button" class="crop-center-btn" id="nlCropCenterBtn" title="Centra immagine nel riquadro" aria-label="Centra immagine nel riquadro">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
+        </svg>
+      </button>
     </div>
 
     <div class="crop-footer-bar">
@@ -5144,7 +5161,7 @@ body.is-fullscreen #previewOverlay .preview-image{
           step="any"
           value="1"
           aria-label="Zoom nuova foto da 1x a 4x">
-        <button type="button" class="crop-zoom-reset" id="nlCropZoomResetBtn" title="Reimposta zoom 1×">1×</button>
+        <span class="crop-zoom-reset is-readonly" id="nlCropZoomResetBtn" aria-label="Valore zoom">1×</span>
       </div>
     </div>
 
@@ -5913,6 +5930,7 @@ try {
   const nlCropGridOverlay = $("nlCropGridOverlay");
   const nlCropZoomSlider = $("nlCropZoomSlider");
   const nlCropZoomResetBtn = $("nlCropZoomResetBtn");
+  const nlCropCenterBtn = $("nlCropCenterBtn");
   const nlCropCancelBtn = $("nlCropCancelBtn");
   const nlCropConfirmBtn = $("nlCropConfirmBtn");
 
@@ -7132,10 +7150,13 @@ try {
    * Schermo intero immersivo con blocco orientamento e rimozione barra indirizzi (v. 1.27)
    */
   function toggleFullscreen(enable){
+    const prevFullscreen = isFullscreen;
     isFullscreen = typeof enable === "boolean" ? enable : !isFullscreen;
 
     gamePanel.classList.toggle("is-fullscreen", isFullscreen);
     document.body.classList.toggle("is-fullscreen", isFullscreen);
+
+    let settlePromise = Promise.resolve();
 
     if (isFullscreen) {
       const useLandscape = shouldUseLandscapeGameView(levelIndex);
@@ -7154,22 +7175,36 @@ try {
       window.scrollTo(0, 0);
       resetPreviewZoom();
     } else {
+      const wasLandscapeLayout = gamePanel.classList.contains("fs-layout-landscape") || (prevFullscreen && shouldUseLandscapeGameView(levelIndex));
+      const hasNativeFs = Boolean(
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.mozFullScreenElement ||
+        document.msFullscreenElement
+      );
       gamePanel.classList.remove("fs-layout-landscape", "fs-layout-portrait");
       const orientPromise = syncScreenOrientation(false, false);
-      Promise.race([
-        orientPromise,
-        new Promise(resolve => setTimeout(resolve, 250))
-      ]).finally(() => {
-        exitNativeFullscreen()
-          .catch(() => {})
-          .finally(() => {
-            setTimeout(() => {
+
+      if(hasNativeFs || wasLandscapeLayout){
+        settlePromise = Promise.race([
+          orientPromise,
+          new Promise(resolve => setTimeout(resolve, 250))
+        ]).finally(() => {
+          return exitNativeFullscreen()
+            .catch(() => {})
+            .then(() => new Promise(resolve => setTimeout(resolve, 100)))
+            .finally(() => {
               if(!inGameSession){
                 updateCropFrameAndImage();
               }
-            }, 120);
-          });
-      });
+            });
+        });
+      } else {
+        exitNativeFullscreen().catch(() => {});
+        if(!inGameSession){
+          requestAnimationFrame(() => updateCropFrameAndImage());
+        }
+      }
     }
 
     if(fullscreenToggleBtn){
@@ -7177,9 +7212,13 @@ try {
     }
 
     updateUI();
+    return settlePromise;
   }
 
   function getVisibleOverlay(){
+    if(isExitingToSummary)
+      return "gameSummary";
+
     if(playerNameOverlay && playerNameOverlay.classList.contains("show"))
       return "playerName";
 
@@ -7810,7 +7849,6 @@ try {
     const clamped = Math.max(1, Math.min(4, nlCropZoom || 1));
     if(nlCropZoomResetBtn){
       nlCropZoomResetBtn.textContent = clamped <= 1.02 ? "1×" : `${clamped.toFixed(1)}×`;
-      nlCropZoomResetBtn.disabled = clamped <= 1.02;
     }
     if(nlCropZoomSlider){
       nlCropZoomSlider.value = String(clamped);
@@ -7870,6 +7908,9 @@ try {
 
     nlCropSourceImg.style.left = `${frameLeft + (frameW - imgW) / 2 + nlCropPanX}px`;
     nlCropSourceImg.style.top = `${frameTop + (frameH - imgH) / 2 + nlCropPanY}px`;
+    if(nlCropCenterBtn){
+      nlCropCenterBtn.classList.toggle("is-shifted", Math.abs(nlCropPanX) > 1 || Math.abs(nlCropPanY) > 1 || (nlCropZoom || 1) > 1.02);
+    }
   }
 
   function setNlCropZoom(nextZoom){
@@ -7885,6 +7926,16 @@ try {
     updateNlCropZoomUI();
   }
 
+  function centerNlCropImage(){
+    nlCropZoom = 1;
+    nlCropPanX = 0;
+    nlCropPanY = 0;
+    nlCropPanRatioX = 0;
+    nlCropPanRatioY = 0;
+    updateNlCropFrameAndImage(false);
+    updateNlCropZoomUI();
+  }
+
   function openNextLevelCropModal(photoUrl, targetLevel, restoreWin = true){
     nlCropTargetLevel = Math.max(0, Math.min(LEVELS.length - 1, targetLevel));
     nlCropPhotoUrl = photoUrl;
@@ -7897,6 +7948,7 @@ try {
 
     if(winOverlay) winOverlay.classList.remove("show");
     if(nextLevelCropOverlay) nextLevelCropOverlay.classList.add("show");
+    if(nlCropCenterBtn) nlCropCenterBtn.classList.remove("is-shifted");
     activeOverlay = "nextCrop";
     updateNlCropZoomUI();
 
@@ -9177,20 +9229,24 @@ try {
     cropPanRatioX = 0;
     cropPanRatioY = 0;
     updateLevelButtonsUI();
+    updateCropZoomUI();
     updateCropFrameAndImage();
   }
 
 
-  function openGameSummaryModal(celebrate=true){
+  function openGameSummaryModal(celebrate=true, options={}){
+    const skipExitReset = Boolean(options && options.skipExitReset);
     if(winOverlay) winOverlay.classList.remove("show");
-    if(exitConfirmOverlay) exitConfirmOverlay.classList.remove("show");
 
-    stopTimer();
-    finalizeSessionScore();
-    inGameSession = false;
-    toggleFullscreen(false);
-    resetHomeSelectionAndCrop();
-    showHomeView();
+    if(!skipExitReset){
+      if(exitConfirmOverlay) exitConfirmOverlay.classList.remove("show", "is-transitioning");
+      stopTimer();
+      finalizeSessionScore();
+      inGameSession = false;
+      toggleFullscreen(false);
+      resetHomeSelectionAndCrop();
+      showHomeView();
+    }
 
     const activeName = (currentPlayerName || savedPlayerName || "Giocatore").trim().slice(0, MAX_RECORD_NAME_LEN) || "Giocatore";
     const medalIcons = { 1: "🥇", 2: "🥈", 3: "🥉" };
@@ -9270,10 +9326,11 @@ try {
 
     activeOverlay = "gameSummary";
     if(gameSummaryOverlay) gameSummaryOverlay.classList.add("show");
+    if(exitConfirmOverlay) exitConfirmOverlay.classList.remove("show", "is-transitioning");
     saveGame();
 
     if(celebrate && (lastSessionRank === 1 || lastSessionRank === 2 || lastSessionRank === 3)){
-      launchConfetti();
+      requestAnimationFrame(() => launchConfetti());
     }
   }
 
@@ -9353,6 +9410,8 @@ try {
     }
     document.body.classList.remove("in-game");
     syncScreenOrientation(false, false);
+    updateLevelButtonsUI();
+    updateCropFrameAndImage();
     requestAnimationFrame(() => {
       updateLevelButtonsUI();
       updateCropFrameAndImage();
@@ -9947,23 +10006,48 @@ try {
    */
 
   let exitConfirmReturnToWin = false;
+  let isExitingToSummary = false;
 
   function requestExitGame(){
+    if(isExitingToSummary) return;
     exitConfirmReturnToWin = Boolean(winOverlay && winOverlay.classList.contains("show"));
     activeOverlay = "exitConfirm";
-    if(exitConfirmOverlay) exitConfirmOverlay.classList.add("show");
+    if(exitConfirmOverlay){
+      exitConfirmOverlay.classList.remove("is-transitioning");
+      exitConfirmOverlay.classList.add("show");
+    }
   }
 
   function confirmExitGame(){
+    if(isExitingToSummary) return;
     exitConfirmReturnToWin = false;
-    if(exitConfirmOverlay) exitConfirmOverlay.classList.remove("show");
     if(winOverlay) winOverlay.classList.remove("show");
-    activeOverlay = "";
     stopTimer();
     if(currentSessionLevelsCleared > 0){
+      if(exitConfirmOverlay && exitConfirmOverlay.classList.contains("show")){
+        isExitingToSummary = true;
+        exitConfirmOverlay.classList.add("is-transitioning");
+        finalizeSessionScore();
+        inGameSession = false;
+        const fsSettle = toggleFullscreen(false);
+        resetHomeSelectionAndCrop();
+        showHomeView();
+        const reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const fadeWait = reducedMotion
+          ? Promise.resolve()
+          : new Promise(resolve => setTimeout(resolve, 125));
+        Promise.all([fadeWait, fsSettle]).finally(() => {
+          isExitingToSummary = false;
+          openGameSummaryModal(true, { skipExitReset: true });
+        });
+        return;
+      }
+      activeOverlay = "";
       openGameSummaryModal(true);
       return;
     }
+    if(exitConfirmOverlay) exitConfirmOverlay.classList.remove("show", "is-transitioning");
+    activeOverlay = "";
     finalizeSessionScore();
     inGameSession = false;
     toggleFullscreen(false);
@@ -9973,7 +10057,8 @@ try {
   }
 
   function cancelExitGame(){
-    if(exitConfirmOverlay) exitConfirmOverlay.classList.remove("show");
+    if(isExitingToSummary) return;
+    if(exitConfirmOverlay) exitConfirmOverlay.classList.remove("show", "is-transitioning");
     if(exitConfirmReturnToWin || (winOverlay && winOverlay.classList.contains("show"))){
       exitConfirmReturnToWin = false;
       if(winOverlay && !winOverlay.classList.contains("show")){
@@ -10882,6 +10967,7 @@ try {
     let initNlPanY = 0;
 
     nlCropPreviewBox.addEventListener("pointerdown", event => {
+      if(event.target && event.target.closest && event.target.closest("#nlCropCenterBtn")) return;
       if(!nlCropSourceImg || !nlCropSourceImg.complete || nlCropSourceImg.naturalWidth === 0) return;
       nlPointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
       try { nlCropPreviewBox.setPointerCapture(event.pointerId); } catch(_){}
@@ -10952,6 +11038,7 @@ try {
       setNlCropZoom(nlCropZoom + (event.deltaY < 0 ? 0.2 : -0.2));
     }, { passive: false });
     nlCropPreviewBox.addEventListener("dblclick", event => {
+      if(event.target && event.target.closest && event.target.closest("#nlCropCenterBtn")) return;
       if(!nlCropSourceImg || !nlCropSourceImg.complete || nlCropSourceImg.naturalWidth === 0) return;
       event.preventDefault();
       setNlCropZoom(nlCropZoom > 1.05 ? 1 : 2);
@@ -11043,8 +11130,13 @@ try {
   if(nlCropZoomSlider){
     bindFluidDragZoomSlider(nlCropZoomSlider, () => nlCropZoom, zoom => setNlCropZoom(zoom), null);
   }
-  if(nlCropZoomResetBtn){
-    nlCropZoomResetBtn.addEventListener("click", () => setNlCropZoom(1));
+  if(nlCropCenterBtn){
+    nlCropCenterBtn.addEventListener("pointerdown", event => event.stopPropagation());
+    nlCropCenterBtn.addEventListener("dblclick", event => event.stopPropagation());
+    nlCropCenterBtn.addEventListener("click", event => {
+      event.stopPropagation();
+      centerNlCropImage();
+    });
   }
   if(nlCropCancelBtn){
     nlCropCancelBtn.addEventListener("click", () => closeNextLevelCropModal(true));
