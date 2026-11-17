@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Puzzle Hero v. 1.31</title>
+<title>Puzzle Hero v. 1.32</title>
 <meta name="description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
 <meta property="og:title" content="Puzzle Hero">
 <meta property="og:description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
@@ -193,17 +193,25 @@ h1 {
   margin-top: clamp(5px, 0.9vh, 8px);
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-height: 36px;
+  padding: 3px 5px 3px 10px;
+  border-radius: 11px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  box-sizing: border-box;
 }
 
 .home-level-record {
   margin-top: 0;
   flex: 1 1 auto;
   min-width: 0;
-  padding: 5px 10px;
-  border-radius: 10px;
-  background: #f8fafc;
-  border: 1px solid var(--border);
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  border: none;
   font-size: 11.5px;
   font-weight: 700;
   color: var(--text);
@@ -218,14 +226,15 @@ h1 {
 
 .records-icon-btn {
   flex: 0 0 auto;
+  margin-left: auto;
   display: inline-grid;
   place-items: center;
-  width: 34px;
-  height: 29px;
+  width: 30px;
+  height: 28px;
   padding: 0;
   border: 1px solid #cbd5e1;
   border-bottom: 2.5px solid #94a3b8;
-  border-radius: 10px;
+  border-radius: 8px;
   background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
   color: #ca8a04;
   cursor: pointer;
@@ -448,6 +457,46 @@ h1 {
   transition: width .18s ease, height .18s ease;
   box-sizing: border-box;
   overflow: hidden;
+}
+
+.crop-center-btn {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(4px);
+  color: #e2e8f0;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.28);
+  opacity: 0.62;
+  touch-action: manipulation;
+  transition: opacity .15s ease, transform .12s ease, background .12s ease, border-color .12s ease;
+}
+
+.crop-center-btn.is-shifted {
+  opacity: 0.92;
+  border-color: rgba(96, 165, 250, 0.65);
+  color: #ffffff;
+}
+
+.crop-center-btn:hover {
+  opacity: 1;
+  background: rgba(15, 23, 42, 0.92);
+  border-color: rgba(96, 165, 250, 0.85);
+  color: #ffffff;
+}
+
+.crop-center-btn:active {
+  transform: scale(0.92);
 }
 
 .crop-grid-overlay {
@@ -4531,7 +4580,7 @@ body.is-fullscreen #previewOverlay .preview-image{
       <div>
         <div class="title-row">
           <h1>Puzzle Hero</h1>
-          <span class="version">v. 1.31</span>
+          <span class="version">v. 1.32</span>
         </div>
         <p class="subtitle">Ricomponi la foto, con l'aiuto dei tuoi Supereroi!</p>
       </div>
@@ -4611,6 +4660,12 @@ body.is-fullscreen #previewOverlay .preview-image{
       <div class="crop-selection-frame" id="cropSelectionFrame" aria-hidden="true">
         <div class="crop-grid-overlay" id="cropGridOverlay"></div>
       </div>
+      <button type="button" class="crop-center-btn" id="cropCenterBtn" title="Centra immagine nel riquadro" aria-label="Centra immagine nel riquadro">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
+        </svg>
+      </button>
     </div>
 
     <div class="crop-footer-bar">
@@ -5713,6 +5768,7 @@ try {
   const cropGridOverlay = $("cropGridOverlay");
   const cropZoomSlider = $("cropZoomSlider");
   const cropZoomResetBtn = $("cropZoomResetBtn");
+  const cropCenterBtn = $("cropCenterBtn");
   const homePlayBtn = $("homePlayBtn");
   const openRecordsBtn = $("openRecordsBtn");
 
@@ -5995,13 +6051,13 @@ try {
     if(Array.isArray(levelLeaderboards[lvlKey])){
       levelLeaderboards[lvlKey] = levelLeaderboards[lvlKey]
         .filter(item => item && typeof item.score === "number")
-        .sort((a, b) => (b.score - a.score) || ((b.timestamp || 0) - (a.timestamp || 0)))
+        .sort((a, b) => (b.score - a.score) || ((a.timestamp || 0) - (b.timestamp || 0)))
         .slice(0, 3);
     }
   });
   sessionLeaderboard = sessionLeaderboard
     .filter(item => item && typeof item.score === "number")
-    .sort((a, b) => (b.score - a.score) || ((b.timestamp || 0) - (a.timestamp || 0)))
+    .sort((a, b) => (b.score - a.score) || ((a.timestamp || 0) - (b.timestamp || 0)))
     .slice(0, 3);
 
   let savedPlayerName = (localStorage.getItem(PLAYER_NAME_STORAGE_KEY) || "").slice(0, MAX_RECORD_NAME_LEN);
@@ -6292,6 +6348,15 @@ try {
     if(anchorSave) saveGame();
   }
 
+  function centerCropImage(anchorSave = false){
+    cropPanX = 0;
+    cropPanY = 0;
+    cropPanRatioX = 0;
+    cropPanRatioY = 0;
+    updateCropFrameAndImage(false);
+    if(anchorSave) saveGame();
+  }
+
   function formatShortDate(dateObj = new Date()){
     const d = String(dateObj.getDate()).padStart(2, "0");
     const m = String(dateObj.getMonth() + 1).padStart(2, "0");
@@ -6310,7 +6375,7 @@ try {
   function sortLeaderboardEntries(list){
     return list
       .slice()
-      .sort((a, b) => (b.score - a.score) || ((b.timestamp || 0) - (a.timestamp || 0)))
+      .sort((a, b) => (b.score - a.score) || ((a.timestamp || 0) - (b.timestamp || 0)))
       .slice(0, 3);
   }
 
@@ -6319,7 +6384,7 @@ try {
     if(!Array.isArray(sortedTop3) || sortedTop3.length < 3) return true;
     const third = sortedTop3[2];
     if(entry.score > third.score) return true;
-    if(entry.score === third.score && (entry.timestamp || 0) >= (third.timestamp || 0)) return true;
+    if(entry.score === third.score && (entry.timestamp || 0) < (third.timestamp || 0)) return true;
     return false;
   }
 
@@ -6363,8 +6428,8 @@ try {
     const key = String(lvlIdx);
     const currentList = getLevelTop3(lvlIdx);
     const prevTop = currentList[0] || null;
-    // A parità di punteggio vince il più recente (timestamp maggiore)
-    const isNewTop = !prevTop || entry.score > prevTop.score || (entry.score === prevTop.score && (entry.timestamp || 0) >= (prevTop.timestamp || 0));
+    // A parità di punteggio vince il più vecchio (timestamp minore)
+    const isNewTop = !prevTop || entry.score > prevTop.score || (entry.score === prevTop.score && (entry.timestamp || 0) < (prevTop.timestamp || 0));
     if(!qualifiesForTop3(currentList, entry)){
       return { isNewTop: false, rank: null };
     }
@@ -6829,6 +6894,9 @@ try {
 
     cropSourceImg.style.left = `${imgLeft}px`;
     cropSourceImg.style.top = `${imgTop}px`;
+    if(cropCenterBtn){
+      cropCenterBtn.classList.toggle("is-shifted", Math.abs(cropPanX) > 1 || Math.abs(cropPanY) > 1);
+    }
   }
 
   function generateCroppedPhoto(targetLvlIdx){
@@ -10474,7 +10542,7 @@ try {
         }
       }
       if(event.target === recordsOverlay){
-        closeRecordsModal();
+        /* intenzionale: clic esterno disattivato per non chiudere la Sala dei Record */
       }
     });
   }
@@ -10687,7 +10755,7 @@ try {
   if(galleryOverlay){
     galleryOverlay.addEventListener("click", event => {
       if(event.target === galleryOverlay){
-        closeGalleryModal(true);
+        /* intenzionale: clic esterno disattivato per non chiudere la Galleria Foto */
       }
     });
   }
@@ -10888,6 +10956,7 @@ try {
     let cropPinchPanY = 0;
 
     cropPreviewBox.addEventListener("pointerdown", event => {
+      if(event.target && event.target.closest && event.target.closest("#cropCenterBtn")) return;
       if(!cropSourceImg || !cropSourceImg.complete || cropSourceImg.naturalWidth === 0) return;
       cropPointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
       try { cropPreviewBox.setPointerCapture(event.pointerId); } catch(_){}
@@ -10967,9 +11036,19 @@ try {
     }, { passive: false });
 
     cropPreviewBox.addEventListener("dblclick", event => {
+      if(event.target && event.target.closest && event.target.closest("#cropCenterBtn")) return;
       if(!cropSourceImg || !cropSourceImg.complete || cropSourceImg.naturalWidth === 0) return;
       event.preventDefault();
       setCropZoom(cropZoom > 1.05 ? 1 : 2, true);
+    });
+  }
+
+  if(cropCenterBtn){
+    cropCenterBtn.addEventListener("pointerdown", event => event.stopPropagation());
+    cropCenterBtn.addEventListener("dblclick", event => event.stopPropagation());
+    cropCenterBtn.addEventListener("click", event => {
+      event.stopPropagation();
+      centerCropImage(true);
     });
   }
 
