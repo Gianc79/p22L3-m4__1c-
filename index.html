@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Puzzle Hero v. 1.40</title>
+<title>Puzzle Hero v. 1.41</title>
 <meta name="description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
 <meta property="og:title" content="Puzzle Hero">
 <meta property="og:description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
@@ -2440,11 +2440,12 @@ body.is-fullscreen{
 /* Barra superiore Schermo Intero VERTICALE: AIUTO (sx), MIX (centro), ESCI (dx) */
 .fs-portrait-top-bar {
   display: none;
-  width: min(98vw, calc(100vw - 8px));
-  max-width: 620px;
+  width: calc(min(96vw, calc(100vw - 12px), calc(64dvh * var(--board-aspect-num, 1)), calc((100dvh - 220px) * var(--board-aspect-num, 1))) - 4px);
+  max-width: none;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  padding: 0;
   margin: 0 auto 6px;
   flex: 0 0 auto;
   box-sizing: border-box;
@@ -4842,7 +4843,7 @@ body.is-fullscreen #previewOverlay .preview-image{
           <button class="sound-toggle" id="soundToggleBtn" type="button" aria-label="Attiva o disattiva audio" title="Audio">
             <span id="soundIcon" aria-hidden="true"></span>
           </button>
-          <span class="version">v. 1.40</span>
+          <span class="version">v. 1.41</span>
         </div>
         <p class="subtitle">Ricomponi la foto, con l'aiuto dei tuoi Supereroi!</p>
       </div>
@@ -7490,14 +7491,20 @@ try {
 
   function syncFullscreenTopBarsAlignment(){
     if(!gamePanel || !isFullscreen){
-      if(fsPortraitTopBar) fsPortraitTopBar.style.width = "";
+      if(fsPortraitTopBar){
+        fsPortraitTopBar.style.width = "";
+        fsPortraitTopBar.style.transform = "";
+      }
       if(fsLandscapeTopBar) fsLandscapeTopBar.style.width = "";
       return;
     }
 
     const isLandscape = gamePanel.classList.contains("fs-layout-landscape");
     if(isLandscape){
-      if(fsPortraitTopBar) fsPortraitTopBar.style.width = "";
+      if(fsPortraitTopBar){
+        fsPortraitTopBar.style.width = "";
+        fsPortraitTopBar.style.transform = "";
+      }
       if(fsLandscapeTopBar && previewTile){
         const rect = previewTile.getBoundingClientRect();
         if(rect.width > 0){
@@ -7509,9 +7516,34 @@ try {
     } else {
       if(fsLandscapeTopBar) fsLandscapeTopBar.style.width = "";
       if(fsPortraitTopBar && board){
-        const rect = board.getBoundingClientRect();
-        if(rect.width > 0){
-          fsPortraitTopBar.style.width = `${Math.round(rect.width)}px`;
+        const { cols } = getGridDimensions(levelIndex);
+        const firstTile = board.firstElementChild;
+        const lastTopTile = cols > 0 && board.children.length >= cols ? board.children[cols - 1] : null;
+        let puzzleWidth = 0;
+        let puzzleLeft = 0;
+        if(firstTile && lastTopTile){
+          const firstRect = firstTile.getBoundingClientRect();
+          const lastRect = lastTopTile.getBoundingClientRect();
+          puzzleWidth = lastRect.right - firstRect.left;
+          puzzleLeft = firstRect.left;
+        }
+        if(puzzleWidth <= 0){
+          const rect = board.getBoundingClientRect();
+          if(rect.width > 4){
+            puzzleWidth = rect.width - 4;
+            puzzleLeft = rect.left + 2;
+          }
+        }
+        if(puzzleWidth > 0){
+          fsPortraitTopBar.style.transform = "";
+          fsPortraitTopBar.style.width = `${puzzleWidth.toFixed(2)}px`;
+          if(puzzleLeft > 0){
+            const barRect = fsPortraitTopBar.getBoundingClientRect();
+            const deltaX = puzzleLeft - barRect.left;
+            if(Math.abs(deltaX) > 0.25 && Math.abs(deltaX) < 16){
+              fsPortraitTopBar.style.transform = `translateX(${deltaX.toFixed(2)}px)`;
+            }
+          }
         }
       }
     }
@@ -12357,7 +12389,12 @@ try {
         syncFullscreenTopBarsAlignment();
       }
     });
-    if(board) fsBarSyncObserver.observe(board);
+    if(board){
+      fsBarSyncObserver.observe(board);
+      board.addEventListener("transitionend", () => {
+        if(isFullscreen) syncFullscreenTopBarsAlignment();
+      });
+    }
     if(previewTile) fsBarSyncObserver.observe(previewTile);
   }
 
