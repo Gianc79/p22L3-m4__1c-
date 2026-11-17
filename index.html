@@ -4738,6 +4738,8 @@ body.is-fullscreen #previewOverlay .preview-image{
   }
 }
 </style>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-192.png">
 </head>
 
 <body>
@@ -11960,6 +11962,12 @@ try {
 
 })();
 </script>
-
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./sw.js").catch(() => {});
+    });
+  }
+</script>
 </body>
 </html>
