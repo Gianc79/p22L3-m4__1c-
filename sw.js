@@ -1,4 +1,4 @@
-const CACHE_NAME = "puzzle-hero-v4";
+const CACHE_NAME = "puzzle-hero-v5";
 const ASSETS = [
   "./",
   "./index.html",
@@ -32,9 +32,26 @@ self.addEventListener("fetch", (event) => {
   const reqUrl = new URL(event.request.url);
   if (reqUrl.origin !== self.location.origin) return;
 
+  const isHtmlRequest =
+    event.request.mode === "navigate" ||
+    reqUrl.pathname === "/" ||
+    reqUrl.pathname.endsWith("/index.html") ||
+    reqUrl.pathname.endsWith(".html");
+
   event.respondWith(
-    caches.open(CACHE_NAME).then((cache) =>
-      cache.match(event.request).then((cached) => {
+    caches.open(CACHE_NAME).then((cache) => {
+      if (isHtmlRequest) {
+        return fetch(event.request)
+          .then((response) => {
+            if (response && response.ok) {
+              cache.put(event.request, response.clone());
+            }
+            return response;
+          })
+          .catch(() => cache.match(event.request));
+      }
+
+      return cache.match(event.request).then((cached) => {
         const networkFetch = fetch(event.request)
           .then((response) => {
             if (response && response.ok) {
@@ -49,7 +66,7 @@ self.addEventListener("fetch", (event) => {
           return cached;
         }
         return networkFetch;
-      })
-    )
+      });
+    })
   );
 });
