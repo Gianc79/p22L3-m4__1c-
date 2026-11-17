@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Puzzle Hero v. 1.38</title>
+<title>Puzzle Hero v. 1.39</title>
 <meta name="description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
 <meta property="og:title" content="Puzzle Hero">
 <meta property="og:description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
@@ -87,9 +87,15 @@ button:focus-visible {
   display: block;
   object-fit: cover;
   object-position: center;
+  opacity: 0;
+  transition: opacity 0.25s ease;
   user-select: none;
   -webkit-user-select: none;
   -webkit-user-drag: none;
+}
+
+.splash-screen-img.is-loaded {
+  opacity: 1;
 }
 
 /* SCHERMATA PRINCIPALE (Home / Setup v. 1.38) - Zero scrollbar */
@@ -113,8 +119,9 @@ button:focus-visible {
 .app-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 10px;
+  width: 100%;
   flex: 0 0 auto;
   margin-bottom: clamp(4px, 1.2vh, 10px);
 }
@@ -123,31 +130,40 @@ button:focus-visible {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.brand-copy {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .logo {
-  width: 42px;
-  height: 42px;
+  width: 63px;
+  height: 63px;
   display: grid;
   place-items: center;
-  border-radius: 13px;
+  border-radius: 18px;
   background: #e8ebff;
-  font-size: 24px;
+  font-size: 36px;
   flex: 0 0 auto;
 }
 
 .title-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   flex-wrap: nowrap;
+  min-width: 0;
 }
 
 h1 {
   margin: 0;
-  font-size: clamp(19px, 4.4vw, 26px);
+  font-size: clamp(15px, 4.1vw, 26px);
   line-height: 1.15;
   letter-spacing: -.6px;
+  white-space: nowrap;
 }
 
 .subtitle {
@@ -161,29 +177,30 @@ h1 {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-left: auto;
+  margin-left: 0;
+  flex: 0 0 auto;
 }
 
 .sound-toggle,
 .app-exit-btn {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: 45px;
+  height: 45px;
   padding: 0;
   border: 1px solid var(--border);
   border-radius: 50%;
   background: white;
   color: var(--text);
   cursor: pointer;
-  font-size: 16px;
+  font-size: 20px;
   line-height: 1;
   transition: background .15s ease, transform .15s ease, border-color .15s ease, color .15s ease;
 }
 
 .title-row .sound-toggle {
-  width: 30px;
-  height: 30px;
+  width: 45px;
+  height: 45px;
   flex: 0 0 auto;
 }
 
@@ -2611,158 +2628,30 @@ body.is-fullscreen #previewOverlay .preview-image{
   box-shadow:0 0 0 2px rgba(91,110,225,.25)
 }
 
-/* Fascia laterale destra a schermo intero ORIZZONTALE (v. 1.16) */
-.fs-landscape-strip{
-  display:none
+/* Barra superiore Schermo Intero ORIZZONTALE (sopra la foto modello): AIUTO (sx), MIX (centro), ESCI (dx) */
+.fs-landscape-top-bar {
+  display: none;
+  width: 100%;
+  max-width: 360px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin: 0 auto;
+  flex: 0 0 auto;
+  box-sizing: border-box;
 }
 
-.fs-strip-btn{
-  display:inline-grid;
-  place-items:center;
-  width:42px;
-  height:42px;
-  padding:0;
-  border:1.5px solid var(--border);
-  border-radius:12px;
-  background:#f8fafd;
-  color:var(--text);
-  cursor:pointer;
-  transition:all .15s ease;
-  touch-action:manipulation;
-  flex-shrink:0
+.fs-landscape-top-bar .toggle-correct-btn {
+  padding: 4px 8px 4px 6px;
+  gap: 5px;
 }
 
-.fs-strip-btn:hover:not(:disabled){
-  background:#f0f2ff;
-  border-color:var(--primary);
-  color:var(--primary-dark);
-  transform:scale(1.05)
-}
-
-.fs-strip-btn:active:not(:disabled){
-  transform:scale(.94)
-}
-
-/* Pulsante Aiuto / Posizione corretta con toggle nella fascia orizzontale */
-.fs-strip-exit,
-.fs-strip-toggle-correct {
-  width: 64px !important;
-  max-width: 64px !important;
-  box-sizing: border-box !important;
-  justify-content: center !important;
-}
-
-.fs-strip-exit {
-  background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
-  border-color: #b91c1c;
-  color: #ffffff;
-}
-
-.fs-strip-exit:hover:not(:disabled) {
-  background: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%);
-  border-color: #991b1b;
-  color: #ffffff;
-}
-
-.fs-strip-toggle-correct{
-  padding:3px 6px;
-  gap:4px;
-  border-radius:16px;
-  box-shadow:0 1px 3px rgba(0,0,0,.08);
-  flex-shrink:0
-}
-
-.fs-strip-toggle-correct .toggle-icon{
-  font-size:11px
-}
-
-.fs-strip-toggle-correct .toggle-pill{
-  width:36px;
-  height:18px
-}
-
-.fs-strip-toggle-correct .toggle-knob{
-  width:14px;
-  height:14px
-}
-
-.fs-strip-toggle-correct.active .toggle-knob{
-  transform:translateX(18px)
-}
-
-.fs-strip-toggle-correct .toggle-state{
-  font-size:8px
-}
-
-.fs-strip-stat{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  width:100%;
-  padding:2px 0;
-  text-align:center;
-  flex-shrink:0
-}
-
-.fs-strip-stat .fs-strip-icon{
-  font-size:13px;
-  line-height:1;
-  margin-bottom:1px
-}
-
-.fs-strip-stat .fs-strip-val{
-  font-size:15px;
-  font-weight:900;
-  color:var(--text);
-  font-variant-numeric:tabular-nums;
-  line-height:1.1
-}
-
-.fs-strip-stat .fs-strip-lbl{
-  font-size:8.5px;
-  font-weight:800;
-  text-transform:uppercase;
-  letter-spacing:.3px;
-  color:var(--muted)
-}
-
-.fs-strip-pause{
-  font-size:19px
-}
-
-.fs-strip-pause.is-paused{
-  background:#eef1ff;
-  border-color:var(--primary);
-  color:var(--primary-dark);
-  box-shadow:0 0 0 2px rgba(91,110,225,.25)
-}
-
-.fs-strip-thumb-btn{
-  position:relative;
-  width:48px;
-  height:48px;
-  padding:0;
-  border:2px solid #cbd5e1;
-  border-radius:10px;
-  overflow:hidden;
-  background:#e2e8f0;
-  cursor:default;
-  touch-action:manipulation;
-  flex-shrink:0;
-  margin-top:auto
-}
-
-.fs-strip-thumb-btn img{
-  display:block;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  pointer-events:none
+.fs-landscape-top-bar .fs-exit-btn-3d {
+  padding: 5px 11px;
 }
 
 /* LAYOUT SCHERMO INTERO VERTICALE (portrait) */
-.game-panel.is-fullscreen.fs-layout-portrait .fs-landscape-strip{
+.game-panel.is-fullscreen.fs-layout-portrait .fs-landscape-top-bar{
   display:none!important
 }
 
@@ -2896,9 +2785,9 @@ body.is-fullscreen #previewOverlay .preview-image{
 .game-panel.is-fullscreen.fs-layout-landscape{
   display:flex!important;
   flex-direction:row!important;
-  align-items:center!important;
+  align-items:stretch!important;
   justify-content:space-between!important;
-  padding:max(4px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(4px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left))!important;
+  padding:max(6px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left))!important;
   gap:12px!important
 }
 
@@ -2912,7 +2801,7 @@ body.is-fullscreen #previewOverlay .preview-image{
   align-items:center!important;
   justify-content:space-between!important;
   height:100%!important;
-  width:auto!important;
+  width:100%!important;
   flex:1 1 0%!important;
   min-width:0!important;
   gap:14px!important;
@@ -2926,12 +2815,12 @@ body.is-fullscreen #previewOverlay .preview-image{
   display:flex!important;
   align-items:center!important;
   justify-content:center!important;
-  max-width:calc(100vw - 220px)!important
+  max-width:calc(100vw - 276px)!important
 }
 
 .game-panel.is-fullscreen.fs-layout-landscape .board-wrap{
-  width:min(calc(100vw - 220px), calc((100dvh - 12px) * var(--board-aspect-num, 1)))!important;
-  height:min(calc(100dvh - 12px), calc((100vw - 220px) / var(--board-aspect-num, 1)))!important;
+  width:min(calc(100vw - 276px), calc((100dvh - 14px) * var(--board-aspect-num, 1)))!important;
+  height:min(calc(100dvh - 14px), calc((100vw - 276px) / var(--board-aspect-num, 1)))!important;
   aspect-ratio:var(--board-aspect, 1/1)!important;
   max-width:none!important;
   max-height:none!important;
@@ -2952,8 +2841,8 @@ body.is-fullscreen #previewOverlay .preview-image{
   display:flex!important;
   flex:1 1 0%!important;
   height:100%!important;
-  min-width:0!important;
-  align-items:center!important;
+  min-width:244px!important;
+  align-items:stretch!important;
   justify-content:center!important;
   padding:0!important;
   margin:0!important
@@ -2961,34 +2850,37 @@ body.is-fullscreen #previewOverlay .preview-image{
 
 .game-panel.is-fullscreen.fs-layout-landscape .side-preview-card{
   display:flex!important;
+  flex-direction:column!important;
   flex:1 1 0%!important;
   height:100%!important;
   width:100%!important;
   min-width:0!important;
   min-height:0!important;
   align-items:center!important;
-  justify-content:center!important;
+  justify-content:space-between!important;
+  gap:6px!important;
   background:transparent!important;
   border:none!important;
-  padding:0!important;
+  padding:2px 0!important;
   margin:0!important
 }
 
-.game-panel.is-fullscreen.fs-layout-landscape .fullscreen-hud{
-  display:none!important
+.game-panel.is-fullscreen.fs-layout-landscape .fs-landscape-top-bar{
+  display:flex!important;
+  flex:0 0 auto!important
 }
 
 .game-panel.is-fullscreen.fs-layout-landscape .preview-tile-container{
   display:flex!important;
   flex:1 1 0%!important;
-  height:100%!important;
+  height:auto!important;
   width:100%!important;
   min-width:0!important;
   min-height:0!important;
   container-type:size!important;
   align-items:center!important;
   justify-content:center!important;
-  padding:4px!important;
+  padding:2px!important;
   overflow:hidden!important
 }
 
@@ -3009,52 +2901,57 @@ body.is-fullscreen #previewOverlay .preview-image{
   overflow:hidden!important
 }
 
-.game-panel.is-fullscreen.fs-layout-landscape .fs-strip-thumb-btn{
-  display:none!important
-}
-
-.game-panel.is-fullscreen.fs-layout-landscape .fs-landscape-strip{
-  display:flex!important;
-  flex-direction:column!important;
+.game-panel.is-fullscreen.fs-layout-landscape .fullscreen-hud{
+  display:inline-flex!important;
+  flex:0 0 auto!important;
   align-items:center!important;
-  justify-content:space-between!important;
-  width:76px!important;
-  flex:0 0 76px!important;
-  height:min(calc(100vh - 12px), calc(100dvh - 12px))!important;
-  padding:8px 4px!important;
-  background:rgba(255,255,255,.95)!important;
-  backdrop-filter:blur(10px)!important;
-  border:1px solid var(--border)!important;
-  border-radius:18px!important;
-  box-shadow:0 4px 20px rgba(0,0,0,.1)!important;
-  box-sizing:border-box!important;
-  z-index:100!important;
-  gap:4px!important
+  justify-content:center!important;
+  gap:10px!important;
+  padding:4px 14px!important;
+  margin-top:0!important;
+  max-width:100%!important;
+  box-shadow:0 4px 14px rgba(0,0,0,.1)!important
 }
 
-@media (max-width: 540px){
+.game-panel.is-fullscreen.fs-layout-landscape .fullscreen-moves-box,
+.game-panel.is-fullscreen.fs-layout-landscape .fullscreen-timer-box{
+  gap:5px!important;
+  font-size:clamp(16px, 4.6dvh, 21px)!important
+}
+
+.game-panel.is-fullscreen.fs-layout-landscape .fullscreen-moves-icon,
+.game-panel.is-fullscreen.fs-layout-landscape .fullscreen-timer-icon{
+  font-size:clamp(15px, 4.2dvh, 19px)!important
+}
+
+.game-panel.is-fullscreen.fs-layout-landscape .fullscreen-pause-btn{
+  width:clamp(36px, 9.5dvh, 44px)!important;
+  height:clamp(36px, 9.5dvh, 44px)!important;
+  font-size:clamp(16px, 4.4dvh, 20px)!important
+}
+
+@media (max-width: 600px){
   .game-panel.is-fullscreen.fs-layout-landscape{
     gap:6px!important;
   }
   .game-panel.is-fullscreen.fs-layout-landscape .game-layout{
-    gap:6px!important;
+    gap:8px!important;
   }
   .game-panel.is-fullscreen.fs-layout-landscape .game-main-col{
-    max-width:calc(100vw - 170px)!important;
+    max-width:calc(100vw - 246px)!important;
   }
   .game-panel.is-fullscreen.fs-layout-landscape .board-wrap{
-    width:min(calc(100vw - 170px), calc((100dvh - 12px) * var(--board-aspect-num, 1)))!important;
-    height:min(calc(100dvh - 12px), calc((100vw - 170px) / var(--board-aspect-num, 1)))!important;
+    width:min(calc(100vw - 246px), calc((100dvh - 14px) * var(--board-aspect-num, 1)))!important;
+    height:min(calc(100dvh - 14px), calc((100vw - 246px) / var(--board-aspect-num, 1)))!important;
   }
-  .game-panel.is-fullscreen.fs-layout-landscape .fs-landscape-strip{
-    width:64px!important;
-    flex:0 0 64px!important;
+  .game-panel.is-fullscreen.fs-layout-landscape .game-side-col{
+    min-width:222px!important;
   }
 }
 
 /* Fallback responsive media queries per rotazione manuale senza classi esplicite */
 @media (orientation: portrait){
-  .game-panel.is-fullscreen:not(.fs-layout-landscape) .fs-landscape-strip{
+  .game-panel.is-fullscreen:not(.fs-layout-landscape) .fs-landscape-top-bar{
     display:none!important
   }
   .game-panel.is-fullscreen:not(.fs-layout-landscape) .fullscreen-exit-btn{
@@ -3144,9 +3041,9 @@ body.is-fullscreen #previewOverlay .preview-image{
   .game-panel.is-fullscreen:not(.fs-layout-portrait){
     display:flex!important;
     flex-direction:row!important;
-    align-items:center!important;
+    align-items:stretch!important;
     justify-content:space-between!important;
-    padding:max(4px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(4px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left))!important;
+    padding:max(6px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left))!important;
     gap:12px!important
   }
   .game-panel.is-fullscreen:not(.fs-layout-portrait) .fullscreen-exit-btn{
@@ -3158,7 +3055,7 @@ body.is-fullscreen #previewOverlay .preview-image{
     align-items:center!important;
     justify-content:space-between!important;
     height:100%!important;
-    width:auto!important;
+    width:100%!important;
     flex:1 1 0%!important;
     min-width:0!important;
     gap:14px!important;
@@ -3171,11 +3068,11 @@ body.is-fullscreen #previewOverlay .preview-image{
     display:flex!important;
     align-items:center!important;
     justify-content:center!important;
-    max-width:calc(100vw - 220px)!important
+    max-width:calc(100vw - 276px)!important
   }
   .game-panel.is-fullscreen:not(.fs-layout-portrait) .board-wrap{
-    width:min(calc(100vw - 220px), calc((100dvh - 12px) * var(--board-aspect-num, 1)))!important;
-    height:min(calc(100dvh - 12px), calc((100vw - 220px) / var(--board-aspect-num, 1)))!important;
+    width:min(calc(100vw - 276px), calc((100dvh - 14px) * var(--board-aspect-num, 1)))!important;
+    height:min(calc(100dvh - 14px), calc((100vw - 276px) / var(--board-aspect-num, 1)))!important;
     aspect-ratio:var(--board-aspect, 1/1)!important;
     max-width:none!important;
     max-height:none!important;
@@ -3194,40 +3091,43 @@ body.is-fullscreen #previewOverlay .preview-image{
     display:flex!important;
     flex:1 1 0%!important;
     height:100%!important;
-    min-width:0!important;
-    align-items:center!important;
+    min-width:244px!important;
+    align-items:stretch!important;
     justify-content:center!important;
     padding:0!important;
     margin:0!important
   }
   .game-panel.is-fullscreen:not(.fs-layout-portrait) .side-preview-card{
     display:flex!important;
+    flex-direction:column!important;
     flex:1 1 0%!important;
     height:100%!important;
     width:100%!important;
     min-width:0!important;
     min-height:0!important;
     align-items:center!important;
-    justify-content:center!important;
+    justify-content:space-between!important;
+    gap:6px!important;
     background:transparent!important;
     border:none!important;
-    padding:0!important;
+    padding:2px 0!important;
     margin:0!important
   }
-  .game-panel.is-fullscreen:not(.fs-layout-portrait) .fullscreen-hud{
-    display:none!important
+  .game-panel.is-fullscreen:not(.fs-layout-portrait) .fs-landscape-top-bar{
+    display:flex!important;
+    flex:0 0 auto!important
   }
   .game-panel.is-fullscreen:not(.fs-layout-portrait) .preview-tile-container{
     display:flex!important;
     flex:1 1 0%!important;
-    height:100%!important;
+    height:auto!important;
     width:100%!important;
     min-width:0!important;
     min-height:0!important;
     container-type:size!important;
     align-items:center!important;
     justify-content:center!important;
-    padding:4px!important;
+    padding:2px!important;
     overflow:hidden!important
   }
   .game-panel.is-fullscreen:not(.fs-layout-portrait) .preview-tile{
@@ -3246,26 +3146,30 @@ body.is-fullscreen #previewOverlay .preview-image{
     position:relative!important;
     overflow:hidden!important
   }
-  .game-panel.is-fullscreen:not(.fs-layout-portrait) .fs-strip-thumb-btn{
-    display:none!important
-  }
-  .game-panel.is-fullscreen:not(.fs-layout-portrait) .fs-landscape-strip{
-    display:flex!important;
-    flex-direction:column!important;
+  .game-panel.is-fullscreen:not(.fs-layout-portrait) .fullscreen-hud{
+    display:inline-flex!important;
+    flex:0 0 auto!important;
     align-items:center!important;
-    justify-content:space-between!important;
-    width:76px!important;
-    flex:0 0 76px!important;
-    height:min(calc(100vh - 12px), calc(100dvh - 12px))!important;
-    padding:8px 4px!important;
-    background:rgba(255,255,255,.95)!important;
-    backdrop-filter:blur(10px)!important;
-    border:1px solid var(--border)!important;
-    border-radius:18px!important;
-    box-shadow:0 4px 20px rgba(0,0,0,.1)!important;
-    box-sizing:border-box!important;
-    z-index:100!important;
-    gap:4px!important
+    justify-content:center!important;
+    gap:10px!important;
+    padding:4px 14px!important;
+    margin-top:0!important;
+    max-width:100%!important;
+    box-shadow:0 4px 14px rgba(0,0,0,.1)!important
+  }
+  .game-panel.is-fullscreen:not(.fs-layout-portrait) .fullscreen-moves-box,
+  .game-panel.is-fullscreen:not(.fs-layout-portrait) .fullscreen-timer-box{
+    gap:5px!important;
+    font-size:clamp(16px, 4.6dvh, 21px)!important
+  }
+  .game-panel.is-fullscreen:not(.fs-layout-portrait) .fullscreen-moves-icon,
+  .game-panel.is-fullscreen:not(.fs-layout-portrait) .fullscreen-timer-icon{
+    font-size:clamp(15px, 4.2dvh, 19px)!important
+  }
+  .game-panel.is-fullscreen:not(.fs-layout-portrait) .fullscreen-pause-btn{
+    width:clamp(36px, 9.5dvh, 44px)!important;
+    height:clamp(36px, 9.5dvh, 44px)!important;
+    font-size:clamp(16px, 4.4dvh, 20px)!important
   }
 }
 
@@ -3281,9 +3185,9 @@ body.is-fullscreen #previewOverlay .preview-image{
   }
 
   .logo{
-    width:42px;
-    height:42px;
-    font-size:23px
+    width:63px;
+    height:63px;
+    font-size:36px
   }
 
   .subtitle{
@@ -4884,37 +4788,61 @@ body.is-fullscreen #previewOverlay .preview-image{
 </head>
 
 <body>
-<!-- SCHERMATA SPLASH AVVIO (v. 1.38) -->
+<!-- SCHERMATA SPLASH AVVIO (v. 1.39) -->
 <div class="splash-screen" id="splashScreen" aria-hidden="true">
-  <img class="splash-screen-img" src="./Splash.webp" alt="Puzzle Hero" draggable="false">
+  <img class="splash-screen-img" id="splashScreenImg" src="./Splash.webp" alt="" draggable="false">
 </div>
+<script>
+(function(){
+  var img = document.getElementById("splashScreenImg");
+  if(!img) return;
+  var candidates = ["./Splash.webp", "/Splash.webp", "./public/Splash.webp", "/public/Splash.webp"];
+  var idx = 0;
+  var markLoaded = function(){ img.classList.add("is-loaded"); };
+  img.addEventListener("load", markLoaded);
+  img.addEventListener("error", function(){
+    idx++;
+    if(idx < candidates.length){
+      img.src = candidates[idx];
+    }
+  });
+  if(img.complete){
+    if(img.naturalWidth > 0){
+      markLoaded();
+    } else {
+      idx = 1;
+      img.src = candidates[1];
+    }
+  }
+})();
+</script>
 
-<!-- SCHERMATA PRINCIPALE (Home / Setup v. 1.38) -->
+<!-- SCHERMATA PRINCIPALE (Home / Setup v. 1.39) -->
 <div class="app home-view" id="homeView">
 
   <header class="app-header">
-    <div class="brand">
-      <div class="logo" aria-hidden="true">🧩</div>
-      <div>
-        <div class="title-row">
-          <h1>Puzzle Hero</h1>
-          <button class="sound-toggle" id="soundToggleBtn" type="button" aria-label="Attiva o disattiva audio" title="Audio">
-            <span id="soundIcon" aria-hidden="true"></span>
-          </button>
-          <span class="version">v. 1.38</span>
-        </div>
-        <p class="subtitle">Ricomponi la foto, con l'aiuto dei tuoi Supereroi!</p>
-      </div>
-    </div>
-
     <div class="header-actions">
       <button class="app-exit-btn" id="appExitBtn" type="button" aria-label="Esci dall'applicazione" title="Esci dall'app">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
           <polyline points="16 17 21 12 16 7"/>
           <line x1="21" y1="12" x2="9" y2="12"/>
         </svg>
       </button>
+    </div>
+
+    <div class="brand">
+      <div class="logo" aria-hidden="true">🧩</div>
+      <div class="brand-copy">
+        <div class="title-row">
+          <h1>Puzzle Hero</h1>
+          <button class="sound-toggle" id="soundToggleBtn" type="button" aria-label="Attiva o disattiva audio" title="Audio">
+            <span id="soundIcon" aria-hidden="true"></span>
+          </button>
+          <span class="version">v. 1.39</span>
+        </div>
+        <p class="subtitle">Ricomponi la foto, con l'aiuto dei tuoi Supereroi!</p>
+      </div>
     </div>
   </header>
 
@@ -5027,16 +4955,17 @@ body.is-fullscreen #previewOverlay .preview-image{
   <!-- SCHERMO INTERO VERTICALE: Fascia in alto con AIUTO (sx), MIX (centro), ESCI (dx) -->
   <div class="fs-portrait-top-bar" id="fsPortraitTopBar">
     <button
-      class="toggle-correct-btn fs-top-help-btn"
+      class="toggle-correct-btn fs-top-help-btn active"
       id="fsPortraitHelpBtn"
       type="button"
       role="switch"
-      aria-checked="false"
+      aria-checked="true"
+      aria-pressed="true"
       title="Evidenzia i tasselli già nella posizione corretta">
       <span class="toggle-icon">✨</span>
       <span class="toggle-pill" aria-hidden="true">
         <span class="toggle-knob"></span>
-        <span class="toggle-state" id="fsPortraitHelpToggleState">OFF</span>
+        <span class="toggle-state" id="fsPortraitHelpToggleState">ON</span>
       </span>
     </button>
 
@@ -5077,6 +5006,48 @@ body.is-fullscreen #previewOverlay .preview-image{
     <!-- Modello foto (miniatura centrata e adattabile) + Widget Mosse, Timer e Pausa -->
     <aside class="game-side-col">
       <div class="side-preview-card">
+        <!-- SCHERMO INTERO ORIZZONTALE: Barra superiore con AIUTO (sx), MIX (centro), ESCI (dx) sopra la foto modello -->
+        <div class="fs-landscape-top-bar" id="fsLandscapeTopBar">
+          <button
+            class="toggle-correct-btn fs-top-help-btn active"
+            id="fsHelpBtn"
+            type="button"
+            role="switch"
+            aria-checked="true"
+            aria-pressed="true"
+            title="Evidenzia i tasselli già nella posizione corretta">
+            <span class="toggle-icon">✨</span>
+            <span class="toggle-pill" aria-hidden="true">
+              <span class="toggle-knob"></span>
+              <span class="toggle-state" id="fsHelpToggleStateLabel">ON</span>
+            </span>
+          </button>
+
+          <button
+            class="mix-icon-btn fs-top-mix-btn"
+            id="fsLandscapeMixBtn"
+            type="button"
+            title="Mescola i tasselli (MIX)"
+            disabled>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="16 3 21 3 21 8"></polyline>
+              <line x1="4" y1="20" x2="21" y2="3"></line>
+              <polyline points="21 16 21 21 16 21"></polyline>
+              <line x1="15" y1="15" x2="21" y2="21"></line>
+              <line x1="4" y1="4" x2="9" y2="9"></line>
+            </svg>
+            <span>MIX</span>
+          </button>
+
+          <button
+            class="fs-exit-btn-3d"
+            id="fsLandscapeExitBtn"
+            type="button"
+            title="Termina partita ed esci">
+            ESCI
+          </button>
+        </div>
+
         <div class="preview-tile-container">
           <div
             class="preview-tile"
@@ -5110,84 +5081,6 @@ body.is-fullscreen #previewOverlay .preview-image{
     </aside>
 
   </div>
-
-  <!-- SCHERMO INTERO ORIZZONTALE: Fascia laterale destra con comandi (ESCI, AIUTO, MIX, MOSSE, TIMER, PAUSA, MODELLO FOTO) -->
-  <aside class="fs-landscape-strip" id="fsLandscapeStrip" aria-label="Controlli schermo intero orizzontale">
-
-    <!-- 1. ESCI -->
-    <button
-      class="fs-strip-btn fs-strip-exit"
-      id="fsStripExitBtn"
-      type="button"
-      title="Termina partita ed esci"
-      aria-label="Termina partita ed esci">
-      <span style="font-size:11px;font-weight:900;letter-spacing:.3px;">ESCI</span>
-    </button>
-
-    <!-- 2. AIUTO (stelline + toggle ON/OFF) -->
-    <button
-      class="toggle-correct-btn fs-strip-toggle-correct"
-      id="fsHelpBtn"
-      type="button"
-      role="switch"
-      aria-checked="false"
-      title="Evidenzia i tasselli corretti">
-      <span class="toggle-icon">✨</span>
-      <span class="toggle-pill" aria-hidden="true">
-        <span class="toggle-knob"></span>
-        <span class="toggle-state" id="fsHelpToggleStateLabel">OFF</span>
-      </span>
-    </button>
-
-    <!-- 3. MIX -->
-    <button
-      class="fs-strip-btn fs-strip-mix"
-      id="fsStripMixBtn"
-      type="button"
-      title="Mescola i tasselli (MIX)"
-      disabled>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="16 3 21 3 21 8"></polyline>
-        <line x1="4" y1="20" x2="21" y2="3"></line>
-        <polyline points="21 16 21 21 16 21"></polyline>
-        <line x1="15" y1="15" x2="21" y2="21"></line>
-        <line x1="4" y1="4" x2="9" y2="9"></line>
-      </svg>
-    </button>
-
-    <!-- 4. MOSSE -->
-    <div class="fs-strip-stat" title="Numero di mosse">
-      <span class="fs-strip-icon" aria-hidden="true">🔄</span>
-      <span class="fs-strip-val" id="fsStripMovesVal">0</span>
-      <span class="fs-strip-lbl">Mosse</span>
-    </div>
-
-    <!-- 5. TIMER -->
-    <div class="fs-strip-stat" title="Tempo di gioco">
-      <span class="fs-strip-icon" aria-hidden="true">⏱️</span>
-      <span class="fs-strip-val" id="fsStripTimerVal">00:00</span>
-      <span class="fs-strip-lbl">Tempo</span>
-    </div>
-
-    <!-- 6. PAUSA -->
-    <button
-      class="fs-strip-btn fs-strip-pause"
-      id="fsStripPauseBtn"
-      type="button"
-      title="Metti in pausa il timer"
-      aria-label="Metti in pausa il timer">
-      <span id="fsStripPauseIcon">⏸️</span>
-    </button>
-
-    <!-- 7. MODELLO FOTO (anteprima fissa) -->
-    <div
-      class="fs-strip-thumb-btn"
-      id="fsStripThumbBtn"
-      aria-label="Modello foto originale">
-      <img id="fsStripThumbImg" alt="Miniatura foto originale" draggable="false">
-    </div>
-
-  </aside>
 
 </main>
 
@@ -6238,11 +6131,13 @@ try {
   const fullscreenToggleBtn = $("fullscreenToggleBtn");
   const fullscreenExitBtn = $("fullscreenExitBtn");
 
-  /* Controlli top bar Schermo Intero Verticale */
+  /* Controlli top bar Schermo Intero Verticale e Orizzontale */
   const fsPortraitHelpBtn = $("fsPortraitHelpBtn");
   const fsPortraitHelpToggleState = $("fsPortraitHelpToggleState");
   const fsPortraitMixBtn = $("fsPortraitMixBtn");
   const fsPortraitExitBtn = $("fsPortraitExitBtn");
+  const fsLandscapeMixBtn = $("fsLandscapeMixBtn");
+  const fsLandscapeExitBtn = $("fsLandscapeExitBtn");
   const fullscreenPortraitThumb = $("fullscreenPortraitThumb");
 
   /* Dialog Uscita Partita & Applicazione (ESCI) */
@@ -6471,7 +6366,7 @@ try {
   let selectedFormat = "auto";
   let currentAspectRatio = "1:1";
   let showNumbers = false;
-  let showCorrect = false;
+  let showCorrect = true;
 
   let timerSeconds = 0;
   let timerInterval = null;
@@ -6557,28 +6452,7 @@ try {
         });
 
       }else if(type === "splash"){
-        const jingle = [
-          { freq: 523.25, start: 0.05, dur: 0.18, vol: 0.14, wave: "triangle" },
-          { freq: 659.25, start: 0.19, dur: 0.18, vol: 0.15, wave: "triangle" },
-          { freq: 783.99, start: 0.33, dur: 0.20, vol: 0.16, wave: "triangle" },
-          { freq: 1046.50, start: 0.48, dur: 0.48, vol: 0.18, wave: "sine" },
-          { freq: 783.99, start: 0.64, dur: 0.26, vol: 0.11, wave: "sine" },
-          { freq: 1046.50, start: 0.80, dur: 0.62, vol: 0.16, wave: "triangle" },
-          { freq: 1318.51, start: 0.80, dur: 0.62, vol: 0.11, wave: "sine" }
-        ];
-        jingle.forEach(n => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = n.wave;
-          osc.frequency.setValueAtTime(n.freq, now + n.start);
-          gain.gain.setValueAtTime(0.001, now + n.start);
-          gain.gain.linearRampToValueAtTime(n.vol, now + n.start + 0.018);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + n.start + n.dur);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(now + n.start);
-          osc.stop(now + n.start + n.dur + 0.02);
-        });
+        playSplashMusic();
 
       }else if(type === "win"){
         const freqs = [523.25, 659.25, 783.99, 1046.50];
@@ -6598,12 +6472,130 @@ try {
     }catch(_){}
   }
 
+  let splashMusicMasterGain = null;
+  let splashMusicNodes = [];
+
+  function stopSplashMusic(fadeSeconds = 0.5){
+    try{
+      if(splashMusicMasterGain && audioCtx){
+        const now = audioCtx.currentTime;
+        const g = splashMusicMasterGain.gain;
+        g.cancelScheduledValues(now);
+        g.setValueAtTime(Math.max(0.0001, g.value), now);
+        g.linearRampToValueAtTime(0.0001, now + Math.max(0.05, fadeSeconds));
+      }
+      const nodesToStop = splashMusicNodes.slice();
+      splashMusicNodes = [];
+      setTimeout(() => {
+        nodesToStop.forEach(n => {
+          try{ n.stop(); }catch(_){}
+          try{ n.disconnect(); }catch(_){}
+        });
+        if(splashMusicMasterGain){
+          try{ splashMusicMasterGain.disconnect(); }catch(_){}
+          splashMusicMasterGain = null;
+        }
+      }, Math.round((fadeSeconds + 0.1) * 1000));
+    }catch(_){}
+  }
+
+  function playSplashMusic(maxDurationSec = 6.0){
+    if(!soundEnabled) return;
+    try{
+      const ctx = getAudioContext();
+      if(!ctx || ctx.state !== "running") return;
+      stopSplashMusic(0.05);
+
+      const now = ctx.currentTime + 0.03;
+      const durLimit = Math.max(0.5, Math.min(6.0, maxDurationSec));
+      const master = ctx.createGain();
+      master.gain.setValueAtTime(0.001, now);
+      master.gain.linearRampToValueAtTime(0.85, now + 0.12);
+      if(durLimit > 0.7){
+        master.gain.setValueAtTime(0.85, now + durLimit - 0.55);
+        master.gain.linearRampToValueAtTime(0.001, now + durLimit);
+      }
+      master.connect(ctx.destination);
+      splashMusicMasterGain = master;
+
+      const scheduleTone = (freq, start, dur, vol, wave = "triangle") => {
+        if(start >= durLimit) return;
+        const clippedDur = Math.min(dur, durLimit - start);
+        if(clippedDur <= 0.04) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = wave;
+        osc.frequency.setValueAtTime(freq, now + start);
+        gain.gain.setValueAtTime(0.0008, now + start);
+        gain.gain.linearRampToValueAtTime(vol, now + start + Math.min(0.025, clippedDur * 0.25));
+        gain.gain.exponentialRampToValueAtTime(0.0008, now + start + clippedDur);
+        osc.connect(gain);
+        gain.connect(master);
+        osc.start(now + start);
+        osc.stop(now + start + clippedDur + 0.03);
+        splashMusicNodes.push(osc);
+      };
+
+      // Melodia principale (6.0s a 120 BPM - tema allegro ed eroico in Do maggiore)
+      const melody = [
+        // Battuta 1 (0.0s - 2.0s): Do5 - Mi5 - Sol5 - Do6 | Si5 - Sol5 - La5 - Sol5
+        { f: 523.25, t: 0.00, d: 0.34, v: 0.13 },
+        { f: 659.25, t: 0.25, d: 0.34, v: 0.13 },
+        { f: 783.99, t: 0.50, d: 0.44, v: 0.15 },
+        { f: 1046.50, t: 0.88, d: 0.36, v: 0.16 },
+        { f: 987.77, t: 1.25, d: 0.24, v: 0.13 },
+        { f: 783.99, t: 1.50, d: 0.24, v: 0.13 },
+        { f: 880.00, t: 1.75, d: 0.24, v: 0.14 },
+
+        // Battuta 2 (2.0s - 4.0s): La5 - Sol5 - Fa5 - Mi5 - Re5 - Mi5 - Fa5 - Sol5
+        { f: 880.00, t: 2.00, d: 0.34, v: 0.15 },
+        { f: 783.99, t: 2.25, d: 0.24, v: 0.13 },
+        { f: 698.46, t: 2.50, d: 0.34, v: 0.14 },
+        { f: 659.25, t: 2.88, d: 0.24, v: 0.13 },
+        { f: 587.33, t: 3.12, d: 0.24, v: 0.13 },
+        { f: 659.25, t: 3.38, d: 0.24, v: 0.13 },
+        { f: 698.46, t: 3.62, d: 0.24, v: 0.14 },
+        { f: 783.99, t: 3.82, d: 0.22, v: 0.14 },
+
+        // Battuta 3 (4.0s - 6.0s): La5 - Si5 - Do6 - Sol5 - Mi5 - Sol5 - Do6 (finale luminoso)
+        { f: 880.00, t: 4.00, d: 0.30, v: 0.15 },
+        { f: 987.77, t: 4.25, d: 0.28, v: 0.15 },
+        { f: 1046.50, t: 4.50, d: 0.38, v: 0.17 },
+        { f: 783.99, t: 4.88, d: 0.24, v: 0.14 },
+        { f: 659.25, t: 5.12, d: 0.22, v: 0.14 },
+        { f: 783.99, t: 5.32, d: 0.22, v: 0.15 },
+        { f: 1046.50, t: 5.50, d: 0.50, v: 0.17 }
+      ];
+      melody.forEach(n => {
+        scheduleTone(n.f, n.t, n.d, n.v, "triangle");
+        scheduleTone(n.f * 2, n.t, n.d * 0.7, n.v * 0.22, "sine");
+      });
+
+      // Accompagnamento armonico e basso morbido lungo tutti i 6 secondi
+      const chords = [
+        { bass: 130.81, arp: [261.63, 329.63, 392.00, 329.63], start: 0.00 }, // C
+        { bass: 196.00, arp: [246.94, 293.66, 392.00, 293.66], start: 1.00 }, // G
+        { bass: 220.00, arp: [261.63, 329.63, 440.00, 329.63], start: 2.00 }, // Am
+        { bass: 174.61, arp: [220.00, 261.63, 349.23, 293.66], start: 3.00 }, // F -> Dm
+        { bass: 174.61, arp: [261.63, 349.23, 440.00, 392.00], start: 4.00 }, // F -> G
+        { bass: 196.00, arp: [246.94, 293.66, 392.00, 493.88], start: 4.75 }, // G7
+        { bass: 130.81, arp: [261.63, 329.63, 392.00, 523.25], start: 5.25 }  // C finale
+      ];
+      chords.forEach(ch => {
+        scheduleTone(ch.bass, ch.start, 0.88, 0.11, "sine");
+        ch.arp.forEach((freq, idx) => {
+          scheduleTone(freq, ch.start + idx * 0.22, 0.36, 0.06, "sine");
+        });
+      });
+    }catch(_){}
+  }
+
 
   function updateSoundUI(){
     if(soundIcon){
       soundIcon.innerHTML = soundEnabled
-        ? `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`
-        : `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
+        ? `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`
+        : `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
     }
     if(soundToggleBtn){
       soundToggleBtn.setAttribute(
@@ -6629,10 +6621,6 @@ try {
     const fsTimer = $("fullscreenTimerVal");
     if(fsTimer){
       fsTimer.textContent = formatted;
-    }
-    const fsStripTimer = $("fsStripTimerVal");
-    if(fsStripTimer){
-      fsStripTimer.textContent = formatted;
     }
   }
 
@@ -6670,8 +6658,7 @@ try {
     const canPause = Boolean(photoData && mixed && !locked);
     const pauseItems = [
       { btn: timerPauseBtn, icon: pauseBtnIcon },
-      { btn: $("fullscreenPauseBtn"), icon: $("fullscreenPauseIcon") },
-      { btn: $("fsStripPauseBtn"), icon: $("fsStripPauseIcon") }
+      { btn: $("fullscreenPauseBtn"), icon: $("fullscreenPauseIcon") }
     ];
 
     pauseItems.forEach(item => {
@@ -7788,7 +7775,9 @@ try {
       timerSeconds = Number.isInteger(data.timerSeconds) ? data.timerSeconds : 0;
       currentAspectRatio = typeof data.currentAspectRatio === "string" ? data.currentAspectRatio : "1:1";
       showNumbers = Boolean(data.showNumbers);
-      showCorrect = Boolean(data.showCorrect);
+      showCorrect = Boolean(data.inGameSession) && typeof data.showCorrect === "boolean"
+        ? data.showCorrect
+        : true;
       mixed = data.mixed;
       locked = data.locked;
       gameCompleted = Boolean(data.gameCompleted || (data.levelIndex >= LEVELS.length - 1 && data.locked));
@@ -7801,8 +7790,6 @@ try {
       if(imgEl) imgEl.src = photoData;
       const thumbEl = $("previewThumb");
       if(thumbEl) thumbEl.src = photoData;
-      const fsThumb = $("fsStripThumbImg");
-      if(fsThumb) fsThumb.src = photoData;
 
       const savedOverlay = data.overlay || "";
 
@@ -7895,10 +7882,6 @@ try {
     if(fsMoves){
       fsMoves.textContent = String(moves);
     }
-    const fsStripMoves = $("fsStripMovesVal");
-    if(fsStripMoves){
-      fsStripMoves.textContent = String(moves);
-    }
 
     if(levelIndicators){
       levelIndicators.querySelectorAll(".level-square").forEach((square, index) => {
@@ -7930,8 +7913,7 @@ try {
     const canMix = loaded && !locked && moves === 0;
     if(mixBtn) mixBtn.disabled = !canMix;
     if(fsPortraitMixBtn) fsPortraitMixBtn.disabled = !canMix;
-    const fsStripMix = $("fsStripMixBtn");
-    if(fsStripMix) fsStripMix.disabled = !canMix;
+    if(fsLandscapeMixBtn) fsLandscapeMixBtn.disabled = !canMix;
 
     if(restartLevelBtn) restartLevelBtn.disabled = !loaded || locked;
     if(previewBtn) previewBtn.disabled = !loaded;
@@ -7942,11 +7924,6 @@ try {
     const thumbEl = $("previewThumb");
     if(thumbEl && photoData){
       thumbEl.src = photoData;
-    }
-
-    const fsStripThumb = $("fsStripThumbImg");
-    if(fsStripThumb && photoData){
-      fsStripThumb.src = photoData;
     }
 
     const previewImg = $("previewImage");
@@ -9935,8 +9912,6 @@ try {
     if(imgEl && photoData) imgEl.src = photoData;
     const thumbEl = $("previewThumb");
     if(thumbEl && photoData) thumbEl.src = photoData;
-    const fsThumb = $("fsStripThumbImg");
-    if(fsThumb && photoData) fsThumb.src = photoData;
 
     createSolvedPieces();
     shufflePieces(true);
@@ -10866,10 +10841,9 @@ try {
     fsPortraitExitBtn.addEventListener("click", requestExitGame);
   }
 
-  // Pulsante ESCI in fascia laterale orizzontale a schermo intero
-  const fsStripExitBtn = $("fsStripExitBtn");
-  if(fsStripExitBtn){
-    fsStripExitBtn.addEventListener("click", requestExitGame);
+  // Pulsante ESCI in top bar orizzontale a schermo intero
+  if(fsLandscapeExitBtn){
+    fsLandscapeExitBtn.addEventListener("click", requestExitGame);
   }
 
   if(fullscreenExitBtn){
@@ -10901,7 +10875,7 @@ try {
     });
   }
 
-  // Pulsante pausa in HUD verticale
+  // Pulsante pausa in HUD schermo intero (verticale e orizzontale)
   const fullscreenPauseBtn = $("fullscreenPauseBtn");
   if(fullscreenPauseBtn){
     fullscreenPauseBtn.addEventListener("click", ()=>{
@@ -10913,10 +10887,10 @@ try {
     });
   }
 
-  // Controlli fascia laterale a schermo intero orizzontale
-  const fsStripHelpBtn = $("fsStripHelpBtn") || $("fsHelpBtn");
-  if(fsStripHelpBtn){
-    fsStripHelpBtn.addEventListener("click", ()=>{
+  // Controlli top bar a schermo intero orizzontale (identici al layout verticale)
+  const fsHelpBtn = $("fsHelpBtn");
+  if(fsHelpBtn){
+    fsHelpBtn.addEventListener("click", ()=>{
       showCorrect = !showCorrect;
       if(fsPortraitHelpToggleState){
         fsPortraitHelpToggleState.textContent = showCorrect ? "ON" : "OFF";
@@ -10929,23 +10903,11 @@ try {
     });
   }
 
-  const fsStripMixBtn = $("fsStripMixBtn");
-  if(fsStripMixBtn){
-    fsStripMixBtn.addEventListener("click", ()=>{
+  if(fsLandscapeMixBtn){
+    fsLandscapeMixBtn.addEventListener("click", ()=>{
       if(!locked){
         shufflePieces(false);
         playSound("swap");
-      }
-    });
-  }
-
-  const fsStripPauseBtn = $("fsStripPauseBtn");
-  if(fsStripPauseBtn){
-    fsStripPauseBtn.addEventListener("click", ()=>{
-      if(isPaused){
-        resumeFromPause();
-      }else{
-        pauseGame();
       }
     });
   }
@@ -11067,6 +11029,8 @@ try {
 
         if(soundEnabled){
           playSound("soundOn");
+        }else{
+          stopSplashMusic(0.08);
         }
       }
     );
@@ -11958,8 +11922,6 @@ try {
       if(imgEl && photoData) imgEl.src = photoData;
       const thumbEl = $("previewThumb");
       if(thumbEl && photoData) thumbEl.src = photoData;
-      const fsThumb = $("fsStripThumbImg");
-      if(fsThumb && photoData) fsThumb.src = photoData;
 
       createSolvedPieces();
       shufflePieces(true);
@@ -12120,6 +12082,7 @@ try {
       mixed = false;
       locked = false;
       gameCompleted = false;
+      showCorrect = true;
       selectedTile = null;
       activeDrag = null;
       inGameSession = true;
@@ -12128,8 +12091,6 @@ try {
       if(imgEl && photoData) imgEl.src = photoData;
       const thumbEl = $("previewThumb");
       if(thumbEl && photoData) thumbEl.src = photoData;
-      const fsThumb = $("fsStripThumbImg");
-      if(fsThumb && photoData) fsThumb.src = photoData;
 
       if(homeView){
         homeView.classList.add("is-hidden");
@@ -12341,14 +12302,16 @@ try {
   });
 
   /*
-   * SCHERMATA DI AVVIO (SPLASH v. 1.38)
+   * SCHERMATA DI AVVIO (SPLASH v. 1.39)
    */
   function initSplashScreen(){
     const splashEl = $("splashScreen");
     if(!splashEl) return;
 
+    const SPLASH_DURATION_MS = 6000;
+    const splashStartedAt = Date.now();
     let splashActive = true;
-    let jinglePlayed = false;
+    let musicStarted = false;
 
     const cleanupUnlockListeners = () => {
       document.removeEventListener("pointerdown", onFirstGesture, true);
@@ -12356,19 +12319,21 @@ try {
       document.removeEventListener("keydown", onFirstGesture, true);
     };
 
-    const triggerSplashJingle = () => {
-      if(!splashActive || jinglePlayed || !soundEnabled) return;
+    const startSplashMusicForRemaining = () => {
+      if(!splashActive || musicStarted || !soundEnabled) return;
       const ctx = getAudioContext();
       if(!ctx) return;
+      const remainingSec = Math.max(0.4, (SPLASH_DURATION_MS - (Date.now() - splashStartedAt)) / 1000);
       if(ctx.state === "running"){
-        jinglePlayed = true;
-        playSound("splash");
+        musicStarted = true;
+        playSplashMusic(remainingSec);
         cleanupUnlockListeners();
       } else {
         ctx.resume().then(() => {
-          if(splashActive && !jinglePlayed && soundEnabled && ctx.state === "running"){
-            jinglePlayed = true;
-            playSound("splash");
+          if(splashActive && !musicStarted && soundEnabled && ctx.state === "running"){
+            musicStarted = true;
+            const rem = Math.max(0.4, (SPLASH_DURATION_MS - (Date.now() - splashStartedAt)) / 1000);
+            playSplashMusic(rem);
             cleanupUnlockListeners();
           }
         }).catch(() => {});
@@ -12376,27 +12341,28 @@ try {
     };
 
     const onFirstGesture = () => {
-      triggerSplashJingle();
+      startSplashMusicForRemaining();
     };
 
     document.addEventListener("pointerdown", onFirstGesture, true);
     document.addEventListener("touchstart", onFirstGesture, true);
     document.addEventListener("keydown", onFirstGesture, true);
 
-    triggerSplashJingle();
+    startSplashMusicForRemaining();
 
     setTimeout(() => {
       splashActive = false;
       cleanupUnlockListeners();
+      stopSplashMusic(0.75);
       splashEl.classList.add("is-fading-out");
       setTimeout(() => {
         splashEl.classList.add("is-hidden");
       }, 900);
-    }, 6000);
+    }, SPLASH_DURATION_MS);
   }
 
   /*
-   * AVVIO DELL'APPLICAZIONE (v. 1.38)
+   * AVVIO DELL'APPLICAZIONE (v. 1.39)
    */
   updateSoundUI();
   updateTimerDisplay();
