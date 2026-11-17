@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Puzzle Hero v. 1.42</title>
+<title>Puzzle Hero v. 1.43</title>
 <meta name="description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
 <meta property="og:title" content="Puzzle Hero">
 <meta property="og:description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
@@ -292,12 +292,6 @@ h1 {
   color: var(--muted);
 }
 
-.home-level-summary {
-  font-size: 11px;
-  font-weight: 800;
-  color: var(--primary-dark);
-}
-
 .home-record-row {
   margin-top: clamp(5px, 0.9vh, 8px);
   display: flex;
@@ -482,7 +476,11 @@ h1 {
   flex: 1 1 auto;
   min-height: 0;
   max-height: 49dvh;
-  margin-top: clamp(4px, 1vh, 8px);
+  margin-top: 0;
+  margin-bottom: clamp(4px, 1vh, 8px);
+}
+
+#levelPanel {
   margin-bottom: clamp(4px, 1vh, 8px);
 }
 
@@ -1352,29 +1350,85 @@ h1 {
   box-shadow:inset 0 0 0 2.5px rgba(32,151,119,.85)
 }
 
-/* Animazione pulse sottile quando un tassello viene posizionato correttamente (v. 1.19) */
+/* Animazione scuotimento e bagliore quando un tassello viene posizionato correttamente (v. 1.43) */
 @keyframes tilePulseCorrect {
   0% {
-    transform: scale(1);
-    box-shadow: inset 0 0 0 0 rgba(32, 151, 119, 0);
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1);
+    box-shadow: inset 0 0 0 0 rgba(52, 211, 153, 0);
   }
-  35% {
-    transform: scale(1.045);
-    box-shadow: inset 0 0 0 3px #209777, 0 0 12px rgba(32, 151, 119, 0.55);
-    z-index: 10;
+  20% {
+    transform: scale(1.055) rotate(-1.6deg);
+    filter: brightness(1.22) saturate(1.15);
+    box-shadow: inset 0 0 0 3.5px #34d399, 0 0 16px rgba(32, 151, 119, 0.72);
   }
-  70% {
-    transform: scale(0.985);
-    box-shadow: inset 0 0 0 2px rgba(32, 151, 119, 0.7);
+  42% {
+    transform: scale(1.035) rotate(1.5deg);
+    filter: brightness(1.15) saturate(1.1);
+    box-shadow: inset 0 0 0 3px #6ee7b7, 0 0 14px rgba(52, 211, 153, 0.6);
+  }
+  66% {
+    transform: scale(0.99) rotate(-0.7deg);
+    filter: brightness(1.06);
+    box-shadow: inset 0 0 0 2.5px rgba(32, 151, 119, 0.88);
+  }
+  84% {
+    transform: scale(1.01) rotate(0.3deg);
+    filter: brightness(1.02);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1);
+  }
+}
+
+@keyframes tileGlowFlash {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  25% {
+    opacity: 0.92;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes tileMarkPop {
+  0% {
+    transform: scale(0.45);
+    opacity: 0.4;
+  }
+  45% {
+    transform: scale(1.32);
+    opacity: 1;
   }
   100% {
     transform: scale(1);
+    opacity: 1;
   }
 }
 
 .tile.tile-pulse {
-  animation: tilePulseCorrect 0.42s cubic-bezier(0.25, 1, 0.5, 1);
-  z-index: 8;
+  animation: tilePulseCorrect 0.56s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 10;
+}
+
+.tile.tile-pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.58) 0%, rgba(52, 211, 153, 0.42) 52%, rgba(32, 151, 119, 0) 85%);
+  animation: tileGlowFlash 0.56s ease-out forwards;
+}
+
+.tile.tile-pulse .tile-correct-mark {
+  animation: tileMarkPop 0.42s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .tile-correct-mark{
@@ -4966,7 +5020,7 @@ body.is-fullscreen #previewOverlay .preview-image{
           <button class="sound-toggle" id="soundToggleBtn" type="button" aria-label="Attiva o disattiva audio" title="Audio">
             <span id="soundIcon" aria-hidden="true"></span>
           </button>
-          <span class="version">v. 1.42</span>
+          <span class="version">v. 1.43</span>
         </div>
         <p class="subtitle">Ricomponi la foto, con l'aiuto dei tuoi Supereroi!</p>
       </div>
@@ -4983,11 +5037,50 @@ body.is-fullscreen #previewOverlay .preview-image{
     </div>
   </header>
 
-  <!-- 2) Riquadro "SCEGLI LIVELLO" con 7 pulsanti 3D con colorazione progressiva verdino -> arancione -->
+  <!-- 2) Riquadro "MODELLO FOTO" con pulsante "Carica foto" e anteprima foto con riquadro di selezione, griglia, pan e zoom -->
+  <section class="home-panel home-photo-panel" id="photoModelPanel">
+    <div class="home-photo-header">
+      <h2 class="home-panel-title">MODELLO FOTO</h2>
+      <button class="upload-btn-3d" id="uploadPhotoBtn" type="button" title="Apri galleria foto">
+        📷 Carica foto
+      </button>
+    </div>
+
+    <div class="crop-preview-box is-empty" id="cropPreviewBox" title="Trascina la foto o esegui lo zoom">
+      <div class="crop-empty-message" id="cropEmptyMessage">Carica una foto e premi su GIOCA!</div>
+      <img id="cropSourceImg" class="crop-source-img" alt="Foto modello" draggable="false">
+      <div class="crop-selection-frame" id="cropSelectionFrame" aria-hidden="true">
+        <div class="crop-grid-overlay" id="cropGridOverlay"></div>
+      </div>
+      <button type="button" class="crop-center-btn" id="cropCenterBtn" title="Centra immagine nel riquadro" aria-label="Centra immagine nel riquadro">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="crop-footer-bar">
+      <span class="crop-guide-caption">Trascina la foto o esegui lo zoom.</span>
+      <div class="crop-zoom-controls" aria-label="Controlli zoom foto">
+        <input
+          type="range"
+          class="crop-zoom-slider"
+          id="cropZoomSlider"
+          min="1"
+          max="4"
+          step="any"
+          value="1"
+          aria-label="Zoom foto da 1x a 4x">
+        <span class="crop-zoom-reset is-readonly" id="cropZoomResetBtn" aria-label="Valore zoom">1×</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3) Riquadro "SCEGLI LIVELLO" con 7 pulsanti 3D con colorazione progressiva verdino -> arancione -->
   <section class="home-panel" id="levelPanel">
     <div class="home-panel-header">
       <h2 class="home-panel-title">SCEGLI LIVELLO</h2>
-      <span class="home-level-summary" id="homeLevelSummary">Livello 1 (3×3)</span>
     </div>
     <div class="levels-3d-grid" id="levelsGrid" role="radiogroup" aria-label="Scegli livello di gioco">
       <button class="level-btn-3d is-selected" type="button" data-level="0" aria-label="Livello 1: 3 per 3">
@@ -5033,46 +5126,6 @@ body.is-fullscreen #previewOverlay .preview-image{
           <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" fill="#facc15"/>
         </svg>
       </button>
-    </div>
-  </section>
-
-  <!-- 3) Riquadro "MODELLO FOTO" con pulsante "Carica foto" e anteprima foto con riquadro di selezione, griglia, pan e zoom -->
-  <section class="home-panel home-photo-panel" id="photoModelPanel">
-    <div class="home-photo-header">
-      <h2 class="home-panel-title">MODELLO FOTO</h2>
-      <button class="upload-btn-3d" id="uploadPhotoBtn" type="button" title="Apri galleria foto">
-        📷 Carica foto
-      </button>
-    </div>
-
-    <div class="crop-preview-box is-empty" id="cropPreviewBox" title="Trascina la foto o esegui lo zoom">
-      <div class="crop-empty-message" id="cropEmptyMessage">Carica una foto e premi su GIOCA!</div>
-      <img id="cropSourceImg" class="crop-source-img" alt="Foto modello" draggable="false">
-      <div class="crop-selection-frame" id="cropSelectionFrame" aria-hidden="true">
-        <div class="crop-grid-overlay" id="cropGridOverlay"></div>
-      </div>
-      <button type="button" class="crop-center-btn" id="cropCenterBtn" title="Centra immagine nel riquadro" aria-label="Centra immagine nel riquadro">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
-        </svg>
-      </button>
-    </div>
-
-    <div class="crop-footer-bar">
-      <span class="crop-guide-caption">Trascina la foto o esegui lo zoom.</span>
-      <div class="crop-zoom-controls" aria-label="Controlli zoom foto">
-        <input
-          type="range"
-          class="crop-zoom-slider"
-          id="cropZoomSlider"
-          min="1"
-          max="4"
-          step="any"
-          value="1"
-          aria-label="Zoom foto da 1x a 4x">
-        <span class="crop-zoom-reset is-readonly" id="cropZoomResetBtn" aria-label="Valore zoom">1×</span>
-      </div>
     </div>
   </section>
 
@@ -6184,7 +6237,6 @@ try {
   /* Elementi della Schermata Principale (v. 1.24) */
   const homeView = $("homeView");
   const levelsGrid = $("levelsGrid");
-  const homeLevelSummary = $("homeLevelSummary");
   const uploadPhotoBtn = $("uploadPhotoBtn");
   const cropPreviewBox = $("cropPreviewBox");
   const cropEmptyMessage = $("cropEmptyMessage");
@@ -6617,19 +6669,109 @@ try {
         playSplashMusic();
 
       }else if(type === "win"){
-        const freqs = [523.25, 659.25, 783.99, 1046.50];
-        freqs.forEach((freq, i) => {
+        playVictorySound();
+      }
+    }catch(_){}
+  }
+
+  let victoryMasterGain = null;
+  let victoryNodes = [];
+
+  function stopVictorySound(fadeSeconds = 0.08){
+    try{
+      const masterToStop = victoryMasterGain;
+      victoryMasterGain = null;
+      const nodesToStop = victoryNodes.slice();
+      victoryNodes = [];
+      if(!masterToStop && nodesToStop.length === 0) return;
+
+      if(masterToStop && audioCtx){
+        const now = audioCtx.currentTime;
+        const g = masterToStop.gain;
+        g.cancelScheduledValues(now);
+        g.setValueAtTime(Math.max(0.0001, g.value), now);
+        g.linearRampToValueAtTime(0.0001, now + Math.max(0.03, fadeSeconds));
+      }
+      setTimeout(() => {
+        nodesToStop.forEach(n => {
+          try{ n.stop(); }catch(_){}
+          try{ n.disconnect(); }catch(_){}
+        });
+        if(masterToStop){
+          try{ masterToStop.disconnect(); }catch(_){}
+        }
+      }, Math.round((fadeSeconds + 0.08) * 1000));
+    }catch(_){}
+  }
+
+  function playVictorySound(){
+    if(!soundEnabled) return;
+    try{
+      const ctx = getAudioContext();
+      if(!ctx) return;
+
+      const startVictoryMelody = () => {
+        if(!soundEnabled) return;
+        stopVictorySound(0.03);
+
+        const now = ctx.currentTime + 0.015;
+        const master = ctx.createGain();
+        master.gain.setValueAtTime(0.9, now);
+        master.connect(ctx.destination);
+        victoryMasterGain = master;
+
+        const leadFilter = ctx.createBiquadFilter();
+        leadFilter.type = "lowpass";
+        leadFilter.frequency.setValueAtTime(3400, now);
+        leadFilter.Q.setValueAtTime(0.9, now);
+        leadFilter.connect(master);
+
+        const scheduleNote = (freq, start, dur, vol, wave = "triangle", dest = leadFilter, attack = 0.014) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
-          osc.type = "sine";
-          osc.frequency.setValueAtTime(freq, now + i * 0.09);
-          gain.gain.setValueAtTime(0.22, now + i * 0.09);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.09 + 0.32);
+          osc.type = wave;
+          osc.frequency.setValueAtTime(freq, now + start);
+          gain.gain.setValueAtTime(0.0008, now + start);
+          gain.gain.linearRampToValueAtTime(vol, now + start + Math.min(attack, dur * 0.3));
+          gain.gain.exponentialRampToValueAtTime(0.0008, now + start + dur);
           osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(now + i * 0.09);
-          osc.stop(now + i * 0.09 + 0.32);
+          gain.connect(dest);
+          osc.start(now + start);
+          osc.stop(now + start + dur + 0.03);
+          victoryNodes.push(osc);
+        };
+
+        // Melodia di vittoria livello: arpeggio eroico ascendente + cadenza finale
+        const melody = [
+          { f: 523.25, t: 0.00, d: 0.14, v: 0.22 }, // Do5
+          { f: 659.25, t: 0.10, d: 0.14, v: 0.22 }, // Mi5
+          { f: 783.99, t: 0.20, d: 0.14, v: 0.24 }, // Sol5
+          { f: 1046.50, t: 0.31, d: 0.24, v: 0.26 }, // Do6
+          { f: 783.99, t: 0.50, d: 0.12, v: 0.21 }, // Sol5
+          { f: 880.00, t: 0.61, d: 0.12, v: 0.23 }, // La5
+          { f: 1046.50, t: 0.73, d: 0.68, v: 0.28 } // Do6 finale trionfale
+        ];
+
+        melody.forEach(n => {
+          scheduleNote(n.f, n.t, n.d, n.v, "triangle", leadFilter, 0.012);
+          scheduleNote(n.f * 2, n.t, n.d * 0.85, n.v * 0.22, "sine", leadFilter, 0.015);
         });
+
+        // Basso morbido di supporto
+        scheduleNote(261.63, 0.00, 0.44, 0.16, "sine", master, 0.018); // Do4
+        scheduleNote(196.00, 0.50, 0.22, 0.15, "sine", master, 0.015); // Sol3
+        scheduleNote(261.63, 0.73, 0.70, 0.18, "sine", master, 0.02);  // Do4
+
+        // Accordo brillante di chiusura
+        [523.25, 659.25, 783.99].forEach(chordFreq => {
+          scheduleNote(chordFreq, 0.73, 0.66, 0.09, "sine", master, 0.025);
+        });
+      };
+
+      if(ctx.state === "suspended" && typeof ctx.resume === "function"){
+        ctx.resume().then(startVictoryMelody).catch(() => {});
+      }else{
+        startVictoryMelody();
       }
     }catch(_){}
   }
@@ -7470,10 +7612,6 @@ try {
       });
     }
 
-    const { cols, rows } = getGridDimensions(selectedLevel);
-    if(homeLevelSummary){
-      homeLevelSummary.textContent = `Livello ${selectedLevel + 1} (${cols}×${rows})`;
-    }
     updateHomeLevelRecordUI();
     updateCropGridOverlay();
     updateCropZoomUI();
@@ -8264,12 +8402,14 @@ try {
         tile.classList.add("is-correct");
       }
 
-      /* Animazione pulse sottile se il tassello è appena stato posizionato correttamente */
+      /* Animazione scuotimento e bagliore se il tassello è appena stato posizionato correttamente */
       if(newlyCorrect.includes(position)){
         tile.classList.add("tile-pulse");
-        tile.addEventListener("animationend", () => {
-          tile.classList.remove("tile-pulse");
-        }, { once: true });
+        tile.addEventListener("animationend", e => {
+          if(e.animationName === "tilePulseCorrect"){
+            tile.classList.remove("tile-pulse");
+          }
+        });
       }
 
       if(selectedTile === position){
@@ -11330,6 +11470,7 @@ try {
           playSound("soundOn");
         }else{
           stopSplashMusic(0.08);
+          stopVictorySound(0.08);
         }
       }
     );
