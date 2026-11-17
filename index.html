@@ -1158,7 +1158,86 @@ h1 {
   border-radius:12px;
   background:#f0f2f5;
   isolation:isolate;
-  transition:aspect-ratio .2s ease
+  transition:aspect-ratio .2s ease, gap .24s ease, padding .24s ease, border-color .24s ease, box-shadow .32s ease, filter .18s ease
+}
+
+.board.is-solved-reveal{
+  gap:0!important;
+  padding:0!important;
+  border-color:rgba(32,151,119,.45)!important;
+  box-shadow:0 0 0 3px rgba(32,151,119,.24), 0 12px 32px rgba(32,151,119,.24)!important
+}
+
+.board.is-solved-reveal .tile{
+  box-shadow:none!important
+}
+
+.board.is-solved-reveal .tile-correct-mark,
+.board.is-solved-reveal .tile-number{
+  display:none!important
+}
+
+.board-wrap.is-paused .board{
+  filter:blur(11px) saturate(.72) brightness(.95);
+  pointer-events:none
+}
+
+.board-pause-veil{
+  position:absolute;
+  inset:0;
+  z-index:20;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  background:rgba(244,247,251,.66);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .18s ease;
+  box-sizing:border-box;
+  user-select:none;
+  -webkit-user-select:none
+}
+
+.board-wrap.is-paused .board-pause-veil{
+  opacity:1;
+  pointer-events:auto;
+  cursor:pointer
+}
+
+.board-pause-badge{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  padding:14px 20px;
+  border-radius:16px;
+  background:rgba(255,255,255,.96);
+  border:1.5px solid #cbd5e1;
+  box-shadow:0 10px 28px rgba(36,50,71,.15);
+  text-align:center
+}
+
+.board-pause-icon{
+  font-size:26px;
+  line-height:1
+}
+
+.board-pause-title{
+  font-size:16px;
+  font-weight:900;
+  color:var(--text);
+  line-height:1.2
+}
+
+.board-pause-sub{
+  font-size:12px;
+  font-weight:700;
+  color:var(--primary-dark);
+  line-height:1.25
 }
 
 .tile{
@@ -5014,6 +5093,19 @@ body.is-fullscreen #previewOverlay .preview-image{
     <div class="game-main-col">
       <div class="board-wrap">
         <div class="board" id="board" aria-label="Tavola del puzzle"></div>
+        <div
+          class="board-pause-veil"
+          id="boardPauseVeil"
+          role="button"
+          tabindex="0"
+          aria-label="Partita in pausa, tocca per riprendere"
+          aria-hidden="true">
+          <div class="board-pause-badge">
+            <span class="board-pause-icon" aria-hidden="true">⏸️</span>
+            <span class="board-pause-title">In pausa</span>
+            <span class="board-pause-sub">Tocca qui per riprendere</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -6129,6 +6221,8 @@ try {
 
   /* Elementi di Gioco a Schermo Intero */
   const board = $("board");
+  const boardWrap = board ? board.parentElement : null;
+  const boardPauseVeil = $("boardPauseVeil");
   const photoInput = $("photoInput");
   const newPhotoBtn = $("newPhotoBtn");
   const restartLevelBtn = $("restartLevelBtn");
@@ -6389,6 +6483,14 @@ try {
   let timerRunning = false;
   let isPaused = false;
   let isFullscreen = false;
+  let pendingWinTimer = null;
+
+  function clearPendingWinReveal(){
+    if(pendingWinTimer){
+      clearTimeout(pendingWinTimer);
+      pendingWinTimer = null;
+    }
+  }
 
   let soundEnabled = localStorage.getItem("puzzleMagic_sound") !== "off";
   let audioCtx = null;
@@ -6529,24 +6631,27 @@ try {
       const durLimit = Math.max(0.5, Math.min(6.0, maxDurationSec));
       const master = ctx.createGain();
       master.gain.setValueAtTime(0.001, now);
-      master.gain.linearRampToValueAtTime(0.85, now + 0.12);
+      master.gain.linearRampToValueAtTime(0.88, now + 0.09);
       if(durLimit > 0.7){
-        master.gain.setValueAtTime(0.85, now + durLimit - 0.55);
+        master.gain.setValueAtTime(0.88, now + durLimit - 0.45);
         master.gain.linearRampToValueAtTime(0.001, now + durLimit);
       }
       master.connect(ctx.destination);
       splashMusicMasterGain = master;
 
-      const scheduleTone = (freq, start, dur, vol, wave = "triangle") => {
+      const scheduleTone = (freq, start, dur, vol, wave = "triangle", slideTo = 0) => {
         if(start >= durLimit) return;
         const clippedDur = Math.min(dur, durLimit - start);
-        if(clippedDur <= 0.04) return;
+        if(clippedDur <= 0.035) return;
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = wave;
         osc.frequency.setValueAtTime(freq, now + start);
+        if(slideTo > 0){
+          osc.frequency.exponentialRampToValueAtTime(slideTo, now + start + Math.min(0.06, clippedDur * 0.45));
+        }
         gain.gain.setValueAtTime(0.0008, now + start);
-        gain.gain.linearRampToValueAtTime(vol, now + start + Math.min(0.025, clippedDur * 0.25));
+        gain.gain.linearRampToValueAtTime(vol, now + start + Math.min(0.016, clippedDur * 0.25));
         gain.gain.exponentialRampToValueAtTime(0.0008, now + start + clippedDur);
         osc.connect(gain);
         gain.connect(master);
@@ -6555,56 +6660,76 @@ try {
         splashMusicNodes.push(osc);
       };
 
-      // Melodia principale (6.0s a 120 BPM - tema allegro ed eroico in Do maggiore)
+      // Sigla Cartoon Giocosa (6.0s a ~136 BPM, Do maggiore con rimbalzi sincopati e campanellini)
       const melody = [
-        // Battuta 1 (0.0s - 2.0s): Do5 - Mi5 - Sol5 - Do6 | Si5 - Sol5 - La5 - Sol5
-        { f: 523.25, t: 0.00, d: 0.34, v: 0.13 },
-        { f: 659.25, t: 0.25, d: 0.34, v: 0.13 },
-        { f: 783.99, t: 0.50, d: 0.44, v: 0.15 },
-        { f: 1046.50, t: 0.88, d: 0.36, v: 0.16 },
-        { f: 987.77, t: 1.25, d: 0.24, v: 0.13 },
-        { f: 783.99, t: 1.50, d: 0.24, v: 0.13 },
-        { f: 880.00, t: 1.75, d: 0.24, v: 0.14 },
+        // Frase A (0.00s - 1.95s): attacco scattante + acciaccatura cartoon
+        { f: 493.88, t: 0.00, d: 0.08, v: 0.10, slide: 523.25 }, // Si4 -> Do5
+        { f: 523.25, t: 0.06, d: 0.20, v: 0.14 }, // Do5
+        { f: 659.25, t: 0.28, d: 0.18, v: 0.14 }, // Mi5
+        { f: 783.99, t: 0.50, d: 0.26, v: 0.15 }, // Sol5
+        { f: 880.00, t: 0.80, d: 0.14, v: 0.14 }, // La5
+        { f: 783.99, t: 0.96, d: 0.18, v: 0.14 }, // Sol5
+        { f: 659.25, t: 1.18, d: 0.16, v: 0.13 }, // Mi5
+        { f: 587.33, t: 1.38, d: 0.18, v: 0.13 }, // Re5
+        { f: 523.25, t: 1.58, d: 0.22, v: 0.14 }, // Do5
+        { f: 659.25, t: 1.82, d: 0.15, v: 0.13 }, // Mi5
 
-        // Battuta 2 (2.0s - 4.0s): La5 - Sol5 - Fa5 - Mi5 - Re5 - Mi5 - Fa5 - Sol5
-        { f: 880.00, t: 2.00, d: 0.34, v: 0.15 },
-        { f: 783.99, t: 2.25, d: 0.24, v: 0.13 },
-        { f: 698.46, t: 2.50, d: 0.34, v: 0.14 },
-        { f: 659.25, t: 2.88, d: 0.24, v: 0.13 },
-        { f: 587.33, t: 3.12, d: 0.24, v: 0.13 },
-        { f: 659.25, t: 3.38, d: 0.24, v: 0.13 },
-        { f: 698.46, t: 3.62, d: 0.24, v: 0.14 },
-        { f: 783.99, t: 3.82, d: 0.22, v: 0.14 },
+        // Frase B (2.00s - 3.90s): botta e risposta giocosa con salto d'ottava
+        { f: 698.46, t: 2.00, d: 0.18, v: 0.14 }, // Fa5
+        { f: 880.00, t: 2.22, d: 0.20, v: 0.15 }, // La5
+        { f: 1046.50, t: 2.46, d: 0.26, v: 0.16 }, // Do6
+        { f: 987.77, t: 2.76, d: 0.15, v: 0.14 }, // Si5
+        { f: 880.00, t: 2.94, d: 0.15, v: 0.14 }, // La5
+        { f: 783.99, t: 3.12, d: 0.22, v: 0.15 }, // Sol5
+        { f: 659.25, t: 3.40, d: 0.16, v: 0.13 }, // Mi5
+        { f: 783.99, t: 3.60, d: 0.16, v: 0.14 }, // Sol5
+        { f: 880.00, t: 3.80, d: 0.16, v: 0.14 }, // La5
 
-        // Battuta 3 (4.0s - 6.0s): La5 - Si5 - Do6 - Sol5 - Mi5 - Sol5 - Do6 (finale luminoso)
-        { f: 880.00, t: 4.00, d: 0.30, v: 0.15 },
-        { f: 987.77, t: 4.25, d: 0.28, v: 0.15 },
-        { f: 1046.50, t: 4.50, d: 0.38, v: 0.17 },
-        { f: 783.99, t: 4.88, d: 0.24, v: 0.14 },
-        { f: 659.25, t: 5.12, d: 0.22, v: 0.14 },
-        { f: 783.99, t: 5.32, d: 0.22, v: 0.15 },
-        { f: 1046.50, t: 5.50, d: 0.50, v: 0.17 }
+        // Frase C (4.00s - 6.00s): rincorsa allegra e gran finale con campanellini
+        { f: 783.99, t: 4.00, d: 0.16, v: 0.14 }, // Sol5
+        { f: 659.25, t: 4.18, d: 0.16, v: 0.13 }, // Mi5
+        { f: 587.33, t: 4.36, d: 0.16, v: 0.13 }, // Re5
+        { f: 659.25, t: 4.54, d: 0.16, v: 0.14 }, // Mi5
+        { f: 698.46, t: 4.72, d: 0.16, v: 0.14 }, // Fa5
+        { f: 783.99, t: 4.90, d: 0.16, v: 0.15 }, // Sol5
+        { f: 880.00, t: 5.08, d: 0.16, v: 0.15 }, // La5
+        { f: 987.77, t: 5.26, d: 0.16, v: 0.15 }, // Si5
+        { f: 1046.50, t: 5.44, d: 0.54, v: 0.17 } // Do6 finale
       ];
+
       melody.forEach(n => {
-        scheduleTone(n.f, n.t, n.d, n.v, "triangle");
-        scheduleTone(n.f * 2, n.t, n.d * 0.7, n.v * 0.22, "sine");
+        scheduleTone(n.f, n.t, n.d, n.v, "triangle", n.slide || 0);
+        scheduleTone(n.f * 2, n.t, Math.min(0.14, n.d * 0.65), n.v * 0.24, "sine");
       });
 
-      // Accompagnamento armonico e basso morbido lungo tutti i 6 secondi
-      const chords = [
-        { bass: 130.81, arp: [261.63, 329.63, 392.00, 329.63], start: 0.00 }, // C
-        { bass: 196.00, arp: [246.94, 293.66, 392.00, 293.66], start: 1.00 }, // G
-        { bass: 220.00, arp: [261.63, 329.63, 440.00, 329.63], start: 2.00 }, // Am
-        { bass: 174.61, arp: [220.00, 261.63, 349.23, 293.66], start: 3.00 }, // F -> Dm
-        { bass: 174.61, arp: [261.63, 349.23, 440.00, 392.00], start: 4.00 }, // F -> G
-        { bass: 196.00, arp: [246.94, 293.66, 392.00, 493.88], start: 4.75 }, // G7
-        { bass: 130.81, arp: [261.63, 329.63, 392.00, 523.25], start: 5.25 }  // C finale
+      // Bassline pizzicata stile cartoon (rimbalzi veloci sui tempi forti e in levare)
+      const pizzBass = [
+        { f: 130.81, t: 0.00, d: 0.18 }, { f: 196.00, t: 0.44, d: 0.16 },
+        { f: 130.81, t: 0.88, d: 0.18 }, { f: 196.00, t: 1.32, d: 0.16 },
+        { f: 146.83, t: 1.76, d: 0.16 }, { f: 174.61, t: 2.00, d: 0.18 },
+        { f: 220.00, t: 2.44, d: 0.16 }, { f: 196.00, t: 2.88, d: 0.18 },
+        { f: 164.81, t: 3.32, d: 0.16 }, { f: 146.83, t: 3.76, d: 0.16 },
+        { f: 130.81, t: 4.00, d: 0.18 }, { f: 196.00, t: 4.44, d: 0.16 },
+        { f: 174.61, t: 4.88, d: 0.16 }, { f: 196.00, t: 5.20, d: 0.16 },
+        { f: 130.81, t: 5.44, d: 0.50 }
       ];
-      chords.forEach(ch => {
-        scheduleTone(ch.bass, ch.start, 0.88, 0.11, "sine");
-        ch.arp.forEach((freq, idx) => {
-          scheduleTone(freq, ch.start + idx * 0.22, 0.36, 0.06, "sine");
-        });
+      pizzBass.forEach(b => {
+        scheduleTone(b.f, b.t, b.d, 0.14, "triangle");
+        scheduleTone(b.f * 0.5, b.t, b.d * 0.85, 0.08, "sine");
+      });
+
+      // Accenti "campanellino" (glockenspiel) sui passaggi chiave e chiusura scintillante
+      const bells = [
+        { f: 1567.98, t: 0.50, d: 0.22, v: 0.055 }, // Sol6
+        { f: 2093.00, t: 2.46, d: 0.24, v: 0.060 }, // Do7
+        { f: 1567.98, t: 3.12, d: 0.20, v: 0.050 }, // Sol6
+        { f: 1567.98, t: 5.10, d: 0.16, v: 0.050 }, // Sol6
+        { f: 1975.53, t: 5.27, d: 0.16, v: 0.055 }, // Si6
+        { f: 2093.00, t: 5.44, d: 0.52, v: 0.075 }, // Do7
+        { f: 2637.02, t: 5.56, d: 0.42, v: 0.055 }  // Mi7
+      ];
+      bells.forEach(c => {
+        scheduleTone(c.f, c.t, c.d, c.v, "sine");
       });
     }catch(_){}
   }
@@ -6695,6 +6820,14 @@ try {
         item.btn.classList.remove("is-paused");
       }
     });
+
+    const showPauseVeil = Boolean(canPause && isPaused);
+    if(boardWrap){
+      boardWrap.classList.toggle("is-paused", showPauseVeil);
+    }
+    if(boardPauseVeil){
+      boardPauseVeil.setAttribute("aria-hidden", String(!showPauseVeil));
+    }
   }
 
 
@@ -6706,7 +6839,7 @@ try {
     if(gameStatus){
       gameStatus.textContent = "IN PAUSA";
     }
-    setHint("Timer in pausa. Sposta un tassello per riprendere.");
+    setHint("Timer in pausa. Tocca il riquadro o ▶️ per riprendere.");
   }
 
 
@@ -8048,6 +8181,7 @@ try {
     document.documentElement.style.setProperty("--board-aspect-num", String(aspectNum));
 
     board.classList.toggle("show-correct", showCorrect);
+    board.classList.toggle("is-solved-reveal", Boolean(locked && photoData && isSolved()));
     updateCorrectTogglesUI();
 
     if(!photoData){
@@ -9119,6 +9253,7 @@ try {
     if(!photoData || locked)
       return;
 
+    clearPendingWinReveal();
 
     moves=0;
     mixed=false;
@@ -9928,9 +10063,8 @@ try {
       finalizeSessionScore();
     }
 
+    clearPendingWinReveal();
     renderBoard();
-
-    showWinDialog(true);
 
     saveGame();
 
@@ -9939,10 +10073,18 @@ try {
         ? "Congratulazioni! Hai completato tutti i livelli!"
         : "Livello completato!"
     );
+
+    pendingWinTimer = setTimeout(() => {
+      pendingWinTimer = null;
+      if(locked && inGameSession && isSolved() && activeOverlay !== "exitConfirm"){
+        showWinDialog(true);
+      }
+    }, 680);
   }
 
 
   function showHomeView(){
+    clearPendingWinReveal();
     if(homeView){
       homeView.classList.remove("is-hidden");
       homeView.style.display = "";
@@ -9962,6 +10104,7 @@ try {
   }
 
   function nextLevel(){
+    clearPendingWinReveal();
 
     if(levelIndex >= LEVELS.length - 1){
       openGameSummaryModal(true);
@@ -10747,7 +10890,9 @@ try {
 
   function requestExitGame(){
     if(isExitingToSummary) return;
-    exitConfirmReturnToWin = Boolean(winOverlay && winOverlay.classList.contains("show"));
+    const isPendingReveal = Boolean(pendingWinTimer && locked && isSolved());
+    clearPendingWinReveal();
+    exitConfirmReturnToWin = isPendingReveal || Boolean(winOverlay && winOverlay.classList.contains("show"));
     activeOverlay = "exitConfirm";
     if(exitConfirmOverlay){
       exitConfirmOverlay.classList.remove("is-transitioning");
@@ -10757,6 +10902,7 @@ try {
 
   function confirmExitGame(){
     if(isExitingToSummary) return;
+    clearPendingWinReveal();
     exitConfirmReturnToWin = false;
     stopWinParticles();
     stopTimer();
@@ -10965,6 +11111,18 @@ try {
         resumeFromPause();
       }else{
         pauseGame();
+      }
+    });
+  }
+
+  if(boardPauseVeil){
+    boardPauseVeil.addEventListener("click", ()=>{
+      if(isPaused) resumeFromPause();
+    });
+    boardPauseVeil.addEventListener("keydown", event=>{
+      if((event.key === "Enter" || event.key === " ") && isPaused){
+        event.preventDefault();
+        resumeFromPause();
       }
     });
   }
