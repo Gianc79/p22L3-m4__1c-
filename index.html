@@ -7,13 +7,13 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Puzzle Hero v. 1.39</title>
+<title>Puzzle Hero v. 1.40</title>
 <meta name="description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
 <meta property="og:title" content="Puzzle Hero">
 <meta property="og:description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
-<link rel="preload" as="image" href="./Splash.webp">
+<link rel="preload" as="image" href="./Splash.webp" fetchpriority="high">
 <link rel="preload" as="image" href="./assets/aistudio/training_celebration.jpg">
 <link rel="preload" as="image" href="./Livello4.webp">
 <link rel="preload" as="image" href="./Livello5.webp">
@@ -87,8 +87,7 @@ button:focus-visible {
   display: block;
   object-fit: cover;
   object-position: center;
-  opacity: 0;
-  transition: opacity 0.25s ease;
+  opacity: 1;
   user-select: none;
   -webkit-user-select: none;
   -webkit-user-drag: none;
@@ -119,7 +118,7 @@ button:focus-visible {
 .app-header {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: 10px;
   width: 100%;
   flex: 0 0 auto;
@@ -177,7 +176,7 @@ h1 {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-left: 0;
+  margin-left: auto;
   flex: 0 0 auto;
 }
 
@@ -2485,15 +2484,15 @@ body.is-fullscreen{
 }
 
 .fs-portrait-top-bar .fs-top-help-btn,
+.fs-portrait-top-bar .fs-top-mix-btn,
 .fs-portrait-top-bar .fs-exit-btn-3d {
-  width: 96px !important;
-  min-width: 96px !important;
-  max-width: 96px !important;
   box-sizing: border-box !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   text-align: center !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
 }
 
 .fs-exit-btn-3d:hover {
@@ -2632,7 +2631,7 @@ body.is-fullscreen #previewOverlay .preview-image{
 .fs-landscape-top-bar {
   display: none;
   width: 100%;
-  max-width: 360px;
+  max-width: 100%;
   align-items: center;
   justify-content: space-between;
   gap: 6px;
@@ -2644,10 +2643,20 @@ body.is-fullscreen #previewOverlay .preview-image{
 .fs-landscape-top-bar .toggle-correct-btn {
   padding: 4px 8px 4px 6px;
   gap: 5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.fs-landscape-top-bar .mix-icon-btn {
+  padding: 5px 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .fs-landscape-top-bar .fs-exit-btn-3d {
   padding: 5px 11px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* LAYOUT SCHERMO INTERO VERTICALE (portrait) */
@@ -4375,6 +4384,10 @@ body.is-fullscreen #previewOverlay .preview-image{
   flex:0 0 auto;
 }
 
+.gallery-toolbar #galleryAddPhotoBtn{
+  margin-left:auto;
+}
+
 .gallery-limit-alert{
   padding:8px 10px;
   border-radius:10px;
@@ -4788,9 +4801,9 @@ body.is-fullscreen #previewOverlay .preview-image{
 </head>
 
 <body>
-<!-- SCHERMATA SPLASH AVVIO (v. 1.39) -->
+<!-- SCHERMATA SPLASH AVVIO (v. 1.40) -->
 <div class="splash-screen" id="splashScreen" aria-hidden="true">
-  <img class="splash-screen-img" id="splashScreenImg" src="./Splash.webp" alt="" draggable="false">
+  <img class="splash-screen-img is-loaded" id="splashScreenImg" src="./Splash.webp" alt="" draggable="false" fetchpriority="high" loading="eager" decoding="sync">
 </div>
 <script>
 (function(){
@@ -4817,20 +4830,10 @@ body.is-fullscreen #previewOverlay .preview-image{
 })();
 </script>
 
-<!-- SCHERMATA PRINCIPALE (Home / Setup v. 1.39) -->
+<!-- SCHERMATA PRINCIPALE (Home / Setup v. 1.40) -->
 <div class="app home-view" id="homeView">
 
   <header class="app-header">
-    <div class="header-actions">
-      <button class="app-exit-btn" id="appExitBtn" type="button" aria-label="Esci dall'applicazione" title="Esci dall'app">
-        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-          <polyline points="16 17 21 12 16 7"/>
-          <line x1="21" y1="12" x2="9" y2="12"/>
-        </svg>
-      </button>
-    </div>
-
     <div class="brand">
       <div class="logo" aria-hidden="true">🧩</div>
       <div class="brand-copy">
@@ -4839,10 +4842,20 @@ body.is-fullscreen #previewOverlay .preview-image{
           <button class="sound-toggle" id="soundToggleBtn" type="button" aria-label="Attiva o disattiva audio" title="Audio">
             <span id="soundIcon" aria-hidden="true"></span>
           </button>
-          <span class="version">v. 1.39</span>
+          <span class="version">v. 1.40</span>
         </div>
         <p class="subtitle">Ricomponi la foto, con l'aiuto dei tuoi Supereroi!</p>
       </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="app-exit-btn" id="appExitBtn" type="button" aria-label="Esci dall'applicazione" title="Esci dall'app">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      </button>
     </div>
   </header>
 
@@ -6132,10 +6145,12 @@ try {
   const fullscreenExitBtn = $("fullscreenExitBtn");
 
   /* Controlli top bar Schermo Intero Verticale e Orizzontale */
+  const fsPortraitTopBar = $("fsPortraitTopBar");
   const fsPortraitHelpBtn = $("fsPortraitHelpBtn");
   const fsPortraitHelpToggleState = $("fsPortraitHelpToggleState");
   const fsPortraitMixBtn = $("fsPortraitMixBtn");
   const fsPortraitExitBtn = $("fsPortraitExitBtn");
+  const fsLandscapeTopBar = $("fsLandscapeTopBar");
   const fsLandscapeMixBtn = $("fsLandscapeMixBtn");
   const fsLandscapeExitBtn = $("fsLandscapeExitBtn");
   const fullscreenPortraitThumb = $("fullscreenPortraitThumb");
@@ -6477,23 +6492,26 @@ try {
 
   function stopSplashMusic(fadeSeconds = 0.5){
     try{
-      if(splashMusicMasterGain && audioCtx){
+      const masterToStop = splashMusicMasterGain;
+      splashMusicMasterGain = null;
+      const nodesToStop = splashMusicNodes.slice();
+      splashMusicNodes = [];
+      if(!masterToStop && nodesToStop.length === 0) return;
+
+      if(masterToStop && audioCtx){
         const now = audioCtx.currentTime;
-        const g = splashMusicMasterGain.gain;
+        const g = masterToStop.gain;
         g.cancelScheduledValues(now);
         g.setValueAtTime(Math.max(0.0001, g.value), now);
         g.linearRampToValueAtTime(0.0001, now + Math.max(0.05, fadeSeconds));
       }
-      const nodesToStop = splashMusicNodes.slice();
-      splashMusicNodes = [];
       setTimeout(() => {
         nodesToStop.forEach(n => {
           try{ n.stop(); }catch(_){}
           try{ n.disconnect(); }catch(_){}
         });
-        if(splashMusicMasterGain){
-          try{ splashMusicMasterGain.disconnect(); }catch(_){}
-          splashMusicMasterGain = null;
+        if(masterToStop){
+          try{ masterToStop.disconnect(); }catch(_){}
         }
       }, Math.round((fadeSeconds + 0.1) * 1000));
     }catch(_){}
@@ -7470,10 +7488,40 @@ try {
     }
   }
 
+  function syncFullscreenTopBarsAlignment(){
+    if(!gamePanel || !isFullscreen){
+      if(fsPortraitTopBar) fsPortraitTopBar.style.width = "";
+      if(fsLandscapeTopBar) fsLandscapeTopBar.style.width = "";
+      return;
+    }
+
+    const isLandscape = gamePanel.classList.contains("fs-layout-landscape");
+    if(isLandscape){
+      if(fsPortraitTopBar) fsPortraitTopBar.style.width = "";
+      if(fsLandscapeTopBar && previewTile){
+        const rect = previewTile.getBoundingClientRect();
+        if(rect.width > 0){
+          const minNeeded = fsLandscapeTopBar.scrollWidth;
+          const targetW = Math.max(Math.round(rect.width), minNeeded > 0 ? Math.min(minNeeded, Math.round(rect.width)) : 0);
+          fsLandscapeTopBar.style.width = `${targetW}px`;
+        }
+      }
+    } else {
+      if(fsLandscapeTopBar) fsLandscapeTopBar.style.width = "";
+      if(fsPortraitTopBar && board){
+        const rect = board.getBoundingClientRect();
+        if(rect.width > 0){
+          fsPortraitTopBar.style.width = `${Math.round(rect.width)}px`;
+        }
+      }
+    }
+  }
+
   function applyFullscreenLayoutClass(isHorizontal){
     if(!gamePanel) return;
     gamePanel.classList.toggle("fs-layout-landscape", isHorizontal);
     gamePanel.classList.toggle("fs-layout-portrait", !isHorizontal);
+    requestAnimationFrame(() => syncFullscreenTopBarsAlignment());
   }
 
   /*
@@ -8027,6 +8075,8 @@ try {
 
     board.appendChild(fragment);
     updateUI();
+    syncFullscreenTopBarsAlignment();
+    requestAnimationFrame(() => syncFullscreenTopBarsAlignment());
   }
 
 
@@ -12301,8 +12351,18 @@ try {
     setTimeout(handleViewportUpdate, 80);
   });
 
+  if(typeof ResizeObserver === "function"){
+    const fsBarSyncObserver = new ResizeObserver(() => {
+      if(isFullscreen){
+        syncFullscreenTopBarsAlignment();
+      }
+    });
+    if(board) fsBarSyncObserver.observe(board);
+    if(previewTile) fsBarSyncObserver.observe(previewTile);
+  }
+
   /*
-   * SCHERMATA DI AVVIO (SPLASH v. 1.39)
+   * SCHERMATA DI AVVIO (SPLASH v. 1.40)
    */
   function initSplashScreen(){
     const splashEl = $("splashScreen");
@@ -12316,39 +12376,59 @@ try {
     const cleanupUnlockListeners = () => {
       document.removeEventListener("pointerdown", onFirstGesture, true);
       document.removeEventListener("touchstart", onFirstGesture, true);
+      document.removeEventListener("touchend", onFirstGesture, true);
+      document.removeEventListener("mousedown", onFirstGesture, true);
+      document.removeEventListener("click", onFirstGesture, true);
       document.removeEventListener("keydown", onFirstGesture, true);
+      window.removeEventListener("focus", onFirstGesture);
     };
 
-    const startSplashMusicForRemaining = () => {
+    const unlockSilentBuffer = (ctx) => {
+      try{
+        const buf = ctx.createBuffer(1, 1, 22050);
+        const src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.connect(ctx.destination);
+        src.start(0);
+      }catch(_){}
+    };
+
+    const startSplashMusicForRemaining = (fromGesture = false) => {
       if(!splashActive || musicStarted || !soundEnabled) return;
       const ctx = getAudioContext();
       if(!ctx) return;
-      const remainingSec = Math.max(0.4, (SPLASH_DURATION_MS - (Date.now() - splashStartedAt)) / 1000);
+      if(fromGesture){
+        unlockSilentBuffer(ctx);
+      }
+      const tryStart = () => {
+        if(!splashActive || musicStarted || !soundEnabled) return;
+        if(ctx.state === "running"){
+          musicStarted = true;
+          const rem = Math.max(0.4, (SPLASH_DURATION_MS - (Date.now() - splashStartedAt)) / 1000);
+          playSplashMusic(rem);
+          cleanupUnlockListeners();
+        }
+      };
       if(ctx.state === "running"){
-        musicStarted = true;
-        playSplashMusic(remainingSec);
-        cleanupUnlockListeners();
+        tryStart();
       } else {
-        ctx.resume().then(() => {
-          if(splashActive && !musicStarted && soundEnabled && ctx.state === "running"){
-            musicStarted = true;
-            const rem = Math.max(0.4, (SPLASH_DURATION_MS - (Date.now() - splashStartedAt)) / 1000);
-            playSplashMusic(rem);
-            cleanupUnlockListeners();
-          }
-        }).catch(() => {});
+        ctx.resume().then(tryStart).catch(() => {});
       }
     };
 
     const onFirstGesture = () => {
-      startSplashMusicForRemaining();
+      startSplashMusicForRemaining(true);
     };
 
     document.addEventListener("pointerdown", onFirstGesture, true);
     document.addEventListener("touchstart", onFirstGesture, true);
+    document.addEventListener("touchend", onFirstGesture, true);
+    document.addEventListener("mousedown", onFirstGesture, true);
+    document.addEventListener("click", onFirstGesture, true);
     document.addEventListener("keydown", onFirstGesture, true);
+    window.addEventListener("focus", onFirstGesture);
 
-    startSplashMusicForRemaining();
+    startSplashMusicForRemaining(false);
 
     setTimeout(() => {
       splashActive = false;
@@ -12362,7 +12442,7 @@ try {
   }
 
   /*
-   * AVVIO DELL'APPLICAZIONE (v. 1.39)
+   * AVVIO DELL'APPLICAZIONE (v. 1.40)
    */
   updateSoundUI();
   updateTimerDisplay();

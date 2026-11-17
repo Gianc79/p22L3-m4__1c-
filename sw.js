@@ -1,11 +1,12 @@
-const CACHE_NAME = "puzzle-hero-v3";
+const CACHE_NAME = "puzzle-hero-v4";
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
+  "./Splash.webp",
   "./icon-192.png",
   "./icon-512.png",
-  "./Splash.webp"
+  "./icon.svg"
 ];
 
 self.addEventListener("install", (event) => {
@@ -28,15 +29,27 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
+  const reqUrl = new URL(event.request.url);
+  if (reqUrl.origin !== self.location.origin) return;
+
   event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        if (response && response.ok) {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+    caches.open(CACHE_NAME).then((cache) =>
+      cache.match(event.request).then((cached) => {
+        const networkFetch = fetch(event.request)
+          .then((response) => {
+            if (response && response.ok) {
+              cache.put(event.request, response.clone());
+            }
+            return response;
+          })
+          .catch(() => cached);
+
+        if (cached) {
+          event.waitUntil(networkFetch);
+          return cached;
         }
-        return response;
+        return networkFetch;
       })
-      .catch(() => caches.match(event.request))
+    )
   );
 });
