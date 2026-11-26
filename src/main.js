@@ -1,4 +1,7 @@
-"use strict";
+import { Capacitor } from "@capacitor/core";
+import { App } from "@capacitor/app";
+import { ScreenOrientation } from "@capacitor/screen-orientation";
+import { StatusBar } from "@capacitor/status-bar";
 
 (() => {
 
@@ -1746,7 +1749,7 @@ try {
 
   function isStandaloneDisplayMode(){
     try {
-      return (window.matchMedia && (
+      return Capacitor.isNativePlatform() || (window.matchMedia && (
         window.matchMedia("(display-mode: fullscreen)").matches ||
         window.matchMedia("(display-mode: standalone)").matches
       )) || window.navigator.standalone === true;
@@ -1800,15 +1803,35 @@ try {
   let pendingOrientationTarget = "";
 
   function syncScreenOrientation(active, isLandscape){
-    const target = (active && isLandscape) ? "landscape" : "portrait";
+    const isUnlock = active === "unlock";
+    const target = isUnlock ? "unlock" : ((active && isLandscape) ? "landscape" : "portrait");
     try {
+      const isNative = Capacitor.isNativePlatform();
       const orientationApi = window.screen && window.screen.orientation;
-      if(!orientationApi || typeof orientationApi.lock !== "function") return Promise.resolve();
+      const canWebLock = Boolean(orientationApi && typeof orientationApi.lock === "function");
+      const canWebUnlock = Boolean(orientationApi && typeof orientationApi.unlock === "function");
+      if(!isNative && (isUnlock ? !canWebUnlock : !canWebLock)) return Promise.resolve();
       if(pendingOrientationPromise && pendingOrientationTarget === target){
         return pendingOrientationPromise;
       }
       pendingOrientationTarget = target;
-      const p = Promise.resolve(orientationApi.lock(target))
+      const tasks = [];
+      if(isUnlock){
+        if(isNative){
+          tasks.push(Promise.resolve(ScreenOrientation.unlock()).catch(() => {}));
+        }
+        if(canWebUnlock){
+          tasks.push(Promise.resolve().then(() => orientationApi.unlock()).catch(() => {}));
+        }
+      } else {
+        if(isNative){
+          tasks.push(Promise.resolve(ScreenOrientation.lock({ orientation: target })).catch(() => {}));
+        }
+        if(canWebLock){
+          tasks.push(Promise.resolve(orientationApi.lock(target)).catch(() => {}));
+        }
+      }
+      const p = Promise.all(tasks)
         .catch(() => {})
         .finally(() => {
           if(pendingOrientationPromise === p){
@@ -5236,6 +5259,10 @@ try {
     saveGame();
     if(appExitConfirmOverlay) appExitConfirmOverlay.classList.remove("show");
     activeOverlay = "";
+    if(Capacitor.isNativePlatform()){
+      try { Promise.resolve(App.exitApp()).catch(() => {}); } catch(_) {}
+      return;
+    }
     try { window.close(); } catch(_) {}
     try { window.open("", "_self"); window.close(); } catch(_) {}
     setTimeout(() => {
@@ -6875,6 +6902,9 @@ try {
   /*
    * AVVIO DELL'APPLICAZIONE (v. 1.40)
    */
+  if(Capacitor.isNativePlatform()){
+    try { Promise.resolve(StatusBar.hide()).catch(() => {}); } catch(_) {}
+  }
   updateSoundUI();
   updateTimerDisplay();
   ensureStarterGallerySeeded();
