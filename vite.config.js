@@ -1,6 +1,8 @@
 import { defineConfig } from "vite";
+import obfuscatorPlugin from "vite-plugin-javascript-obfuscator";
 
 export default defineConfig({
+  base: "./",
   server: {
     hmr: false
   },
@@ -25,6 +27,31 @@ export default defineConfig({
           next();
         });
       }
-    }
+    },
+    obfuscatorPlugin({
+      apply: "build",
+      include: [/\.(jsx?|tsx?|cjs|mjs)$/],
+      exclude: [/node_modules/],
+      options: {
+        compact: true,
+        controlFlowFlattening: false,
+        deadCodeInjection: false,
+        debugProtection: false,
+        identifierNamesGenerator: "hexadecimal",
+        renameGlobals: false,
+        selfDefending: false,
+        simplify: true,
+        splitStrings: true,
+        splitStringsChunkLength: 10,
+        stringArray: true,
+        stringArrayCallsTransform: true,
+        stringArrayEncoding: ["base64"],
+        stringArrayIndexShift: true,
+        stringArrayRotate: true,
+        stringArrayShuffle: true,
+        stringArrayThreshold: 0.75,
+        unicodeEscapeSequence: false
+      }
+    })
   ]
 });
