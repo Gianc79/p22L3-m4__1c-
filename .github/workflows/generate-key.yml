@@ -1,0 +1,27 @@
+name: Genera Chiave Fissa
+
+on:
+  workflow_dispatch:
+
+jobs:
+  make-key:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configura Java 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Crea chiave e converti in Base64
+        run: |
+          keytool -genkey -v -keystore puzzlehero-debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=PuzzleHero, OU=Dev, O=Personal, L=Italy, S=IT, C=IT"
+          base64 -w 0 puzzlehero-debug.keystore > chiave_base64.txt
+
+      - name: Scarica pacchetto chiave
+        uses: actions/upload-artifact@v4
+        with:
+          name: Chiave-PuzzleHero
+          path: |
+            puzzlehero-debug.keystore
+            chiave_base64.txt
