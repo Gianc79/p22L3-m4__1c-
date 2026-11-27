@@ -98,3 +98,9 @@ jobs:
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
+
+      - name: Carica APK scaricabile
+        uses: actions/upload-artifact@v4
+        with:
+          name: PuzzleHero-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
