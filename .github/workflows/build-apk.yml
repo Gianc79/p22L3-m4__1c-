@@ -30,9 +30,15 @@ jobs:
       - name: Compila e offusca con Vite
         run: npm run build
 
-      - name: Genera progetto Android e attiva schermo intero immersivo
+      - name: Genera progetto Android, icona e schermo intero immersivo
         run: |
           npx cap add android
+          mkdir -p resources
+          ICON_SRC=$(find public -iname "*512*.png" | head -n 1)
+          if [ -n "$ICON_SRC" ]; then
+            cp "$ICON_SRC" resources/icon.png
+            npx --yes @capacitor/assets generate --android
+          fi
           cat << 'EOF' > android/app/src/main/java/it/puzzlehero/app/MainActivity.java
           package it.puzzlehero.app;
 
