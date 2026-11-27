@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Puzzle Hero v. 1.44</title>
+<title>Puzzle Hero v. 1.45</title>
 <meta name="description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
 <meta property="og:title" content="Puzzle Hero">
 <meta property="og:description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
@@ -215,12 +215,11 @@ h1 {
   flex: 0 0 auto;
 }
 
-.sound-toggle,
-.app-exit-btn {
+.sound-toggle {
   display: grid;
   place-items: center;
-  width: 45px;
-  height: 45px;
+  width: 38px;
+  height: 38px;
   padding: 0;
   border: 1px solid var(--border);
   border-radius: 50%;
@@ -232,48 +231,75 @@ h1 {
   transition: background .15s ease, transform .15s ease, border-color .15s ease, color .15s ease;
 }
 
+.app-exit-btn {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  margin-left: auto;
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: white;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  transition: background .15s ease, transform .15s ease, border-color .15s ease, color .15s ease;
+}
+
 .title-row .sound-toggle {
-  width: 45px;
-  height: 45px;
+  width: 38px;
+  height: 38px;
   flex: 0 0 auto;
 }
 
-/* Tasto volume 3D nella schermata iniziale (v. 1.44) */
+/* Tasto volume elegante nella schermata iniziale */
 .sound-toggle {
-  border: 1px solid #cbd5e1;
-  border-bottom: 3.5px solid #94a3b8;
-  background: linear-gradient(180deg, #ffffff 0%, #eef2f7 100%);
-  box-shadow: 0 3px 6px rgba(36, 50, 71, .14), inset 0 1px 0 rgba(255, 255, 255, .92);
-  transition: background .15s ease, transform .08s ease, border-color .15s ease, border-bottom-width .08s ease, box-shadow .08s ease, color .15s ease;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(91, 110, 225, 0.22);
+  background: linear-gradient(180deg, #ffffff 0%, #f5f7ff 100%);
+  color: var(--primary-dark);
+  box-shadow: 0 2px 8px rgba(70, 86, 194, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  transition: background .18s ease, transform .14s ease, border-color .18s ease, box-shadow .18s ease, color .18s ease;
 }
 
 .sound-toggle #soundIcon {
   display: inline-grid;
   place-items: center;
   line-height: 0;
+  transition: transform .16s ease, opacity .16s ease;
 }
 
 .sound-toggle:hover {
-  background: linear-gradient(180deg, #ffffff 0%, #e8eeff 100%);
-  border-color: #b8c4f2 #b8c4f2 #7e90d8 #b8c4f2;
-  color: var(--primary-dark);
+  background: linear-gradient(180deg, #ffffff 0%, #edf1ff 100%);
+  border-color: rgba(91, 110, 225, 0.40);
+  color: var(--primary);
+  box-shadow: 0 4px 12px rgba(91, 110, 225, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.98);
+  transform: translateY(-1px);
 }
 
 .sound-toggle.is-muted {
-  background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
-  border-color: #cbd5e1 #cbd5e1 #94a3b8 #cbd5e1;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border-color: rgba(148, 163, 184, 0.36);
+  color: #64748b;
+  box-shadow: 0 1px 4px rgba(36, 50, 71, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.92);
 }
 
 .sound-toggle.is-muted:hover {
-  background: linear-gradient(180deg, #ffffff 0%, #fef2f2 100%);
-  border-color: #fecaca #fecaca #dc8a8a #fecaca;
+  background: linear-gradient(180deg, #ffffff 0%, #fff5f5 100%);
+  border-color: rgba(220, 76, 76, 0.34);
+  color: #dc4c4c;
+  box-shadow: 0 3px 10px rgba(220, 76, 76, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  transform: translateY(-1px);
 }
 
 .sound-toggle:active,
 .sound-toggle.is-muted:active {
-  transform: translateY(2px);
-  border-bottom-width: 1.5px;
-  box-shadow: 0 1px 2px rgba(36, 50, 71, .12), inset 0 1px 2px rgba(0, 0, 0, .06);
+  transform: scale(0.93);
+  box-shadow: 0 1px 2px rgba(36, 50, 71, 0.10), inset 0 1px 2px rgba(36, 50, 71, 0.06);
 }
 
 .app-exit-btn:active { transform: scale(.94); }
@@ -335,9 +361,9 @@ h1 {
   justify-content: space-between;
   gap: 8px;
   width: 100%;
-  min-height: 36px;
-  padding: 3px 5px 3px 10px;
-  border-radius: 11px;
+  min-height: 46px;
+  padding: 5px 6px 5px 12px;
+  border-radius: 12px;
   background: #f8fafc;
   border: 1px solid var(--border);
   box-sizing: border-box;
@@ -351,7 +377,7 @@ h1 {
   border-radius: 0;
   background: transparent;
   border: none;
-  font-size: 11.5px;
+  font-size: 12.5px;
   font-weight: 700;
   color: var(--text);
   white-space: nowrap;
@@ -368,12 +394,12 @@ h1 {
   margin-left: auto;
   display: inline-grid;
   place-items: center;
-  width: 30px;
-  height: 28px;
+  width: 40px;
+  height: 36px;
   padding: 0;
   border: 1px solid #cbd5e1;
-  border-bottom: 2.5px solid #94a3b8;
-  border-radius: 8px;
+  border-bottom: 3px solid #94a3b8;
+  border-radius: 10px;
   background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
   color: #ca8a04;
   cursor: pointer;
@@ -2284,6 +2310,46 @@ footer{
 
 /* v. 1.10 / v. 1.12 - Supereroi a fine livello con foto */
 
+@keyframes winOverlayDissolveIn{
+  0%{
+    opacity:0;
+    backdrop-filter:blur(0px);
+    -webkit-backdrop-filter:blur(0px);
+  }
+  100%{
+    opacity:1;
+    backdrop-filter:blur(4px);
+    -webkit-backdrop-filter:blur(4px);
+  }
+}
+
+@keyframes winDialogDissolveIn{
+  0%{
+    opacity:0;
+    transform:scale(0.84) translateY(10px);
+    filter:blur(8px);
+  }
+  60%{
+    opacity:0.94;
+    transform:scale(1.01) translateY(-1px);
+    filter:blur(0.8px);
+  }
+  100%{
+    opacity:1;
+    transform:scale(1) translateY(0);
+    filter:blur(0px);
+  }
+}
+
+#winOverlay.show{
+  animation:winOverlayDissolveIn .58s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+#winOverlay.show .win-dialog{
+  animation:winDialogDissolveIn .65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change:opacity, transform, filter;
+}
+
 .win-dialog{
   max-height:92dvh;
   overflow-y:auto;
@@ -3625,6 +3691,18 @@ body.is-fullscreen #previewOverlay .preview-image{
   gap:12px;
 }
 
+#exitConfirmOverlay .exit-confirm-dialog,
+#appExitConfirmOverlay .exit-confirm-dialog{
+  background:linear-gradient(160deg, #f0f7ff 0%, #dbeafe 55%, #c7e0ff 100%);
+  border:1px solid #bfdbfe;
+  box-shadow:0 20px 60px rgba(30, 58, 138, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+#exitConfirmOverlay .exit-confirm-dialog p,
+#appExitConfirmOverlay .exit-confirm-dialog p{
+  color:#475569;
+}
+
 #exitConfirmOverlay .exit-confirm-actions .button,
 #appExitConfirmOverlay .exit-confirm-actions .button,
 #appExitedOverlay .exit-confirm-actions .button{
@@ -3632,6 +3710,56 @@ body.is-fullscreen #previewOverlay .preview-image{
   padding:12px 18px;
   font-size:16px;
   border-radius:14px;
+}
+
+#exitConfirmOverlay .exit-confirm-actions .button,
+#appExitConfirmOverlay .exit-confirm-actions .button{
+  font-weight:800;
+  border-style:solid;
+  border-width:1px 1px 4px 1px;
+  transition:transform .08s ease, box-shadow .08s ease, border-bottom-width .08s ease, background .15s ease;
+}
+
+#exitConfirmOverlay .exit-confirm-actions .button:active,
+#appExitConfirmOverlay .exit-confirm-actions .button:active{
+  transform:translateY(2.5px);
+  border-bottom-width:1.5px;
+}
+
+#exitConfirmOverlay .exit-confirm-actions .button.secondary,
+#appExitConfirmOverlay .exit-confirm-actions .button.secondary{
+  background:linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%);
+  border-color:#cbd5e1 #cbd5e1 #94a3b8 #cbd5e1;
+  color:#1e293b;
+  box-shadow:0 3px 8px rgba(30, 41, 59, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+#exitConfirmOverlay .exit-confirm-actions .button.secondary:hover,
+#appExitConfirmOverlay .exit-confirm-actions .button.secondary:hover{
+  background:linear-gradient(180deg, #ffffff 0%, #dbe6f5 100%);
+}
+
+#exitConfirmOverlay .exit-confirm-actions .button.secondary:active,
+#appExitConfirmOverlay .exit-confirm-actions .button.secondary:active{
+  box-shadow:0 1px 2px rgba(30, 41, 59, 0.12);
+}
+
+#exitConfirmOverlay .exit-confirm-actions .button.danger,
+#appExitConfirmOverlay .exit-confirm-actions .button.danger{
+  background:linear-gradient(180deg, #f87171 0%, #dc2626 100%);
+  border-color:#dc2626 #dc2626 #991b1b #dc2626;
+  color:#ffffff;
+  box-shadow:0 4px 12px rgba(220, 38, 38, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+#exitConfirmOverlay .exit-confirm-actions .button.danger:hover,
+#appExitConfirmOverlay .exit-confirm-actions .button.danger:hover{
+  background:linear-gradient(180deg, #ef4444 0%, #b91c1c 100%);
+}
+
+#exitConfirmOverlay .exit-confirm-actions .button.danger:active,
+#appExitConfirmOverlay .exit-confirm-actions .button.danger:active{
+  box-shadow:0 1px 3px rgba(220, 38, 38, 0.2);
 }
 
 #exitConfirmOverlay.is-transitioning{
@@ -3715,20 +3843,48 @@ body.is-fullscreen #previewOverlay .preview-image{
 .name-dialog{
   position:relative;
   width:min(100%, 420px);
-  padding:18px 14px 16px;
+  padding:0;
   border-radius:22px;
+  overflow:hidden;
+}
+
+.name-dialog-header{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:14px 48px;
+  background:linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
+  border-bottom:1px solid #2563eb;
+  box-shadow:inset 0 1px 0 rgba(255, 255, 255, 0.32);
 }
 
 .name-dialog-close{
   position:absolute;
-  top:12px;
+  top:50%;
   right:12px;
+  transform:translateY(-50%);
+  background:rgba(255, 255, 255, 0.22);
+  border-color:rgba(255, 255, 255, 0.45);
+  color:#ffffff;
+}
+
+.name-dialog-close:hover{
+  background:rgba(255, 255, 255, 0.34);
 }
 
 .name-dialog h2{
   font-size:19px;
-  margin:0 0 4px;
-  padding:0 34px;
+  margin:0;
+  padding:0;
+  color:#ffffff;
+  text-shadow:0 1px 2px rgba(15, 23, 42, 0.16);
+}
+
+.name-dialog-body{
+  padding:14px 14px 16px;
+  max-height:calc(90vh - 56px);
+  overflow-y:auto;
 }
 
 .name-dialog-sub{
@@ -4316,8 +4472,9 @@ body.is-fullscreen #previewOverlay .preview-image{
 }
 
 .podium-name{
-  font-size:clamp(12.5px, 2dvh, 15px);
-  font-weight:900;
+  font-size:clamp(10px, 2.75vw, 12.5px);
+  font-weight:800;
+  letter-spacing:-0.3px;
   color:var(--text);
   max-width:100%;
   white-space:nowrap;
@@ -5048,23 +5205,20 @@ body.is-fullscreen #previewOverlay .preview-image{
       <div class="brand-copy">
         <div class="title-row">
           <h1>Puzzle Hero</h1>
+          <span class="version">v. 1.45</span>
           <button class="sound-toggle" id="soundToggleBtn" type="button" aria-label="Attiva o disattiva audio" title="Audio">
             <span id="soundIcon" aria-hidden="true"></span>
           </button>
-          <span class="version">v. 1.44</span>
+          <button class="app-exit-btn" id="appExitBtn" type="button" aria-label="Esci dall'applicazione" title="Esci dall'app">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+          </button>
         </div>
         <p class="subtitle">Ricomponi la foto, con l'aiuto dei tuoi Supereroi!</p>
       </div>
-    </div>
-
-    <div class="header-actions">
-      <button class="app-exit-btn" id="appExitBtn" type="button" aria-label="Esci dall'applicazione" title="Esci dall'app">
-        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-          <polyline points="16 17 21 12 16 7"/>
-          <line x1="21" y1="12" x2="9" y2="12"/>
-        </svg>
-      </button>
     </div>
   </header>
 
@@ -5148,7 +5302,7 @@ body.is-fullscreen #previewOverlay .preview-image{
         🏆 Record: nessun punteggio salvato
       </div>
       <button class="records-icon-btn" id="openRecordsBtn" type="button" aria-label="Apri classifica record" title="Classifica Record">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
           <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
           <path d="M4 22h16" stroke="#b45309"/>
@@ -5396,22 +5550,26 @@ body.is-fullscreen #previewOverlay .preview-image{
   aria-modal="true"
   aria-labelledby="playerNameTitle">
   <div class="dialog name-dialog">
-    <button type="button" class="records-close-x name-dialog-close" id="playerNameCloseBtn" aria-label="Annulla e torna alla schermata principale">✕</button>
-    <h2 id="playerNameTitle">Inserisci il tuo nome</h2>
-    <p class="name-dialog-sub">I tuoi punteggi verranno salvati automaticamente.</p>
-    <div
-      class="name-display-box"
-      id="playerNameDisplay"
-      tabindex="0"
-      role="textbox"
-      aria-label="Nome giocatore"
-      aria-multiline="false"><span class="name-display-placeholder">NOME</span></div>
-    <div class="name-tip-error" id="playerNameTip">Immettere un numero di caratteri da 1 a 12</div>
-    <div class="vk-grid" id="virtualKeyboardLetters" aria-label="Tastiera lettere"></div>
-    <div class="vk-bottom-row">
-      <button type="button" class="vk-key vk-key-action vk-key-backspace" id="vkBackspaceBtn" aria-label="Cancella carattere"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg></button>
-      <button type="button" class="vk-key vk-key-action vk-key-space" id="vkSpaceBtn" aria-label="Spazio"><svg width="30" height="16" viewBox="0 0 30 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5v6h24V5"/></svg></button>
-      <button type="button" class="vk-key vk-key-action vk-key-ok" id="vkOkBtn" disabled>OK</button>
+    <div class="name-dialog-header">
+      <h2 id="playerNameTitle">Inserisci il tuo nome</h2>
+      <button type="button" class="records-close-x name-dialog-close" id="playerNameCloseBtn" aria-label="Annulla e torna alla schermata principale">✕</button>
+    </div>
+    <div class="name-dialog-body">
+      <p class="name-dialog-sub">I tuoi punteggi verranno salvati automaticamente.</p>
+      <div
+        class="name-display-box"
+        id="playerNameDisplay"
+        tabindex="0"
+        role="textbox"
+        aria-label="Nome giocatore"
+        aria-multiline="false"><span class="name-display-placeholder">NOME</span></div>
+      <div class="name-tip-error" id="playerNameTip">Immettere un numero di caratteri da 1 a 10</div>
+      <div class="vk-grid" id="virtualKeyboardLetters" aria-label="Tastiera lettere"></div>
+      <div class="vk-bottom-row">
+        <button type="button" class="vk-key vk-key-action vk-key-backspace" id="vkBackspaceBtn" aria-label="Cancella carattere"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg></button>
+        <button type="button" class="vk-key vk-key-action vk-key-space" id="vkSpaceBtn" aria-label="Spazio"><svg width="30" height="16" viewBox="0 0 30 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5v6h24V5"/></svg></button>
+        <button type="button" class="vk-key vk-key-action vk-key-ok" id="vkOkBtn" disabled>OK</button>
+      </div>
     </div>
   </div>
 </div>
@@ -5434,17 +5592,17 @@ body.is-fullscreen #previewOverlay .preview-image{
         <div class="records-info-popover-arrow" aria-hidden="true"></div>
         <div id="recordsInfoText">
           <div class="records-info-title">MODALITA' DI ATTRIBUZIONE PUNTEGGIO:</div>
-          <div class="records-info-green">120 Punti per ogni tassello di Puzzle completati;</div>
-          <div class="records-info-red records-info-red-heading">Penalità:</div>
+          <div class="records-info-green">120 Punti per ogni tassello di Puzzle completato.</div>
+          <div class="records-info-red records-info-red-heading"><em>Penalità</em>:</div>
           <div class="records-info-red">-12 Punti per ogni mossa eseguita;</div>
           <div class="records-info-red">- 3 Punti per ogni secondo trascorso.</div>
         </div>
       </div>
     </div>
 
-    <section class="records-section records-section-session" aria-label="Classifica partita completa">
+    <section class="records-section records-section-session" aria-label="Classifica generale">
       <div class="records-sec-head">
-        <span class="records-sec-title">Classifica Partita Completa</span>
+        <span class="records-sec-title">Classifica Generale</span>
       </div>
       <div class="podium-stage" id="recordsPodiumStage"></div>
     </section>
@@ -5501,7 +5659,7 @@ body.is-fullscreen #previewOverlay .preview-image{
       <div class="reset-records-options">
         <button type="button" class="button warning" id="resetLevelBtn">Resetta la classifica del livello 1</button>
         <button type="button" class="button warning" id="resetAllLevelsBtn">Resetta la classifica di tutti i livelli</button>
-        <button type="button" class="button warning" id="resetSessionBtn">Resetta la classifica partita completa</button>
+        <button type="button" class="button warning" id="resetSessionBtn">Resetta la classifica generale</button>
         <button type="button" class="button danger" id="resetAllBtn">Resetta tutte le classifiche</button>
         <button type="button" class="button secondary" id="resetCancelBtn">Annulla</button>
       </div>

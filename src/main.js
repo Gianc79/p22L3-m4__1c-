@@ -507,7 +507,7 @@ try {
   const RECORDS_STORAGE_KEY = "puzzleMagic_records_v1";
   const LEADERBOARDS_STORAGE_KEY = "puzzleMagic_leaderboards_v1";
   const PLAYER_NAME_STORAGE_KEY = "puzzleMagic_playerName_v1";
-  const MAX_RECORD_NAME_LEN = 12;
+  const MAX_RECORD_NAME_LEN = 10;
   const LATIN_LETTER_ROWS = [
     ["A", "B", "C", "D", "E", "F", "G"],
     ["H", "I", "J", "K", "L", "M", "N"],
@@ -944,8 +944,8 @@ try {
   function updateSoundUI(){
     if(soundIcon){
       soundIcon.innerHTML = soundEnabled
-        ? `<svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`
-        : `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="14.5 7.4 10.7 10.1 7.9 10.1 7.9 13.9 10.7 13.9 14.5 16.6 14.5 7.4" fill="rgba(71, 85, 105, 0.1)" stroke="#475569" stroke-width="1.6"/><line x1="6.4" y1="6.4" x2="17.6" y2="17.6" stroke="#f8fafc" stroke-width="3"/><circle cx="12" cy="12" r="9.6" stroke="#dc4c4c" stroke-width="1.6" stroke-opacity="0.85"/><line x1="5.3" y1="5.3" x2="18.7" y2="18.7" stroke="#dc4c4c" stroke-width="1.6" stroke-opacity="0.85"/></svg>`;
+        ? `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5.5L6.5 9.2H3.5A1.5 1.5 0 0 0 2 10.7v2.6a1.5 1.5 0 0 0 1.5 1.5h3L11 18.5V5.5z" fill="currentColor" fill-opacity="0.11"/><path d="M15.2 9.1a4.2 4.2 0 0 1 0 5.8"/><path d="M18.1 6.4a8 8 0 0 1 0 11.2" opacity="0.62"/></svg>`
+        : `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5.5L6.5 9.2H3.5A1.5 1.5 0 0 0 2 10.7v2.6a1.5 1.5 0 0 0 1.5 1.5h3L11 18.5V5.5z" fill="currentColor" fill-opacity="0.07"/><line x1="15.5" y1="9.5" x2="20.5" y2="14.5" stroke="#dc4c4c" stroke-width="1.7"/><line x1="20.5" y1="9.5" x2="15.5" y2="14.5" stroke="#dc4c4c" stroke-width="1.7"/></svg>`;
     }
     if(soundToggleBtn){
       soundToggleBtn.classList.toggle("is-muted", !soundEnabled);
@@ -1410,6 +1410,19 @@ try {
         col.append(playerDiv, blockDiv);
         recordsPodiumStage.appendChild(col);
       });
+
+      requestAnimationFrame(() => {
+        if(!recordsPodiumStage) return;
+        recordsPodiumStage.querySelectorAll(".podium-name").forEach(el => {
+          el.style.fontSize = "";
+          if(el.clientWidth <= 0) return;
+          let size = parseFloat(window.getComputedStyle(el).fontSize) || 12;
+          while(el.scrollWidth > el.clientWidth && size > 7.5){
+            size -= 0.5;
+            el.style.fontSize = `${size}px`;
+          }
+        });
+      });
     }
 
     if(recordsLevelList){
@@ -1558,11 +1571,11 @@ try {
       if(actionType === "level"){
         recordsResetConfirmText.textContent = `Confermi l'azzeramento della classifica del Livello ${resetTargetLevel + 1}? I record eliminati non potranno essere recuperati.`;
       } else if(actionType === "allLevels"){
-        recordsResetConfirmText.textContent = "Confermi l'azzeramento della classifica di TUTTI i livelli (1-7)? La classifica Partita Completa resterà invariata.";
+        recordsResetConfirmText.textContent = "Confermi l'azzeramento della classifica di TUTTI i livelli (1-7)? La Classifica Generale resterà invariata.";
       } else if(actionType === "session"){
-        recordsResetConfirmText.textContent = "Confermi l'azzeramento della classifica Partita Completa? I record eliminati non potranno essere recuperati.";
+        recordsResetConfirmText.textContent = "Confermi l'azzeramento della Classifica Generale? I record eliminati non potranno essere recuperati.";
       } else {
-        recordsResetConfirmText.textContent = "Confermi l'azzeramento di TUTTE le classifiche (tutti i livelli e Partita Completa)?";
+        recordsResetConfirmText.textContent = "Confermi l'azzeramento di TUTTE le classifiche (tutti i livelli e Classifica Generale)?";
       }
     }
     if(recordsResetMenuPanel) recordsResetMenuPanel.style.display = "none";
@@ -4132,7 +4145,7 @@ try {
         summaryTop3Banner.innerHTML =
           `<div class="summary-top3-medal">${medalIcons[lastSessionRank]}</div>` +
           `<div class="summary-top3-title">Congratulazioni, ${activeName}!</div>` +
-          `<div class="summary-top3-sub">Sei nella Top 3 della Classifica Generale<br>(${lastSessionRank}° posto)!</div>`;
+          `<div class="summary-top3-sub">Sei al ${lastSessionRank}° posto della Classifica Generale!</div>`;
       } else {
         summaryTop3Banner.style.display = "none";
         summaryTop3Banner.innerHTML = "";
