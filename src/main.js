@@ -624,29 +624,6 @@ try {
   }
 
 
-  function triggerHaptic(type){
-    if(!soundEnabled) return;
-    if(typeof navigator === "undefined" || typeof navigator.vibrate !== "function") return;
-    try{
-      if(type === "correct"){
-        if(!navigator.vibrate([30, 28, 45])){
-          navigator.vibrate(40);
-        }
-      }else if(type === "win"){
-        if(!navigator.vibrate([35, 45, 55, 45, 80])){
-          navigator.vibrate(75);
-        }
-      }else if(type === "swap"){
-        navigator.vibrate(14);
-      }else if(type === "peek"){
-        navigator.vibrate(12);
-      }else if(type === "tap"){
-        navigator.vibrate(18);
-      }
-    }catch(_){}
-  }
-
-
   function playSound(type){
     if(!soundEnabled) return;
 
@@ -1417,10 +1394,10 @@ try {
 
         const playerDiv = document.createElement("div");
         playerDiv.className = "podium-player";
-        if(isJustEarned){
+        if(isJustEarned && slot.rankIdx === 0){
           const badgeDiv = document.createElement("div");
           badgeDiv.className = "podium-new-badge";
-          badgeDiv.textContent = slot.rankIdx === 0 ? "✨ Nuovo Record!" : "✨ Appena ottenuto";
+          badgeDiv.textContent = "✨ Nuovo Record!";
           playerDiv.appendChild(badgeDiv);
         }
         const nameDiv = document.createElement("div");
@@ -1497,10 +1474,10 @@ try {
         nameDiv.className = "session-rank-name";
         nameDiv.textContent = entry ? (entry.name || "Giocatore") : "Nessun record salvato";
         nameRow.appendChild(nameDiv);
-        if(isJustEarnedRow){
+        if(isJustEarnedRow && i === 0){
           const newBadge = document.createElement("span");
           newBadge.className = "rank-new-badge";
-          newBadge.textContent = i === 0 ? "✨ Nuovo Record!" : "✨ Appena ottenuto";
+          newBadge.textContent = "✨ Nuovo Record!";
           nameRow.appendChild(newBadge);
         }
         const metaDiv = document.createElement("div");
@@ -2820,8 +2797,7 @@ try {
   function closeNextLevelCropModal(restoreWin = false){
     if(nextLevelCropOverlay) nextLevelCropOverlay.classList.remove("show");
     if(restoreWin && nlRestoreWinOnCancel){
-      if(winOverlay) winOverlay.classList.add("show");
-      activeOverlay = "win";
+      restoreWinOverlayInstant();
     } else {
       activeOverlay = "";
     }
@@ -3075,7 +3051,6 @@ try {
     gallerySelectionMode = true;
     gallerySelectedIds.clear();
     if(initialId) gallerySelectedIds.add(initialId);
-    triggerHaptic("tap");
     syncGallerySelectionUI();
   }
 
@@ -3273,8 +3248,7 @@ try {
     exitGallerySelectionMode();
     if(galleryOverlay) galleryOverlay.classList.remove("show");
     if(restoreWin && galleryMode === "nextLevel" && galleryRestoreWinOnCancel){
-      if(winOverlay) winOverlay.classList.add("show");
-      activeOverlay = "win";
+      restoreWinOverlayInstant();
     } else if(activeOverlay === "gallery"){
       activeOverlay = "";
     }
@@ -3504,7 +3478,6 @@ try {
 
     if(!isSolved()){
       playSound(newlyCorrect.length > 0 ? "correct" : "swap");
-      triggerHaptic(newlyCorrect.length > 0 ? "correct" : "swap");
     }
 
     renderBoard(newlyCorrect);
@@ -4100,19 +4073,34 @@ try {
     if(heroStage){
       heroStage.classList.remove("is-revealing");
       if(celebrate){
-        void heroStage.offsetWidth;
         heroStage.classList.add("is-revealing");
         heroStage.addEventListener("animationend", () => {
           heroStage.classList.remove("is-revealing");
         }, { once: true });
       }
     }
-    if(winOverlay) winOverlay.classList.add("show");
+    if(winOverlay){
+      winOverlay.classList.toggle("no-win-anim", !celebrate);
+      winOverlay.classList.add("show");
+    }
 
     if(celebrate){
-      launchConfetti();
-      launchWinParticleExplosion(levelIndex);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if(activeOverlay === "win" && winOverlay && winOverlay.classList.contains("show")){
+            launchConfetti();
+            launchWinParticleExplosion(levelIndex);
+          }
+        });
+      });
     }
+  }
+
+  function restoreWinOverlayInstant(){
+    if(!winOverlay) return;
+    if(heroStage) heroStage.classList.remove("is-revealing");
+    winOverlay.classList.add("no-win-anim", "show");
+    activeOverlay = "win";
   }
 
 
@@ -4317,7 +4305,6 @@ try {
 
     stopTimer();
     playSound("win");
-    triggerHaptic("win");
 
     const earnedScore = calculateScore(levelIndex, moves, timerSeconds);
     lastWinScore = earnedScore;
@@ -4409,7 +4396,7 @@ try {
     }
 
     stopWinParticles();
-    winOverlay.classList.remove("show");
+    winOverlay.classList.remove("show", "no-win-anim");
     activeOverlay = "";
     lastWinScore = null;
     lastWinIsNewRecord = false;
@@ -4472,6 +4459,7 @@ try {
     ];
 
 
+    const frag = document.createDocumentFragment();
     for(let i=0;i<35;i++){
 
       const item=
@@ -4502,7 +4490,7 @@ try {
         `${12+Math.random()*10}px`;
 
 
-      document.body.appendChild(item);
+      frag.appendChild(item);
 
 
       item.addEventListener(
@@ -4511,6 +4499,7 @@ try {
         {once:true}
       );
     }
+    document.body.appendChild(frag);
   }
 
 
@@ -5669,18 +5658,35 @@ try {
     }
   }
 
+  function syncPreviewImageAspect(previewImgEl){
+    if(!previewOverlay) return;
+    let ratio = 1;
+    if(previewImgEl && previewImgEl.naturalWidth > 0 && previewImgEl.naturalHeight > 0){
+      ratio = previewImgEl.naturalWidth / previewImgEl.naturalHeight;
+    } else {
+      const dims = getGridDimensions(levelIndex);
+      if(dims && dims.cols > 0 && dims.rows > 0){
+        ratio = dims.cols / dims.rows;
+      }
+    }
+    previewOverlay.style.setProperty("--peek-aspect", String(ratio));
+  }
+
   function startPreviewPeek(){
     if(!photoData || isPaused || locked || activeOverlay) return;
     const previewImgEl = $("previewImage");
     if(previewImgEl && photoData && previewImgEl.getAttribute("src") !== photoData){
       previewImgEl.src = photoData;
     }
+    syncPreviewImageAspect(previewImgEl);
+    if(previewImgEl && (!previewImgEl.complete || !previewImgEl.naturalWidth)){
+      previewImgEl.addEventListener("load", () => syncPreviewImageAspect(previewImgEl), { once: true });
+    }
     previewPeekActive = true;
     activeOverlay = "previewPeek";
     if(previewOverlay){
       previewOverlay.classList.add("show", "is-hold-peek");
     }
-    triggerHaptic("peek");
   }
 
   function endPreviewPeek(){
@@ -5969,7 +5975,7 @@ try {
     if(playerNameQuickWrap && playerNameQuickVal && playerNameQuickBtn){
       if(lastUsedName){
         playerNameQuickVal.textContent = lastUsedName;
-        playerNameQuickBtn.setAttribute("aria-label", `Usa ultimo nome ${lastUsedName} e inizia`);
+        playerNameQuickBtn.setAttribute("aria-label", `Inserisci ultimo nome ${lastUsedName}`);
         playerNameQuickWrap.style.display = "flex";
       } else {
         playerNameQuickWrap.style.display = "none";
@@ -6018,7 +6024,8 @@ try {
       if(!lastUsedName) return;
       playerNameBuffer = lastUsedName;
       playerNameCursorPos = lastUsedName.length;
-      confirmPlayerNameAndStart();
+      playerNameCaretVisible = true;
+      updatePlayerNameModalUI();
     });
   }
 
@@ -6123,7 +6130,6 @@ try {
       crestStartY = event.clientY;
       recordsCrestLongPressTimer = setTimeout(() => {
         recordsCrestLongPressTimer = null;
-        triggerHaptic("tap");
         openRecordsPinModal();
       }, 1500);
     });

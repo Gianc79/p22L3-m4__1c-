@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Puzzle Hero v. 1.46</title>
+<title>Puzzle Hero v. 1.47</title>
 <meta name="description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
 <meta property="og:title" content="Puzzle Hero">
 <meta property="og:description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
@@ -205,6 +205,10 @@ h1 {
   color: var(--muted);
   font-size: 12px;
   line-height: 1.2;
+}
+
+.subtitle-mobile-br {
+  display: none;
 }
 
 .header-actions {
@@ -2330,41 +2334,40 @@ footer{
 @keyframes winOverlayDissolveIn{
   0%{
     opacity:0;
-    backdrop-filter:blur(0px);
-    -webkit-backdrop-filter:blur(0px);
   }
   100%{
     opacity:1;
-    backdrop-filter:blur(4px);
-    -webkit-backdrop-filter:blur(4px);
   }
 }
 
 @keyframes winDialogDissolveIn{
   0%{
     opacity:0;
-    transform:scale(0.90) translateY(8px);
-    filter:blur(6px);
-  }
-  45%{
-    opacity:0.72;
-    transform:scale(0.97) translateY(2px);
-    filter:blur(1.8px);
+    transform:translate3d(0, 14px, 0) scale(0.95);
   }
   100%{
     opacity:1;
-    transform:scale(1) translateY(0);
-    filter:blur(0px);
+    transform:translate3d(0, 0, 0) scale(1);
   }
 }
 
 #winOverlay.show{
-  animation:winOverlayDissolveIn 0.95s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation:winOverlayDissolveIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change:opacity;
 }
 
 #winOverlay.show .win-dialog{
-  animation:winDialogDissolveIn 1.05s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  will-change:opacity, transform, filter;
+  animation:winDialogDissolveIn 0.48s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change:opacity, transform;
+  backface-visibility:hidden;
+}
+
+#winOverlay.show.no-win-anim,
+#winOverlay.show.no-win-anim .win-dialog,
+#winOverlay.show.no-win-anim .hero-stage{
+  animation:none !important;
+  opacity:1;
+  transform:none;
 }
 
 .win-dialog{
@@ -2478,17 +2481,16 @@ footer{
 
 @keyframes hero-stage-reveal{
   0%{
-    transform:scale(0.93);
-    filter:brightness(1.16);
+    transform:scale(0.96) translateZ(0);
   }
   100%{
-    transform:scale(1);
-    filter:brightness(1);
+    transform:scale(1) translateZ(0);
   }
 }
 
 .hero-stage.is-revealing{
-  animation:hero-stage-reveal .85s cubic-bezier(0.22, 1, 0.36, 1);
+  animation:hero-stage-reveal .52s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change:transform;
 }
 
 .win-particles-canvas{
@@ -2811,7 +2813,7 @@ body.is-fullscreen{
 
 body.is-fullscreen #previewOverlay,
 #previewOverlay.is-hold-peek{
-  padding:12px;
+  padding:10px;
   background:rgba(10,16,28,.82);
   backdrop-filter:blur(6px);
   -webkit-backdrop-filter:blur(6px);
@@ -2829,11 +2831,11 @@ body.is-fullscreen #previewOverlay,
 body.is-fullscreen #previewOverlay .dialog,
 #previewOverlay.is-hold-peek .dialog{
   width:auto;
-  max-width:min(92vw, 92dvw);
-  max-height:min(92vh, 92dvh);
+  max-width:none;
+  max-height:none;
   padding:0;
   margin:auto;
-  overflow:hidden!important;
+  overflow:visible!important;
   background:transparent;
   border:none;
   border-radius:14px;
@@ -2852,10 +2854,13 @@ body.is-fullscreen #previewOverlay .dialog-actions,
 body.is-fullscreen #previewOverlay .preview-image,
 #previewOverlay.is-hold-peek .preview-image{
   display:block;
-  width:auto;
-  height:auto;
-  max-width:min(90vw, 90dvw);
-  max-height:min(90vh, 90dvh);
+  aspect-ratio:auto;
+  width:min(calc(100vw - 24px), calc((100vh - 24px) * var(--peek-aspect, 1)));
+  height:min(calc(100vh - 24px), calc((100vw - 24px) / var(--peek-aspect, 1)));
+  width:min(calc(100dvw - 24px), calc((100dvh - 24px) * var(--peek-aspect, 1)));
+  height:min(calc(100dvh - 24px), calc((100dvw - 24px) / var(--peek-aspect, 1)));
+  max-width:none;
+  max-height:none;
   margin:0 auto;
   object-fit:contain;
   border-radius:14px;
@@ -3519,6 +3524,10 @@ body.is-fullscreen #previewOverlay .preview-image,
 
   .subtitle{
     font-size:12px
+  }
+
+  .subtitle-mobile-br{
+    display:inline
   }
 
   .upload-panel{
@@ -5390,7 +5399,7 @@ body.is-fullscreen #previewOverlay .preview-image,
       <div class="brand-copy">
         <div class="title-row">
           <h1>Puzzle Hero</h1>
-          <span class="version">v. 1.46</span>
+          <span class="version">v. 1.47</span>
           <button class="sound-toggle" id="soundToggleBtn" type="button" aria-label="Attiva o disattiva audio" title="Audio">
             <span id="soundIcon" aria-hidden="true"></span>
           </button>
@@ -5402,7 +5411,7 @@ body.is-fullscreen #previewOverlay .preview-image,
             </svg>
           </button>
         </div>
-        <p class="subtitle">Ricomponi la foto, con l'aiuto dei tuoi Supereroi!</p>
+        <p class="subtitle">Ricomponi la foto, con l'aiuto<br class="subtitle-mobile-br"> dei tuoi Supereroi!</p>
       </div>
     </div>
   </header>
