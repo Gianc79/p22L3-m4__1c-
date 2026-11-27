@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Puzzle Hero v. 1.45</title>
+<title>Puzzle Hero v. 1.46</title>
 <meta name="description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
 <meta property="og:title" content="Puzzle Hero">
 <meta property="og:description" content="Ricomponi la foto, con l'aiuto dei tuoi Supereroi! Puzzle scorrevole con livelli progressivi, modalità schermo intero e galleria supereroi.">
@@ -162,7 +162,7 @@ button:focus-visible {
 
 .brand {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   flex: 1 1 auto;
   min-width: 0;
@@ -238,6 +238,8 @@ h1 {
   height: 40px;
   padding: 0;
   margin-left: auto;
+  margin-right: 13px;
+  align-self: flex-start;
   flex: 0 0 auto;
   border: 1px solid var(--border);
   border-radius: 11px;
@@ -302,18 +304,25 @@ h1 {
   box-shadow: 0 1px 2px rgba(36, 50, 71, 0.10), inset 0 1px 2px rgba(36, 50, 71, 0.06);
 }
 
-.app-exit-btn:active { transform: scale(.94); }
-
 .app-exit-btn {
   color: #ffffff;
-  border-color: #b91c1c;
-  background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
-  box-shadow: 0 2px 6px rgba(220, 38, 38, .25);
+  border-style: solid;
+  border-width: 1px 1px 4px 1px;
+  border-color: #ef4444 #dc2626 #991b1b #dc2626;
+  background: linear-gradient(180deg, #f87171 0%, #ef4444 45%, #dc2626 100%);
+  box-shadow: 0 4px 10px rgba(220, 38, 38, .30), inset 0 1px 0 rgba(255, 255, 255, .38);
+  transition: transform .08s ease, box-shadow .08s ease, border-bottom-width .08s ease, background .15s ease;
 }
 
 .app-exit-btn:hover {
-  background: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%);
-  border-color: #991b1b;
+  background: linear-gradient(180deg, #ef4444 0%, #dc2626 55%, #b91c1c 100%);
+  border-color: #dc2626 #b91c1c #7f1d1d #b91c1c;
+}
+
+.app-exit-btn:active {
+  transform: translateY(2.5px);
+  border-bottom-width: 1.5px;
+  box-shadow: 0 1px 3px rgba(220, 38, 38, .22), inset 0 1px 2px rgba(127, 29, 29, .22);
 }
 
 .version {
@@ -1774,10 +1783,18 @@ footer{
   border:1px solid #e1e6ef;
   border-radius:12px;
   background:#edf1f6;
-  touch-action:manipulation;
+  touch-action:none;
   user-select:none;
   -webkit-user-select:none;
-  cursor:default
+  -webkit-touch-callout:none;
+  cursor:zoom-in;
+  transition:transform .14s ease, box-shadow .14s ease, border-color .14s ease
+}
+
+.preview-tile.is-holding{
+  transform:scale(0.97);
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(91,110,225,.24)
 }
 
 .preview-zoom-stage{
@@ -2326,13 +2343,13 @@ footer{
 @keyframes winDialogDissolveIn{
   0%{
     opacity:0;
-    transform:scale(0.84) translateY(10px);
-    filter:blur(8px);
+    transform:scale(0.90) translateY(8px);
+    filter:blur(6px);
   }
-  60%{
-    opacity:0.94;
-    transform:scale(1.01) translateY(-1px);
-    filter:blur(0.8px);
+  45%{
+    opacity:0.72;
+    transform:scale(0.97) translateY(2px);
+    filter:blur(1.8px);
   }
   100%{
     opacity:1;
@@ -2342,11 +2359,11 @@ footer{
 }
 
 #winOverlay.show{
-  animation:winOverlayDissolveIn .58s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation:winOverlayDissolveIn 0.95s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 #winOverlay.show .win-dialog{
-  animation:winDialogDissolveIn .65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation:winDialogDissolveIn 1.05s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change:opacity, transform, filter;
 }
 
@@ -2461,12 +2478,8 @@ footer{
 
 @keyframes hero-stage-reveal{
   0%{
-    transform:scale(0.86);
-    filter:brightness(1.32);
-  }
-  55%{
-    transform:scale(1.03);
-    filter:brightness(1.08);
+    transform:scale(0.93);
+    filter:brightness(1.16);
   }
   100%{
     transform:scale(1);
@@ -2475,7 +2488,7 @@ footer{
 }
 
 .hero-stage.is-revealing{
-  animation:hero-stage-reveal .52s cubic-bezier(0.22, 1, 0.36, 1);
+  animation:hero-stage-reveal .85s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .win-particles-canvas{
@@ -2779,15 +2792,42 @@ body.is-fullscreen{
   box-shadow: 0 1px 2px rgba(220, 38, 38, .1);
 }
 
-/* Modale foto in schermo intero: sola foto, senza titolo, senza chiudi, senza scrollbar */
-body.is-fullscreen #previewOverlay{
+/* Modale foto in schermo intero e anteprima rapida "tieni premuto" (v. 1.46) */
+@keyframes peekOverlayFadeIn{
+  from{ opacity:0; }
+  to{ opacity:1; }
+}
+
+@keyframes peekImageZoomIn{
+  from{
+    opacity:0;
+    transform:scale(0.92);
+  }
+  to{
+    opacity:1;
+    transform:scale(1);
+  }
+}
+
+body.is-fullscreen #previewOverlay,
+#previewOverlay.is-hold-peek{
   padding:12px;
   background:rgba(10,16,28,.82);
   backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
   cursor:pointer
 }
 
-body.is-fullscreen #previewOverlay .dialog{
+#previewOverlay.is-hold-peek{
+  pointer-events:none;
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-touch-callout:none;
+  animation:peekOverlayFadeIn .16s ease-out forwards
+}
+
+body.is-fullscreen #previewOverlay .dialog,
+#previewOverlay.is-hold-peek .dialog{
   width:auto;
   max-width:min(92vw, 92dvw);
   max-height:min(92vh, 92dvh);
@@ -2798,15 +2838,19 @@ body.is-fullscreen #previewOverlay .dialog{
   border:none;
   border-radius:14px;
   box-shadow:none;
-  cursor:default
+  cursor:default;
+  animation:peekImageZoomIn .18s cubic-bezier(0.22, 1, 0.36, 1) forwards
 }
 
 body.is-fullscreen #previewOverlay #previewTitle,
-body.is-fullscreen #previewOverlay .dialog-actions{
+body.is-fullscreen #previewOverlay .dialog-actions,
+#previewOverlay.is-hold-peek #previewTitle,
+#previewOverlay.is-hold-peek .dialog-actions{
   display:none!important
 }
 
-body.is-fullscreen #previewOverlay .preview-image{
+body.is-fullscreen #previewOverlay .preview-image,
+#previewOverlay.is-hold-peek .preview-image{
   display:block;
   width:auto;
   height:auto;
@@ -3890,7 +3934,62 @@ body.is-fullscreen #previewOverlay .preview-image{
 .name-dialog-sub{
   font-size:12.5px;
   color:var(--muted);
-  margin:0 0 12px;
+  margin:0 0 10px;
+}
+
+.name-quick-wrap{
+  display:flex;
+  justify-content:center;
+  margin:0 0 10px;
+}
+
+.name-quick-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  max-width:100%;
+  padding:6px 13px;
+  border-style:solid;
+  border-width:1px 1px 3px 1px;
+  border-color:#93c5fd #93c5fd #2563eb #93c5fd;
+  border-radius:12px;
+  background:linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%);
+  color:#1e40af;
+  font-size:12.5px;
+  font-weight:700;
+  cursor:pointer;
+  touch-action:manipulation;
+  user-select:none;
+  -webkit-user-select:none;
+  box-shadow:0 2px 6px rgba(37, 99, 235, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition:transform .08s ease, border-bottom-width .08s ease, background .14s ease, box-shadow .14s ease;
+}
+
+.name-quick-chip:hover{
+  background:linear-gradient(180deg, #ffffff 0%, #dbeafe 100%);
+}
+
+.name-quick-chip:active{
+  transform:translateY(2px);
+  border-bottom-width:1px;
+  box-shadow:0 1px 2px rgba(37, 99, 235, 0.12);
+}
+
+.name-quick-label{
+  color:#3b82f6;
+  font-weight:700;
+}
+
+.name-quick-val{
+  font-weight:900;
+  letter-spacing:.4px;
+  color:#1e3a8a;
+  text-transform:uppercase;
+}
+
+.name-quick-arrow{
+  font-weight:900;
+  color:#2563eb;
 }
 
 .name-display-box{
@@ -4539,6 +4638,92 @@ body.is-fullscreen #previewOverlay .preview-image{
   border:1px dashed #cbd5e1;
   color:var(--muted);
   box-shadow:none;
+}
+
+/* Evidenziazione animata "Nuovo Record / Appena ottenuto" (v. 1.46) */
+@keyframes newRecordGlow{
+  0%, 100%{
+    box-shadow:0 0 0 2px rgba(245, 158, 11, 0.72), 0 0 14px rgba(250, 204, 21, 0.55);
+  }
+  50%{
+    box-shadow:0 0 0 3.5px rgba(234, 179, 8, 0.98), 0 0 22px rgba(250, 204, 21, 0.82);
+  }
+}
+
+@keyframes newBadgePop{
+  0%{
+    opacity:0;
+    transform:scale(0.75) translateY(4px);
+  }
+  65%{
+    opacity:1;
+    transform:scale(1.06) translateY(-1px);
+  }
+  100%{
+    opacity:1;
+    transform:scale(1) translateY(0);
+  }
+}
+
+.podium-col.is-just-earned.rank-1 .podium-block{
+  height:68%;
+  min-height:74px;
+}
+
+.podium-col.is-just-earned .podium-block{
+  border-width:2px;
+  border-color:#f59e0b;
+  animation:newRecordGlow 1.9s ease-in-out infinite;
+}
+
+.podium-new-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  max-width:100%;
+  margin-bottom:2px;
+  padding:2px 6px;
+  border-radius:999px;
+  background:linear-gradient(135deg, #fef08a 0%, #f59e0b 100%);
+  color:#78350f;
+  border:1px solid rgba(180, 83, 9, 0.35);
+  font-size:8.5px;
+  font-weight:900;
+  letter-spacing:.15px;
+  line-height:1.15;
+  white-space:nowrap;
+  box-shadow:0 2px 6px rgba(245, 158, 11, 0.32);
+  animation:newBadgePop .42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.session-rank-row.is-just-earned{
+  border-width:2px;
+  border-color:#f59e0b;
+  animation:newRecordGlow 1.9s ease-in-out infinite;
+}
+
+.session-rank-name-row{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  min-width:0;
+}
+
+.rank-new-badge{
+  display:inline-flex;
+  align-items:center;
+  flex-shrink:0;
+  padding:1.5px 6px;
+  border-radius:999px;
+  background:linear-gradient(135deg, #fef08a 0%, #f59e0b 100%);
+  color:#78350f;
+  border:1px solid rgba(180, 83, 9, 0.32);
+  font-size:9px;
+  font-weight:900;
+  line-height:1.2;
+  white-space:nowrap;
+  box-shadow:0 1px 4px rgba(245, 158, 11, 0.28);
+  animation:newBadgePop .42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .podium-medal{
@@ -5205,7 +5390,7 @@ body.is-fullscreen #previewOverlay .preview-image{
       <div class="brand-copy">
         <div class="title-row">
           <h1>Puzzle Hero</h1>
-          <span class="version">v. 1.45</span>
+          <span class="version">v. 1.46</span>
           <button class="sound-toggle" id="soundToggleBtn" type="button" aria-label="Attiva o disattiva audio" title="Audio">
             <span id="soundIcon" aria-hidden="true"></span>
           </button>
@@ -5440,7 +5625,8 @@ body.is-fullscreen #previewOverlay .preview-image{
           <div
             class="preview-tile"
             id="previewTile"
-            aria-label="Modello foto originale">
+            title="Tieni premuto per ingrandire il modello foto"
+            aria-label="Modello foto originale — tieni premuto per ingrandire">
             <div class="preview-zoom-stage" id="previewZoomStage">
               <img id="previewThumb" alt="Miniatura foto originale" draggable="false">
             </div>
@@ -5556,6 +5742,13 @@ body.is-fullscreen #previewOverlay .preview-image{
     </div>
     <div class="name-dialog-body">
       <p class="name-dialog-sub">I tuoi punteggi verranno salvati automaticamente.</p>
+      <div class="name-quick-wrap" id="playerNameQuickWrap" style="display:none;">
+        <button type="button" class="name-quick-chip" id="playerNameQuickBtn">
+          <span class="name-quick-label">Ultimo nome:</span>
+          <strong class="name-quick-val" id="playerNameQuickVal"></strong>
+          <span class="name-quick-arrow" aria-hidden="true">→</span>
+        </button>
+      </div>
       <div
         class="name-display-box"
         id="playerNameDisplay"

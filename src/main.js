@@ -270,6 +270,9 @@ try {
   const playerNameCloseBtn = $("playerNameCloseBtn");
   const playerNameDisplay = $("playerNameDisplay");
   const playerNameTip = $("playerNameTip");
+  const playerNameQuickWrap = $("playerNameQuickWrap");
+  const playerNameQuickBtn = $("playerNameQuickBtn");
+  const playerNameQuickVal = $("playerNameQuickVal");
   const virtualKeyboardLetters = $("virtualKeyboardLetters");
   const vkBackspaceBtn = $("vkBackspaceBtn");
   const vkSpaceBtn = $("vkSpaceBtn");
@@ -580,6 +583,8 @@ try {
   let lastSessionRank = null;
   let sessionFinalized = false;
   let recordsViewLevel = 0;
+  let lastSessionRecordHighlights = { sessionTimestamp: null, levelTimestamps: {} };
+  let recordsHighlightActive = false;
 
   /*
    * Nuove funzionalità v1.09
@@ -616,6 +621,29 @@ try {
       audioCtx.resume();
     }
     return audioCtx;
+  }
+
+
+  function triggerHaptic(type){
+    if(!soundEnabled) return;
+    if(typeof navigator === "undefined" || typeof navigator.vibrate !== "function") return;
+    try{
+      if(type === "correct"){
+        if(!navigator.vibrate([30, 28, 45])){
+          navigator.vibrate(40);
+        }
+      }else if(type === "win"){
+        if(!navigator.vibrate([35, 45, 55, 45, 80])){
+          navigator.vibrate(75);
+        }
+      }else if(type === "swap"){
+        navigator.vibrate(14);
+      }else if(type === "peek"){
+        navigator.vibrate(12);
+      }else if(type === "tap"){
+        navigator.vibrate(18);
+      }
+    }catch(_){}
   }
 
 
@@ -1241,6 +1269,9 @@ try {
     levelLeaderboards[key] = sorted;
     const posIdx = sorted.indexOf(entry);
     const rank = posIdx >= 0 && posIdx < 3 ? posIdx + 1 : null;
+    if(rank !== null && entry.timestamp){
+      lastSessionRecordHighlights.levelTimestamps[key] = entry.timestamp;
+    }
     persistRecords();
     updateHomeLevelRecordUI();
     return { isNewTop, rank };
@@ -1267,6 +1298,9 @@ try {
     sessionLeaderboard = sorted;
     const posIdx = sorted.indexOf(entry);
     lastSessionRank = posIdx >= 0 && posIdx < 3 ? posIdx + 1 : null;
+    if(lastSessionRank !== null && entry.timestamp){
+      lastSessionRecordHighlights.sessionTimestamp = entry.timestamp;
+    }
     persistRecords();
     return lastSessionRank;
   }
@@ -1372,11 +1406,23 @@ try {
       recordsPodiumStage.innerHTML = "";
       slots.forEach(slot => {
         const entry = topSessions[slot.rankIdx] || null;
+        const isJustEarned = Boolean(
+          recordsHighlightActive &&
+          entry &&
+          lastSessionRecordHighlights.sessionTimestamp &&
+          entry.timestamp === lastSessionRecordHighlights.sessionTimestamp
+        );
         const col = document.createElement("div");
-        col.className = `podium-col ${slot.cls}` + (entry ? "" : " is-empty");
+        col.className = `podium-col ${slot.cls}` + (entry ? "" : " is-empty") + (isJustEarned ? " is-just-earned" : "");
 
         const playerDiv = document.createElement("div");
         playerDiv.className = "podium-player";
+        if(isJustEarned){
+          const badgeDiv = document.createElement("div");
+          badgeDiv.className = "podium-new-badge";
+          badgeDiv.textContent = slot.rankIdx === 0 ? "✨ Nuovo Record!" : "✨ Appena ottenuto";
+          playerDiv.appendChild(badgeDiv);
+        }
         const nameDiv = document.createElement("div");
         nameDiv.className = "podium-name";
         nameDiv.textContent = entry ? (entry.name || "Giocatore") : "—";
@@ -1429,11 +1475,15 @@ try {
       const top3 = getLevelTop3(recordsViewLevel);
       const badges = ["🥇", "🥈", "🥉"];
       const rowClasses = ["rank-1", "rank-2", "rank-3"];
+      const recentLvlTs = recordsHighlightActive
+        ? (lastSessionRecordHighlights.levelTimestamps[String(recordsViewLevel)] || null)
+        : null;
       recordsLevelList.innerHTML = "";
       for(let i = 0; i < 3; i++){
         const entry = top3[i] || null;
+        const isJustEarnedRow = Boolean(entry && recentLvlTs && entry.timestamp === recentLvlTs);
         const row = document.createElement("div");
-        row.className = `session-rank-row ${rowClasses[i]}`;
+        row.className = `session-rank-row ${rowClasses[i]}` + (isJustEarnedRow ? " is-just-earned" : "");
 
         const badgeSpan = document.createElement("span");
         badgeSpan.className = "session-rank-badge";
@@ -1441,9 +1491,18 @@ try {
 
         const infoDiv = document.createElement("div");
         infoDiv.className = "session-rank-info";
+        const nameRow = document.createElement("div");
+        nameRow.className = "session-rank-name-row";
         const nameDiv = document.createElement("div");
         nameDiv.className = "session-rank-name";
         nameDiv.textContent = entry ? (entry.name || "Giocatore") : "Nessun record salvato";
+        nameRow.appendChild(nameDiv);
+        if(isJustEarnedRow){
+          const newBadge = document.createElement("span");
+          newBadge.className = "rank-new-badge";
+          newBadge.textContent = i === 0 ? "✨ Nuovo Record!" : "✨ Appena ottenuto";
+          nameRow.appendChild(newBadge);
+        }
         const metaDiv = document.createElement("div");
         metaDiv.className = "session-rank-meta";
         if(entry){
@@ -1455,7 +1514,7 @@ try {
         } else {
           metaDiv.textContent = "Completa il livello per entrare in classifica";
         }
-        infoDiv.append(nameDiv, metaDiv);
+        infoDiv.append(nameRow, metaDiv);
 
         const scoreDiv = document.createElement("div");
         scoreDiv.className = "session-rank-score";
@@ -1605,8 +1664,9 @@ try {
     closeRecordsResetModal();
   }
 
-  function openRecordsModal(lvlIdx = selectedLevel){
+  function openRecordsModal(lvlIdx = selectedLevel, highlightRecent = false){
     toggleRecordsInfoPopover(false);
+    recordsHighlightActive = Boolean(highlightRecent);
     renderRecordsModal(lvlIdx);
     activeOverlay = "records";
     if(recordsOverlay) recordsOverlay.classList.add("show");
@@ -1617,6 +1677,7 @@ try {
       clearTimeout(recordsCrestLongPressTimer);
       recordsCrestLongPressTimer = null;
     }
+    recordsHighlightActive = false;
     closeRecordsResetModal();
     closeRecordsPinModal();
     toggleRecordsInfoPopover(false);
@@ -3014,9 +3075,7 @@ try {
     gallerySelectionMode = true;
     gallerySelectedIds.clear();
     if(initialId) gallerySelectedIds.add(initialId);
-    try {
-      if(navigator.vibrate) navigator.vibrate(20);
-    } catch(_) {}
+    triggerHaptic("tap");
     syncGallerySelectionUI();
   }
 
@@ -3445,18 +3504,7 @@ try {
 
     if(!isSolved()){
       playSound(newlyCorrect.length > 0 ? "correct" : "swap");
-    }
-
-    if(typeof navigator !== "undefined" && typeof navigator.vibrate === "function"){
-      try{
-        if(newlyCorrect.length > 0){
-          if(!navigator.vibrate([50, 35, 70])){
-            navigator.vibrate(65);
-          }
-        }else{
-          navigator.vibrate(20);
-        }
-      }catch(_){}
+      triggerHaptic(newlyCorrect.length > 0 ? "correct" : "swap");
     }
 
     renderBoard(newlyCorrect);
@@ -4269,6 +4317,7 @@ try {
 
     stopTimer();
     playSound("win");
+    triggerHaptic("win");
 
     const earnedScore = calculateScore(levelIndex, moves, timerSeconds);
     lastWinScore = earnedScore;
@@ -4327,7 +4376,7 @@ try {
       if(locked && inGameSession && isSolved() && activeOverlay !== "exitConfirm"){
         showWinDialog(true);
       }
-    }, 800);
+    }, 1450);
   }
 
 
@@ -5608,27 +5657,95 @@ try {
 
 
   /*
-   * ANTEPRIMA MODELLO FOTO FISSA (v. 1.29)
-   * L'anteprima nelle schermate del Puzzle resta fissa senza zoom o ingrandimenti al click.
+   * ANTEPRIMA RAPIDA "TIENI PREMUTO" SUL MODELLO FOTO IN PARTITA (v. 1.46)
    */
+  let previewHoldTimer = null;
+  let previewPeekActive = false;
+
+  function clearPreviewHoldTimer(){
+    if(previewHoldTimer){
+      clearTimeout(previewHoldTimer);
+      previewHoldTimer = null;
+    }
+  }
+
+  function startPreviewPeek(){
+    if(!photoData || isPaused || locked || activeOverlay) return;
+    const previewImgEl = $("previewImage");
+    if(previewImgEl && photoData && previewImgEl.getAttribute("src") !== photoData){
+      previewImgEl.src = photoData;
+    }
+    previewPeekActive = true;
+    activeOverlay = "previewPeek";
+    if(previewOverlay){
+      previewOverlay.classList.add("show", "is-hold-peek");
+    }
+    triggerHaptic("peek");
+  }
+
+  function endPreviewPeek(){
+    clearPreviewHoldTimer();
+    if(previewTile){
+      previewTile.classList.remove("is-holding");
+    }
+    if(!previewPeekActive) return;
+    previewPeekActive = false;
+    if(previewOverlay){
+      previewOverlay.classList.remove("show", "is-hold-peek");
+    }
+    if(activeOverlay === "previewPeek"){
+      activeOverlay = "";
+    }
+  }
+
   function resetPreviewZoom(){
+    endPreviewPeek();
     if(!previewZoomStage) return;
     previewZoomStage.classList.add("no-transition");
     previewZoomStage.style.transform = "translate(0px, 0px) scale(1)";
     if(previewTile){
-      previewTile.classList.remove("is-zoomed", "is-panning");
+      previewTile.classList.remove("is-zoomed", "is-panning", "is-holding");
     }
   }
 
 
   function closePreview(){
-
-    if(previewOverlay) previewOverlay.classList.remove("show");
+    clearPreviewHoldTimer();
+    previewPeekActive = false;
+    if(previewTile) previewTile.classList.remove("is-holding");
+    if(previewOverlay) previewOverlay.classList.remove("show", "is-hold-peek");
 
     activeOverlay="";
 
     saveGame();
   }
+
+
+  if(previewTile){
+    previewTile.addEventListener("contextmenu", event => event.preventDefault());
+    previewTile.addEventListener("pointerdown", event => {
+      if(event.pointerType === "mouse" && event.button !== 0) return;
+      if(!photoData || isPaused || locked || activeOverlay) return;
+      event.preventDefault();
+      clearPreviewHoldTimer();
+      previewTile.classList.add("is-holding");
+      previewHoldTimer = setTimeout(() => {
+        previewHoldTimer = null;
+        startPreviewPeek();
+      }, 170);
+    });
+    previewTile.addEventListener("pointerup", endPreviewPeek);
+    previewTile.addEventListener("pointercancel", endPreviewPeek);
+    previewTile.addEventListener("pointerleave", event => {
+      if(event.pointerType === "mouse" && !previewPeekActive){
+        endPreviewPeek();
+      }
+    });
+  }
+
+  window.addEventListener("pointerup", endPreviewPeek);
+  window.addEventListener("pointercancel", endPreviewPeek);
+  window.addEventListener("blur", endPreviewPeek);
 
 
   if(closePreviewBtn){
@@ -5641,7 +5758,7 @@ try {
 
   if(previewOverlay){
     previewOverlay.addEventListener("click", () => {
-      closePreview();
+      if(!previewPeekActive) closePreview();
     });
   }
 
@@ -5714,7 +5831,7 @@ try {
         ? currentSessionDetails[currentSessionDetails.length - 1].levelIndex
         : selectedLevel;
       closeGameSummaryModal();
-      openRecordsModal(targetLvl);
+      openRecordsModal(targetLvl, true);
     });
   }
 
@@ -5848,6 +5965,16 @@ try {
     playerNameBuffer = "";
     playerNameCursorPos = 0;
     playerNameCaretVisible = false;
+    const lastUsedName = (savedPlayerName || currentPlayerName || "").trim().slice(0, MAX_RECORD_NAME_LEN);
+    if(playerNameQuickWrap && playerNameQuickVal && playerNameQuickBtn){
+      if(lastUsedName){
+        playerNameQuickVal.textContent = lastUsedName;
+        playerNameQuickBtn.setAttribute("aria-label", `Usa ultimo nome ${lastUsedName} e inizia`);
+        playerNameQuickWrap.style.display = "flex";
+      } else {
+        playerNameQuickWrap.style.display = "none";
+      }
+    }
     updatePlayerNameModalUI();
     activeOverlay = "playerName";
     if(playerNameOverlay) playerNameOverlay.classList.add("show");
@@ -5877,10 +6004,22 @@ try {
     lastSessionRank = null;
     lastWinRank = null;
     sessionFinalized = false;
+    lastSessionRecordHighlights = { sessionTimestamp: null, levelTimestamps: {} };
+    recordsHighlightActive = false;
 
     if(playerNameOverlay) playerNameOverlay.classList.remove("show");
     activeOverlay = "";
     startGameFromHome();
+  }
+
+  if(playerNameQuickBtn){
+    playerNameQuickBtn.addEventListener("click", () => {
+      const lastUsedName = (savedPlayerName || currentPlayerName || "").trim().slice(0, MAX_RECORD_NAME_LEN);
+      if(!lastUsedName) return;
+      playerNameBuffer = lastUsedName;
+      playerNameCursorPos = lastUsedName.length;
+      confirmPlayerNameAndStart();
+    });
   }
 
   if(playerNameCloseBtn){
@@ -5984,7 +6123,7 @@ try {
       crestStartY = event.clientY;
       recordsCrestLongPressTimer = setTimeout(() => {
         recordsCrestLongPressTimer = null;
-        try { if(navigator.vibrate) navigator.vibrate(25); } catch(_) {}
+        triggerHaptic("tap");
         openRecordsPinModal();
       }, 1500);
     });
