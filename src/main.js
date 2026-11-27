@@ -1459,8 +1459,9 @@ try {
       for(let i = 0; i < 3; i++){
         const entry = top3[i] || null;
         const isJustEarnedRow = Boolean(entry && recentLvlTs && entry.timestamp === recentLvlTs);
+        const hasNewRecordBadge = Boolean(isJustEarnedRow && i === 0);
         const row = document.createElement("div");
-        row.className = `session-rank-row ${rowClasses[i]}` + (isJustEarnedRow ? " is-just-earned" : "");
+        row.className = `session-rank-row ${rowClasses[i]}` + (isJustEarnedRow ? " is-just-earned" : "") + (hasNewRecordBadge ? " has-new-badge" : "");
 
         const badgeSpan = document.createElement("span");
         badgeSpan.className = "session-rank-badge";
@@ -1474,12 +1475,6 @@ try {
         nameDiv.className = "session-rank-name";
         nameDiv.textContent = entry ? (entry.name || "Giocatore") : "Nessun record salvato";
         nameRow.appendChild(nameDiv);
-        if(isJustEarnedRow && i === 0){
-          const newBadge = document.createElement("span");
-          newBadge.className = "rank-new-badge";
-          newBadge.textContent = "✨ Nuovo Record!";
-          nameRow.appendChild(newBadge);
-        }
         const metaDiv = document.createElement("div");
         metaDiv.className = "session-rank-meta";
         if(entry){
@@ -1498,6 +1493,12 @@ try {
         scoreDiv.textContent = entry ? `${entry.score} pt` : "—";
 
         row.append(badgeSpan, infoDiv, scoreDiv);
+        if(hasNewRecordBadge){
+          const newBadge = document.createElement("span");
+          newBadge.className = "rank-new-badge";
+          newBadge.textContent = "✨ Nuovo Record!";
+          row.appendChild(newBadge);
+        }
         recordsLevelList.appendChild(row);
       }
     }
